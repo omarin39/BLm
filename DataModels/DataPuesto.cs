@@ -27,10 +27,10 @@ namespace APIRest.DataModels
             switch (tipoBusqueda)
             {
                 case 1:
-                    resultadobusqueda = _context.Puestos.AsNoTracking().SingleOrDefault(us => us.IdPuestoExt == id_puestoExterno);
+                    resultadobusqueda = _context.Puestos.SingleOrDefault(us => us.IdPuestoExt == id_puestoExterno);
                     break;
                 case 2:
-                    resultadobusqueda = _context.Puestos.AsNoTracking().SingleOrDefault(us => us.DescPuesto == nombrePuesto);
+                    resultadobusqueda = _context.Puestos.SingleOrDefault(us => us.DescPuesto == nombrePuesto);
                     break;
                 default:
                     break;
@@ -53,11 +53,11 @@ namespace APIRest.DataModels
             }
         }
 
-        public long UpdatePuesto(Puesto editPuesto)//(long id_puestoExterno, string nombrePuesto)
+        public long UpdatePuesto()//(long id_puestoExterno, string nombrePuesto)
         {
             try
             {
-                _context.Puestos.Update(editPuesto);
+                //_context.Puestos.Update(editPuesto);
                 return _context.SaveChanges();
             }
             catch (Exception ex)

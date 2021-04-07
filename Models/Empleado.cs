@@ -16,10 +16,10 @@ namespace APIRest.Models
         public DateTime FIngreso { get; set; }
         public string Email { get; set; }
         public string NominaJefe { get; set; }
-        public Nullable<long> DepartamentoIdDepartamentoNivel0 { get; set; }
-        public Nullable<long> DepartamentoIdDepartamentoNivel1 { get; set; }
-        public Nullable<long> DepartamentoIdDepartamentoNivel2 { get; set; }
-        public Nullable<long> DepartamentoIdDepartamentoNivel3 { get; set; }
+        public long DepartamentoIdDepartamentoNivel0 { get; set; }
+        public long? DepartamentoIdDepartamentoNivel1 { get; set; }
+        public long? DepartamentoIdDepartamentoNivel2 { get; set; }
+        public long? DepartamentoIdDepartamentoNivel3 { get; set; }
         public long IdiomaIdIdioma { get; set; }
         public long PuestosIdPuesto { get; set; }
         public long UnidadNegocioIdUnidadNegocio { get; set; }

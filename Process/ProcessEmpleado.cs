@@ -37,7 +37,7 @@ namespace APIRest.Controllers.Process
                 //logNewRegistro.DepartamentoIdDepartamentoNivel0 = empleado.Departamento_id_departamento_nivel0;
 
                 if(empleado.Departamento_id_departamento_nivel0!=null){
-                  logNewRegistro.DepartamentoIdDepartamentoNivel0 = empleado.Departamento_id_departamento_nivel0;
+                  logNewRegistro.DepartamentoIdDepartamentoNivel0 = (long)empleado.Departamento_id_departamento_nivel0;
                 }
 
                 if(empleado.Departamento_id_departamento_nivel1!=null){

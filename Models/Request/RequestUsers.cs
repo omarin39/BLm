@@ -39,5 +39,6 @@ namespace APIRest.Models.Request
         public string Pass { get; set; }
         public string id_depa_externo { get; set; }
         public string id_puesto_externo { get; set; }
+        public long IdPerfil { get; set; }
     }
 }

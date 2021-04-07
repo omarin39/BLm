@@ -13,6 +13,11 @@ namespace APIRest.Controllers.Process
 {
     public class ProcessUSR
     {
+        private readonly Carta_vContext _context;
+        public ProcessUSR()
+        {
+            _context = new Carta_vContext();
+        }
         private ResponseUsers ResponseWS = new();
         public DataResourceValidaciones _ParamValidaUSR = new();
         public DataEmpleados empleadoData = new();
@@ -45,7 +50,7 @@ namespace APIRest.Controllers.Process
             ComplementosSuccessResponse regProcesados = new();
             foreach (var RegistroUSR in RegBien)
             {
-                var existe = empleadoData.FindEmpleado(RegistroUSR.NoNomina.ToString());
+                Empleado existe = empleadoData.FindEmpleado(RegistroUSR.NoNomina.ToString());
 
 
                 switch (RegistroUSR.Operacion.ToUpper())
@@ -57,7 +62,7 @@ namespace APIRest.Controllers.Process
                         if (existe != null)
                         {
                             //SI EXISTE se trata como una modificacion
-                            regProcesados = UpdateUsr(RegistroUSR, existe.IdEmpleado);
+                            regProcesados = UpdateUsr(RegistroUSR, existe);
                             if (regProcesados != null)
                             {
                                 RegistrosOk.Add(regProcesados);
@@ -85,7 +90,7 @@ namespace APIRest.Controllers.Process
                         //pendiente
                         break;
                     case "M":
-                        regProcesados = UpdateUsr(RegistroUSR, existe.IdEmpleado);
+                        regProcesados = UpdateUsr(RegistroUSR, existe);
                         if (regProcesados != null)
                         {
                             RegistrosOk.Add(regProcesados);
@@ -157,7 +162,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ComplementosSuccessResponse UpdateUsr(RequestUsers RegBien, long idEmpleado)
+        public ComplementosSuccessResponse UpdateUsr(RequestUsers RegBien, Empleado _Empleado)
         {
             ComplementosSuccessResponse respAltaUsr = new();
             try
@@ -173,27 +178,25 @@ namespace APIRest.Controllers.Process
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
                 long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno);
 
-                Empleado empleadoNewRegistro = new();
-                empleadoNewRegistro.IdEmpleado = idEmpleado;
-                empleadoNewRegistro.NNomina = RegBien.NoNomina.ToString();
-                empleadoNewRegistro.Nombre = RegBien.Nombre;
-                empleadoNewRegistro.ApellidoPaterno = RegBien.ApellidoPaterno;
-                empleadoNewRegistro.ApellidoMaterno = RegBien.ApellidoMaterno;
-                empleadoNewRegistro.FIngreso = FechaIngreso;
-                empleadoNewRegistro.Email = RegBien.Email;
-                empleadoNewRegistro.DepartamentoIdDepartamentoNivel0 = id_departamento;
-                empleadoNewRegistro.PuestosIdPuesto = id_puesto;
-                empleadoNewRegistro.NominaJefe = RegBien.NominaJefe.ToString();
-                empleadoNewRegistro.UnidadNegocioIdUnidadNegocio = id_unidadNegocio;
-                empleadoNewRegistro.FNacimiento = fechaNacimiento;
-                empleadoNewRegistro.CentroCostoIdCentroCosto = id_CECO;
-                empleadoNewRegistro.IdiomaIdIdioma = 1;
+                _Empleado.NNomina = RegBien.NoNomina.ToString();
+                _Empleado.Nombre = RegBien.Nombre;
+                _Empleado.ApellidoPaterno = RegBien.ApellidoPaterno;
+                _Empleado.ApellidoMaterno = RegBien.ApellidoMaterno;
+                _Empleado.FIngreso = FechaIngreso;
+                _Empleado.Email = RegBien.Email;
+                _Empleado.DepartamentoIdDepartamentoNivel0 = id_departamento;
+                _Empleado.PuestosIdPuesto = id_puesto;
+                _Empleado.NominaJefe = RegBien.NominaJefe.ToString();
+                _Empleado.UnidadNegocioIdUnidadNegocio = id_unidadNegocio;
+                _Empleado.FNacimiento = fechaNacimiento;
+                _Empleado.CentroCostoIdCentroCosto = id_CECO;
 
-                var respNewUSR = empleadoData.UpdateEmpleado(empleadoNewRegistro);
+
+                var respNewUSR = empleadoData.UpdateEmpleado(_Empleado);
                 if (respNewUSR > 0)
                 {
                     respAltaUsr.Id_user = respNewUSR.ToString();
-                    respAltaUsr.NoNomina = RegBien.NoNomina.ToString();
+                    respAltaUsr.NoNomina = _Empleado.NNomina.ToString();
                     respAltaUsr.Operacion = RegBien.Operacion.ToString();
                     return respAltaUsr;
 
@@ -247,8 +250,8 @@ namespace APIRest.Controllers.Process
                 {
                     // se crea nuevo departamento
                     Departamento newDepartamento = new();
-                    newDepartamento.Departamento1 = nombreDepa;
-                    newDepartamento.IdDepartamentExt = idDepa_externo;
+                    seridDepaNombre.Departamento1 = nombreDepa;
+                    seridDepaNombre.IdDepartamentExt = idDepa_externo;
                     var respNewDepto = departamentoData.AddDepartamento(newDepartamento);
                     idDepa_externoret = respNewDepto;
                 }
@@ -271,10 +274,13 @@ namespace APIRest.Controllers.Process
                 }
                 else
                 {
-                    Puesto editPuesto = new();
-                    editPuesto.DescPuesto = nombrePuesto;
-                    editPuesto.IdPuestoExt = idPuesto_externo;
-                    idPuestoret = puestoData.UpdatePuesto(resPuesto); //idPuesto_externo, nombrePuesto);                    
+                    resPuesto.DescPuesto = nombrePuesto;
+                    resPuesto.IdPuestoExt = idPuesto_externo;
+                    //_context.SaveChanges();
+                    //idPuestoret = resPuesto.IdPuesto;
+
+                    //idPuestoret = puestoData.UpdatePuesto(editPuesto); //idPuesto_externo, nombrePuesto);
+                    idPuestoret = puestoData.UpdatePuesto();
                 }
                 
             }

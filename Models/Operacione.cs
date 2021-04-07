@@ -14,8 +14,12 @@ namespace APIRest.Models
 
         public long Id { get; set; }
         public string Operacion { get; set; }
+        public string NombreMenu { get; set; }
+        public string NombrePagina { get; set; }
         public bool Estatus { get; set; }
+        public long IdMenu { get; set; }
 
+        public virtual Menu IdMenuNavigation { get; set; }
         public virtual ICollection<PerfilOperacionPermiso> PerfilOperacionPermisos { get; set; }
     }
 }

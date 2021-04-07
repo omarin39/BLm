@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/mnt/0e74f96b-2899-46dc-b2b5-b0c41d7d9697/projectos/oceancode/BLm/APIRest.csproj": {}
+    "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj": {}
   },
   "projects": {
-    "/mnt/0e74f96b-2899-46dc-b2b5-b0c41d7d9697/projectos/oceancode/BLm/APIRest.csproj": {
+    "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/0e74f96b-2899-46dc-b2b5-b0c41d7d9697/projectos/oceancode/BLm/APIRest.csproj",
+        "projectUniqueName": "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj",
         "projectName": "APIRest",
-        "projectPath": "/mnt/0e74f96b-2899-46dc-b2b5-b0c41d7d9697/projectos/oceancode/BLm/APIRest.csproj",
-        "packagesPath": "/home/erdnando/.nuget/packages/",
-        "outputPath": "/mnt/0e74f96b-2899-46dc-b2b5-b0c41d7d9697/projectos/oceancode/BLm/obj/",
+        "projectPath": "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj",
+        "packagesPath": "C:\\Users\\omari\\.nuget\\packages\\",
+        "outputPath": "C:\\Proyectos\\BLMOVIL\\APIRest\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/home/erdnando/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\omari\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -83,12 +90,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -97,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }
