@@ -22,7 +22,7 @@ namespace APIRest.DataModels
         }
         public Empleado FindEmpleado(long idEmpleado)
         {
-            return _context.Empleados.AsNoTracking().SingleOrDefault(us => us.IdEmpleado == idEmpleado);
+            return _context.Empleados.SingleOrDefault(us => us.IdEmpleado == idEmpleado);
         }
 
         public long AddEmpleado(Empleado NewEmpleado)
@@ -46,7 +46,7 @@ namespace APIRest.DataModels
         {
             try
             {
-                _context.Empleados.Update(editEmpleado);
+                //_context.Empleados.Update(editEmpleado);
                 return _context.SaveChanges();
             }
             catch (Exception ex)

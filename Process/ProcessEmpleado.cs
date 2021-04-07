@@ -26,39 +26,39 @@ namespace APIRest.Controllers.Process
                 
 
                 Empleado logNewRegistro = new();
-                logNewRegistro.NNomina = empleado.n_nomina;
-                logNewRegistro.Nombre = empleado.nombre;
-                logNewRegistro.ApellidoPaterno = empleado.apellido_paterno;
-                logNewRegistro.ApellidoMaterno = empleado.apellido_materno;
-                logNewRegistro.FNacimiento = empleado.f_nacimiento;
-                logNewRegistro.FIngreso = empleado.f_ingreso;
-                logNewRegistro.Email = empleado.email;
-                logNewRegistro.NominaJefe = empleado.nomina_jefe;
+                logNewRegistro.NNomina = empleado.NNomina;
+                logNewRegistro.Nombre = empleado.Nombre;
+                logNewRegistro.ApellidoPaterno = empleado.ApellidoMaterno;
+                logNewRegistro.ApellidoMaterno = empleado.ApellidoMaterno;
+                logNewRegistro.FNacimiento = empleado.FNacimiento;
+                logNewRegistro.FIngreso = empleado.FIngreso;
+                logNewRegistro.Email = empleado.Email;
+                logNewRegistro.NominaJefe = empleado.NominaJefe;
                 //logNewRegistro.DepartamentoIdDepartamentoNivel0 = empleado.Departamento_id_departamento_nivel0;
 
-                if(empleado.Departamento_id_departamento_nivel0!=null){
-                  logNewRegistro.DepartamentoIdDepartamentoNivel0 = (long)empleado.Departamento_id_departamento_nivel0;
+                if(empleado.DepartamentoIdDepartamentoNivel0!=null){
+                  logNewRegistro.DepartamentoIdDepartamentoNivel0 = (long)empleado.DepartamentoIdDepartamentoNivel0;
                 }
 
-                if(empleado.Departamento_id_departamento_nivel1!=null){
-                  logNewRegistro.DepartamentoIdDepartamentoNivel1 = empleado.Departamento_id_departamento_nivel1;
+                if(empleado.DepartamentoIdDepartamentoNivel1!=null){
+                  logNewRegistro.DepartamentoIdDepartamentoNivel1 = empleado.DepartamentoIdDepartamentoNivel1;
                 }
 
-                 if(empleado.Departamento_id_departamento_nivel2!=null){
-                  logNewRegistro.DepartamentoIdDepartamentoNivel2 = empleado.Departamento_id_departamento_nivel2;
+                 if(empleado.DepartamentoIdDepartamentoNivel2!=null){
+                  logNewRegistro.DepartamentoIdDepartamentoNivel2 = empleado.DepartamentoIdDepartamentoNivel2;
                 }
 
-                 if(empleado.Departamento_id_departamento_nivel3!=null){
-                  logNewRegistro.DepartamentoIdDepartamentoNivel3 = empleado.Departamento_id_departamento_nivel3;
+                 if(empleado.DepartamentoIdDepartamentoNivel3!=null){
+                  logNewRegistro.DepartamentoIdDepartamentoNivel3 = empleado.DepartamentoIdDepartamentoNivel3;
                 }
                
                // logNewRegistro.DepartamentoIdDepartamentoNivel2 = empleado.Departamento_id_departamento_nivel2;
                 //logNewRegistro.DepartamentoIdDepartamentoNivel3 = empleado.Departamento_id_departamento_nivel3;
-                logNewRegistro.IdiomaIdIdioma = empleado.idioma_id_idioma;
-                logNewRegistro.PuestosIdPuesto = empleado.Puestos_id_puesto;
-                logNewRegistro.UnidadNegocioIdUnidadNegocio = empleado.Unidad_negocio_id_unidad_negocio;
-                logNewRegistro.CentroCostoIdCentroCosto = empleado.Centro_costo_id_centro_costo;
-                logNewRegistro.IdPerfil = empleado.id_Perfil;
+                logNewRegistro.IdiomaIdIdioma = empleado.IdiomaIdIdioma;
+                logNewRegistro.PuestosIdPuesto = empleado.PuestosIdPuesto;
+                logNewRegistro.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
+                logNewRegistro.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
+                logNewRegistro.IdPerfil = empleado.IdPerfil;
 
 
                 
@@ -89,30 +89,30 @@ namespace APIRest.Controllers.Process
             ResponseEmpleado respAltaEmpleado = new();
             Perfile updAltaEmpleado = new();
 
-            var empleadoBuscado = FindEmpleado(empleado.id_empleado);
+            var empleadoBuscado = FindEmpleado(empleado.IdEmpleado);
             if(empleadoBuscado==null){
                  return respAltaEmpleado;
             }else{
                 try
                     {
 
-                        empleadoBuscado.NNomina = empleado.n_nomina;
-                        empleadoBuscado.Nombre = empleado.nombre;
-                        empleadoBuscado.ApellidoPaterno = empleado.apellido_paterno;
-                        empleadoBuscado.ApellidoMaterno = empleado.apellido_materno;
-                        empleadoBuscado.FNacimiento = empleado.f_nacimiento;
-                        empleadoBuscado.FIngreso = empleado.f_ingreso;
-                        empleadoBuscado.Email = empleado.email;
-                        empleadoBuscado.NominaJefe = empleado.nomina_jefe;
+                        empleadoBuscado.NNomina = empleado.NNomina;
+                        empleadoBuscado.Nombre = empleado.Nombre;
+                        empleadoBuscado.ApellidoPaterno = empleado.ApellidoPaterno;
+                        empleadoBuscado.ApellidoMaterno = empleado.ApellidoMaterno;
+                        empleadoBuscado.FNacimiento = empleado.FNacimiento;
+                        empleadoBuscado.FIngreso = empleado.FIngreso;
+                        empleadoBuscado.Email = empleado.Email;
+                        empleadoBuscado.NominaJefe = empleado.NNomina;
                         //empleadoBuscado.DepartamentoIdDepartamentoNivel0 = empleado.Departamento_id_departamento_nivel0;
-                        empleadoBuscado.DepartamentoIdDepartamentoNivel1 = empleado.Departamento_id_departamento_nivel1;
-                        empleadoBuscado.DepartamentoIdDepartamentoNivel2 = empleado.Departamento_id_departamento_nivel2;
-                        empleadoBuscado.DepartamentoIdDepartamentoNivel3 = empleado.Departamento_id_departamento_nivel3;
-                        empleadoBuscado.IdiomaIdIdioma = empleado.idioma_id_idioma;
-                        empleadoBuscado.PuestosIdPuesto = empleado.Puestos_id_puesto;
-                        empleadoBuscado.UnidadNegocioIdUnidadNegocio = empleado.Unidad_negocio_id_unidad_negocio;
-                        empleadoBuscado.CentroCostoIdCentroCosto = empleado.Centro_costo_id_centro_costo;
-                        empleadoBuscado.IdPerfil = empleado.id_Perfil;
+                        empleadoBuscado.DepartamentoIdDepartamentoNivel1 = empleado.DepartamentoIdDepartamentoNivel1;
+                        empleadoBuscado.DepartamentoIdDepartamentoNivel2 = empleado.DepartamentoIdDepartamentoNivel2;
+                        empleadoBuscado.DepartamentoIdDepartamentoNivel3 = empleado.DepartamentoIdDepartamentoNivel3;
+                        empleadoBuscado.IdiomaIdIdioma = empleado.IdiomaIdIdioma;
+                        empleadoBuscado.PuestosIdPuesto = empleado.PuestosIdPuesto;
+                        empleadoBuscado.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
+                        empleadoBuscado.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
+                        empleadoBuscado.IdPerfil = empleado.IdPerfil;
                       
 
 

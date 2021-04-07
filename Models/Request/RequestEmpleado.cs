@@ -7,25 +7,24 @@ using System.Threading.Tasks;
 namespace APIRest.Models.Request
 {
     public class RequestEmpleado
-    {   
-        public long id_empleado { get; set; }     
-        public string n_nomina { get; set; }
-        public string nombre { get; set; }
-        public string apellido_paterno { get; set; }
-        public string apellido_materno { get; set; }
-        public DateTime f_nacimiento { get; set; }
-        public DateTime f_ingreso { get; set; }
-        public string email { get; set; }
-        public string nomina_jefe { get; set; }
-        public Nullable<long> Departamento_id_departamento_nivel0 { get; set; }
-        public Nullable<long> Departamento_id_departamento_nivel1 { get; set; }
-        public Nullable<long> Departamento_id_departamento_nivel2 { get; set; }
-        public Nullable<long> Departamento_id_departamento_nivel3 { get; set; }
-        public long idioma_id_idioma { get; set; }
-        public long Puestos_id_puesto { get; set; }
-        public long Unidad_negocio_id_unidad_negocio { get; set; }
-        public long Centro_costo_id_centro_costo { get; set; }
-        public long id_Perfil { get; set; }
-        
+    {  
+        public long IdEmpleado { get; set; }
+        public string NNomina { get; set; }
+        public string Nombre { get; set; }
+        public string ApellidoPaterno { get; set; }
+        public string ApellidoMaterno { get; set; }
+        public DateTime FNacimiento { get; set; }
+        public DateTime FIngreso { get; set; }
+        public string Email { get; set; }
+        public string NominaJefe { get; set; }
+        public Nullable<long> DepartamentoIdDepartamentoNivel0 { get; set; }
+        public Nullable<long> DepartamentoIdDepartamentoNivel1 { get; set; }
+        public Nullable<long> DepartamentoIdDepartamentoNivel2 { get; set; }
+        public Nullable<long> DepartamentoIdDepartamentoNivel3 { get; set; }
+        public long IdiomaIdIdioma { get; set; }
+        public long PuestosIdPuesto { get; set; }
+        public long UnidadNegocioIdUnidadNegocio { get; set; }
+        public long CentroCostoIdCentroCosto { get; set; }
+        public long? IdPerfil { get; set; }
     }
 }

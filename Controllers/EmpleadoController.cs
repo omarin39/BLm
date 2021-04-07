@@ -55,7 +55,7 @@ namespace APIRest.Controllers
 
             try
             {
-                if (ReqEmpleado.nombre != null)
+                if (ReqEmpleado.Nombre != null)
                 {
                     var result = ProcEmpleado.AddEmpleado(ReqEmpleado); 
                     if (result != null)
