@@ -21,6 +21,7 @@ namespace APIRest.Models
         public int CantidadAccesoMultiple { get; set; }
         public long FabricanteIdFabricante { get; set; }
         public long? TipoAccesoIdTipoAcceso { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual Fabricante FabricanteIdFabricanteNavigation { get; set; }
         public virtual TipoAcceso TipoAccesoIdTipoAccesoNavigation { get; set; }

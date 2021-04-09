@@ -20,6 +20,7 @@ namespace APIRest.Models
 
         public long IdNivelCertificacion { get; set; }
         public string DescNivelCertificacion { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual ICollection<PreguntasMaquinaGenerale> PreguntasMaquinaGenerales { get; set; }
         public virtual ICollection<PreguntasMaquina> PreguntasMaquinas { get; set; }

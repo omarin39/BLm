@@ -8,11 +8,12 @@ namespace APIRest.Models.Request
 {
     public class RequestFabricante
     {
-        public long Id_fabricante { get; set; }
-        public String nombre { get; set; }
-        public String contacto { get; set; }
-        public String email { get; set; }
-        public String telefono { get; set; }
+        public long IdFabricante { get; set; }
+        public string Nombre { get; set; }
+        public string Contacto { get; set; }
+        public string Email { get; set; }
+        public string Telefono { get; set; }
+        public bool? Activo { get; set; }
 
     }
 }

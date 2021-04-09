@@ -12,7 +12,7 @@ namespace APIRest.Models.Request
         public String Operacion { get; set; }
         public String Nombre_Menu { get; set; }
         public String Nombre_Pagina { get; set; }
-        public bool Estatus { get; set; }
+        public bool Activo { get; set; }
 
     }
 }

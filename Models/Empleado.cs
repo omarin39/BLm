@@ -25,6 +25,7 @@ namespace APIRest.Models
         public long UnidadNegocioIdUnidadNegocio { get; set; }
         public long CentroCostoIdCentroCosto { get; set; }
         public long? IdPerfil { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual CentroCosto CentroCostoIdCentroCostoNavigation { get; set; }
         public virtual Departamento DepartamentoIdDepartamentoNivel0Navigation { get; set; }

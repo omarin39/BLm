@@ -9,6 +9,7 @@ namespace APIRest.Models
     {
         public long MaquinasIdMaquina { get; set; }
         public long ProcesosIdProceso { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual Proceso ProcesosIdProcesoNavigation { get; set; }
     }

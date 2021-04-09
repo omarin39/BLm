@@ -17,6 +17,7 @@ namespace APIRest.Models
         public long IdDepartamento { get; set; }
         public long IdDepartamentExt { get; set; }
         public string Departamento { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual Departamento IdDepartamentoNavigation { get; set; }
         public virtual ICollection<DepartamentoNivel2> DepartamentoNivel2s { get; set; }

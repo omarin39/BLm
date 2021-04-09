@@ -26,10 +26,11 @@ namespace APIRest.Controllers.Process
 
 
                 Cliente logNewRegistro = new();
-                logNewRegistro.Nombre = Cliente.nombre;
-                logNewRegistro.Contacto = Cliente.contacto;
-                logNewRegistro.Email = Cliente.email;
-                logNewRegistro.Telefono = Cliente.telefono;
+                logNewRegistro.Nombre = Cliente.Nombre;
+                logNewRegistro.Contacto = Cliente.Contacto;
+                logNewRegistro.Email = Cliente.Email;
+                logNewRegistro.Telefono = Cliente.Telefono;
+                logNewRegistro.Activo = Cliente.Activo;
 
 
                 long respNewUSR = ClienteData.AddCliente(logNewRegistro);
@@ -58,7 +59,7 @@ namespace APIRest.Controllers.Process
             ResponseCliente respAltaCliente = new();
             Cliente updAltaCliente = new();
 
-            var clienteBuscado = FindCliente(Cliente.Id);
+            var clienteBuscado = FindCliente(Cliente.IdCliente);
             if(clienteBuscado==null){
                  return respAltaCliente;
             }else{
@@ -68,10 +69,11 @@ namespace APIRest.Controllers.Process
                     
                    
 
-                    clienteBuscado.Nombre = Cliente.nombre;
-                    clienteBuscado.Contacto = Cliente.contacto;
-                    clienteBuscado.Email = Cliente.email;
-                    clienteBuscado.Telefono = Cliente.telefono;
+                    clienteBuscado.Nombre = Cliente.Nombre;
+                    clienteBuscado.Contacto = Cliente.Contacto;
+                    clienteBuscado.Email = Cliente.Email;
+                    clienteBuscado.Telefono = Cliente.Telefono;
+                    clienteBuscado.Activo = Cliente.Activo;
 
 
 

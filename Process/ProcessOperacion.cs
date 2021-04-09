@@ -29,7 +29,8 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Operacion = operacion.Operacion;
                 logNewRegistro.NombreMenu = operacion.Nombre_Menu;
                 logNewRegistro.NombrePagina = operacion.Nombre_Pagina;
-                logNewRegistro.Estatus = operacion.Estatus;
+                logNewRegistro.Activo = operacion.Activo;
+
 
 
                 long respNewUSR = operacionData.AddOperacion(logNewRegistro);
@@ -69,7 +70,7 @@ namespace APIRest.Controllers.Process
                     operacionBuscado.Operacion = operacion.Operacion;
                     operacionBuscado.NombreMenu = operacion.Nombre_Menu;
                     operacionBuscado.NombrePagina = operacion.Nombre_Pagina;
-                    operacionBuscado.Estatus = operacion.Estatus;
+                    operacionBuscado.Activo = operacion.Activo;
 
 
 

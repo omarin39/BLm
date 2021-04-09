@@ -55,7 +55,7 @@ namespace APIRest.Controllers
 
             try
             {
-                if (ReqFabricante.nombre != null)
+                if (ReqFabricante.Nombre != null)
                 {
                     var result = procFabricante.AddFabricante(ReqFabricante); //.ProcesaUSER(ReqUser, Configuration);
                     if (result != null)

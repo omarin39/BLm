@@ -9,6 +9,7 @@ namespace APIRest.Models
     {
         public long ClientesIdCliente { get; set; }
         public long PiezasIdPieza { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual Pieza PiezasIdPiezaNavigation { get; set; }
     }

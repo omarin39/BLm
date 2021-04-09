@@ -55,7 +55,7 @@ namespace APIRest.Controllers
 
             try
             {
-                if (ReqCliente.nombre != null)
+                if (ReqCliente.Nombre != null)
                 {
                     var result = procCliente.AddCliente(ReqCliente); //.ProcesaUSER(ReqUser, Configuration);
                     if (result != null)

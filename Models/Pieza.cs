@@ -15,6 +15,7 @@ namespace APIRest.Models
         public long IdPieza { get; set; }
         public string Nombre { get; set; }
         public string Descripción { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual ICollection<PreguntasPieza> PreguntasPiezas { get; set; }
     }

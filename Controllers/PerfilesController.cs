@@ -46,18 +46,11 @@ namespace APIRest.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] RequestPerfiles ReqPerfil)
         {
-            List<ResponsePerfiles> ResponseWS = new();
-            ResponsePerfiles ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
-
             try
             {
                 if (ReqPerfil.Perfil != null)
                 {
-                    var result = ProcPerfil.AddPerfil(ReqPerfil); //.ProcesaUSER(ReqUser, Configuration);
+                    var result = ProcPerfil.AddPerfil(ReqPerfil);
                     if (result != null)
                     {
                         return Ok(result);
@@ -89,10 +82,6 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public ActionResult<RequestPerfiles> Find(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponsePerfiles> ResponseWS = new();
-            ResponsePerfiles ComplementoResponseWS = new();
-           
-
             try
             {
                 if (id == 0)
@@ -126,14 +115,11 @@ namespace APIRest.Controllers
         [HttpGet()]
         public ActionResult<List<Perfile>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponsePerfiles> ResponseWS = new();
-            ResponsePerfiles ComplementoResponseWS = new();
-           
-
             try
             {
-                 List<Perfile> result = ProcPerfil.FindAllPerfil();//Async();//.FindProcessLog(id);
-                    if (result != null)
+                //List<Perfile> result = ProcPerfil.FindAllPerfil().Where(v=>v.Activo==true).ToList();//Async();//.FindProcessLog(id);
+                List<Perfile> result = ProcPerfil.FindAllPerfil();//Async();//.FindProcessLog(id);
+                if (result != null)
                     {
                         return result;
                     }
@@ -159,14 +145,9 @@ namespace APIRest.Controllers
          public ActionResult Put([FromBody] RequestPerfiles ReqPerfil)
         //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponsePerfiles> ResponseWS = new();
-            ResponsePerfiles ComplementoResponseWS = new();
-           
-
-
             try
             {
-                 ResponsePerfiles result = ProcPerfil.UpdatePerfil(ReqPerfil);//Async();//.FindProcessLog(id);
+                 ResponsePerfiles result = ProcPerfil.UpdatePerfil(ReqPerfil);
                     if (result != null)
                     {
                         return Ok(result);

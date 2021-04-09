@@ -15,6 +15,7 @@ namespace APIRest.Models
         public long IdPlanta { get; set; }
         public string Acronimo { get; set; }
         public string Planta1 { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual ICollection<Nafe> Naves { get; set; }
     }

@@ -12,5 +12,6 @@ namespace APIRest.Models
         public string Contacto { get; set; }
         public string Email { get; set; }
         public string Telefono { get; set; }
+        public bool? Activo { get; set; }
     }
 }

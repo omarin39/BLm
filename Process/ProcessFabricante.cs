@@ -26,10 +26,11 @@ namespace APIRest.Controllers.Process
 
 
                 Fabricante logNewRegistro = new();
-                logNewRegistro.Nombre = Fabricante.nombre;
-                logNewRegistro.Contacto = Fabricante.contacto;
-                logNewRegistro.Email = Fabricante.email;
-                logNewRegistro.Telefono = Fabricante.telefono;
+                logNewRegistro.Nombre = Fabricante.Nombre;
+                logNewRegistro.Contacto = Fabricante.Contacto;
+                logNewRegistro.Email = Fabricante.Email;
+                logNewRegistro.Telefono = Fabricante.Telefono;
+                logNewRegistro.Activo = Fabricante.Activo;
 
 
                 long respNewUSR = FabricanteData.AddFabricante(logNewRegistro);
@@ -58,7 +59,7 @@ namespace APIRest.Controllers.Process
             ResponseFabricante respAltaFabricante = new();
             Fabricante updAltaFabricante = new();
 
-            var FabricanteBuscado = FindFabricante(Fabricante.Id_fabricante);
+            var FabricanteBuscado = FindFabricante(Fabricante.IdFabricante);
             if(FabricanteBuscado==null){
                  return respAltaFabricante;
             }else{
@@ -67,10 +68,11 @@ namespace APIRest.Controllers.Process
 
             
 
-                    FabricanteBuscado.Nombre = Fabricante.nombre;
-                    FabricanteBuscado.Contacto = Fabricante.contacto;
-                    FabricanteBuscado.Email = Fabricante.email;
-                    FabricanteBuscado.Telefono = Fabricante.telefono;
+                    FabricanteBuscado.Nombre = Fabricante.Nombre;
+                    FabricanteBuscado.Contacto = Fabricante.Contacto;
+                    FabricanteBuscado.Email = Fabricante.Email;
+                    FabricanteBuscado.Telefono = Fabricante.Telefono;
+                    FabricanteBuscado.Activo = Fabricante.Activo;
 
 
 

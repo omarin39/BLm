@@ -20,5 +20,6 @@ namespace APIRest.Models
         public string TokenResponsable { get; set; }
         public DateTime? FechaResponsable { get; set; }
         public double? Resultado { get; set; }
+        public bool? Activo { get; set; }
     }
 }

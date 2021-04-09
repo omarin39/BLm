@@ -16,6 +16,7 @@ namespace APIRest.Models
         public long IdCentroCostoExt { get; set; }
         public string DescCentroCosto { get; set; }
         public long DuenoCeco { get; set; }
+        public bool? Activo { get; set; }
 
         public virtual ICollection<Empleado> Empleados { get; set; }
     }

@@ -12,6 +12,7 @@ namespace APIRest.Models
         public string Ubicacion { get; set; }
         public long MaquinasIdMaquina { get; set; }
         public long NavesIdNave { get; set; }
+        public bool Activo { get; set; }
 
         public virtual Maquina MaquinasIdMaquinaNavigation { get; set; }
         public virtual Nafe NavesIdNaveNavigation { get; set; }
