@@ -159,14 +159,9 @@ namespace APIRest.Controllers
          public ActionResult Put([FromBody] RequestNivelesCertificacion ReqNivelesCertificacion)
         //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseNivelesCertificacion> ResponseWS = new();
-            ResponseNivelesCertificacion ComplementoResponseWS = new();
-           
-
-
             try
             {
-                 ResponseNivelesCertificacion result = procNivelesCertificacion.UpdateNivelesCertificacion(ReqNivelesCertificacion);//Async();//.FindProcessLog(id);
+                ResponseGral result = procNivelesCertificacion.UpdateNivelesCertificacion(ReqNivelesCertificacion);//Async();//.FindProcessLog(id);
                     if (result != null)
                     {
                         return Ok(result);

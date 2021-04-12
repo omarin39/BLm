@@ -151,42 +151,30 @@ namespace APIRest.Controllers
             }
          
         }
-
-
-
-
         [HttpPut()]
-         public ActionResult Put([FromBody] RequestProcessLog ReqProcessLog)
-        //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult Put([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseProcessLog> ResponseWS = new();
-            ResponseProcessLog ComplementoResponseWS = new();
-           
-
-
             try
             {
-                 ResponseProcessLog result = ProcLOG.UpdateProcessLog(ReqProcessLog);//Async();//.FindProcessLog(id);
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
-                    else
-                    {
-                        return NotFound("Process Log not found");
-                    }
+                ResponseGral result = ProcLOG.UpdateProcessLog(ReqProcessLog);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Process Log not found");
+                }
 
-                
+
             }
             catch (Exception e)
             {
                 return NotFound("Process Log not found");
-               
+
             }
-         
+
         }
-
-
 
 
     }

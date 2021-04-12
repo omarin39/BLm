@@ -1,86 +1,79 @@
 ﻿using APIRest.Common;
-using APIRest.Controllers.Process;
 using APIRest.Models;
 using APIRest.Models.Request;
 using APIRest.Models.Response;
 using APIRest.Process;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 
 namespace APIRest.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IdiomasController : ControllerBase
+    public class MenuController : ControllerBase
     {
-        private JsonMediaTypeFormatter _formatter = new();
-        private ProcessIdioma ProcIdioma = new();
-        // private ValidaDatosRequest _validaReq = new();
+        private ProcessMenu procMenu= new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        public IdiomasController(IConfiguration configuration)
+        public MenuController(IConfiguration configuration)
         {
             Configuration = configuration;
-
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestIdiomas ReqIdioma)
-        {           
+        public ActionResult Post([FromBody] RequestMenu ReqMenu)
+        {
             try
             {
-                if (ReqIdioma.Idioma1 != null)
+                if (!string.IsNullOrEmpty(ReqMenu.NombreMenu))
                 {
-                    var result = ProcIdioma.AddIdioma(ReqIdioma);
+                    var result = procMenu.AddMenu(ReqMenu);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Language not inserted");
+                        return NotFound("Menu not inserted");
                     }
 
                 }
                 else
                 {
-                    return NotFound("Language required");
+                    return NotFound("Menu required");
                 }
 
             }
             catch (Exception e)
             {
-                return NotFound("Language not found");
+                return NotFound("Menu not found");
 
             }
 
         }
         [HttpGet("{id}")]
-        public ActionResult<RequestIdiomas> Find(long id)
+        public ActionResult<RequestMenu> Find(long id)
         {
             try
             {
                 if (id == 0)
                 {
-                    return NotFound("Language not found");
+                    return NotFound("Menu not found");
                 }
                 else
                 {
-                    var result = ProcIdioma.FindIdioma(id);
+                    var result = procMenu.FindMenu(id);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Language not found");
+                        return NotFound("Menu not found");
                     }
 
                 }
@@ -88,62 +81,58 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
-                return NotFound("Language not found");
+                return NotFound("Menu not found");
 
             }
 
         }
-
-
         [HttpGet()]
-        public ActionResult<List<Idioma>> FindAll()
+        public ActionResult<List<Menu>> FindAll()
         {
             try
             {
-                List<Idioma> result = ProcIdioma.FindAllIdioma();
-                if (result != null)
-                {
-                    return result;
-                }
-                else
-                {
-                    return NotFound("Language not found");
-                }
-            }
-            catch (Exception e)
-            {
-                return NotFound("Language not found");
-
-            }
-
-        }
-
-        [HttpPut()]
-        public ActionResult Put([FromBody] RequestIdiomas ReqIdioma)
-        {
-
-            try
-            {
-                ResponseGral result = ProcIdioma.UpdateIdioma(ReqIdioma);
+                List<Menu> result = procMenu.FindAllMenu();
                 if (result != null)
                 {
                     return Ok(result);
                 }
                 else
                 {
-                    return NotFound("Language not found");
+                    return NotFound("Menu not found");
                 }
 
 
             }
             catch (Exception e)
             {
-                return NotFound("Language not found");
+                return NotFound("Menu not found");
 
             }
 
         }
+        [HttpPut()]
+        public ActionResult Put([FromBody] RequestMenu ReqMenu)
+        {
+            try
+            {
+                ResponseGral result = procMenu.UpdateMenu(ReqMenu);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Menu not found");
+                }
 
 
+            }
+            catch (Exception e)
+            {
+                return NotFound("Menu not found");
+
+            }
+
+        }
     }
 }

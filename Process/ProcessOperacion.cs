@@ -12,35 +12,24 @@ using System.Threading.Tasks;
 namespace APIRest.Controllers.Process
 {
     public class ProcessOperacion
-    {
-        private ResponseOperacion ResponseWS = new();
-       
+    {       
         public DataOperacion operacionData = new();
-       
-// public async Task<List<ProcessLog>> FindAllProcessLogAsync(){
-        public ResponseOperacion AddOperacion(RequestOperacion operacion)
+        public ResponseGral AddOperacion(RequestOperacion operacion)
         {
-            ResponseOperacion respAltaOperacion = new();
+            ResponseGral respAltaOperacion = new();
             try
             {
-
-
                 Operacione logNewRegistro = new();
                 logNewRegistro.Operacion = operacion.Operacion;
                 logNewRegistro.NombreMenu = operacion.Nombre_Menu;
                 logNewRegistro.NombrePagina = operacion.Nombre_Pagina;
                 logNewRegistro.Activo = operacion.Activo;
-
-
-
                 long respNewUSR = operacionData.AddOperacion(logNewRegistro);
                 if(respNewUSR >0)
                 {
-                    respAltaOperacion.Id = respNewUSR.ToString();
+                    respAltaOperacion.Id = respNewUSR;
                     respAltaOperacion.Codigo = "200";
-                    
                     return respAltaOperacion;
-
                 }
                 else
                 {
@@ -49,76 +38,56 @@ namespace APIRest.Controllers.Process
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
-
-        public ResponseOperacion UpdateOperacion(RequestOperacion operacion)
+        public ResponseGral UpdateOperacion(RequestOperacion operacion)
         {
-            ResponseOperacion respAltaOperacion = new();
-            Operacione updAltaOperacion = new();
-
+            ResponseGral respAltaOperacion = new();
             var operacionBuscado = FindOperacion(operacion.Id);
-            if(operacionBuscado==null){
-                 return respAltaOperacion;
-            }else{
+            if (operacionBuscado == null)
+            {
+                return respAltaOperacion;
+            }
+            else
+            {
                 try
-                    {
-
-                    
+                {
                     operacionBuscado.Operacion = operacion.Operacion;
                     operacionBuscado.NombreMenu = operacion.Nombre_Menu;
                     operacionBuscado.NombrePagina = operacion.Nombre_Pagina;
                     operacionBuscado.Activo = operacion.Activo;
-
-
-
                     var respNewOperacion = operacionData.UpdateOperacion(operacionBuscado);
-                        if (respNewOperacion > 0)
-                        {
-                        respAltaOperacion.Id = operacionBuscado.Id.ToString();
-                            respAltaOperacion.Codigo = "200";
-                        
-                            return respAltaOperacion;
-
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                    catch (Exception ex)
+                    if (respNewOperacion > 0)
                     {
-
+                        respAltaOperacion.Id = operacionBuscado.Id;
+                        respAltaOperacion.Codigo = "200";
+                        return respAltaOperacion;
+                    }
+                    else
+                    {
                         return null;
                     }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
-
-            
         }
-
-        public Operacione FindOperacion(long idOperacion){
-
-            Operacione respAltaOperacion = new();
-
-            respAltaOperacion = operacionData.FindOperacion(idOperacion);
-            if(respAltaOperacion==null){
+        public Operacione FindOperacion(long idOperacion)
+        {
+            Operacione respAltaOperacion = operacionData.FindOperacion(idOperacion);
+            if (respAltaOperacion == null)
+            {
                 respAltaOperacion.Id = -1;
             }
-          
-              return respAltaOperacion;
+            return respAltaOperacion;
         }
-
-         public List<Operacione> FindAllOperacion(){
-            List<Operacione> resOperacionRet = new List<Operacione>();
-            resOperacionRet =  operacionData.FindAllOperacion();
-           
+        public List<Operacione> FindAllOperacion()
+        {
+            List<Operacione> resOperacionRet = operacionData.FindAllOperacion();
             return resOperacionRet;
         }
-
-       
-
-
     }
 }

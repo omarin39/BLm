@@ -1,4 +1,5 @@
 ﻿using APIRest.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace APIRest.DataModels
         }
         public Idioma FindIdioma(long idIdioma)
         {
-            return _context.Idiomas.SingleOrDefault(us => us.IdIdioma == idIdioma);
+            return _context.Idiomas.AsNoTracking().SingleOrDefault(us => us.IdIdioma == idIdioma);
         }
 
         public long AddIdioma(Idioma NewIdioma)

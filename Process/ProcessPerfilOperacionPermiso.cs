@@ -12,19 +12,13 @@ using System.Threading.Tasks;
 namespace APIRest.Controllers.Process
 {
     public class ProcessPerfilOperacionPermiso
-    {
-        private ResponsePerfilOperacionPermiso ResponseWS = new();
-       
+    {       
         public DataPerfilOperacionPermiso PerfilOperacionPermisoData = new();
-       
-// public async Task<List<ProcessLog>> FindAllProcessLogAsync(){
-        public ResponsePerfilOperacionPermiso AddPerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso)
+        public ResponseGral AddPerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso)
         {
-            ResponsePerfilOperacionPermiso respAltaPerfilOperacionPermiso = new();
+            ResponseGral respAltaPerfilOperacionPermiso = new();
             try
             {
-
-
                 PerfilOperacionPermiso logNewRegistro = new();
                 logNewRegistro.IdPerfil = PerfilOperacionPermiso.IdPerfil;
                 logNewRegistro.IdOperacion = PerfilOperacionPermiso.IdOpercion;
@@ -32,16 +26,12 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Editar = PerfilOperacionPermiso.Editar;
                 logNewRegistro.Eliminar = PerfilOperacionPermiso.Eliminar;
                 logNewRegistro.Ver = PerfilOperacionPermiso.Ver;
-
-
                 long respNewUSR = PerfilOperacionPermisoData.AddPerfilOperacionPermiso(logNewRegistro);
                 if(respNewUSR >0)
                 {
-                    respAltaPerfilOperacionPermiso.Id = respNewUSR.ToString();
+                    respAltaPerfilOperacionPermiso.Id = respNewUSR;
                     respAltaPerfilOperacionPermiso.Codigo = "200";
-                    
                     return respAltaPerfilOperacionPermiso;
-
                 }
                 else
                 {
@@ -50,78 +40,56 @@ namespace APIRest.Controllers.Process
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
-
-        public ResponsePerfilOperacionPermiso UpdatePerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso)
+        public ResponseGral UpdatePerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso)
         {
-            ResponsePerfilOperacionPermiso respAltaPerfilOperacionPermiso = new();
-            PerfilOperacionPermiso updAltaPerfilOperacionPermiso = new();
-
+            ResponseGral respAltaPerfilOperacionPermiso = new();
             var PerfilOperacionPermisoBuscado = FindPerfilOperacionPermiso(PerfilOperacionPermiso.Id);
-            if(PerfilOperacionPermisoBuscado==null){
-                 return respAltaPerfilOperacionPermiso;
-            }else{
+            if (PerfilOperacionPermisoBuscado == null)
+            {
+                return respAltaPerfilOperacionPermiso;
+            }
+            else
+            {
                 try
-                    {
-
-
+                {
                     PerfilOperacionPermisoBuscado.IdPerfil = PerfilOperacionPermiso.IdPerfil;
                     PerfilOperacionPermisoBuscado.IdOperacion = PerfilOperacionPermiso.IdOpercion;
                     PerfilOperacionPermisoBuscado.Crear = PerfilOperacionPermiso.Crear;
                     PerfilOperacionPermisoBuscado.Editar = PerfilOperacionPermiso.Editar;
                     PerfilOperacionPermisoBuscado.Eliminar = PerfilOperacionPermiso.Eliminar;
                     PerfilOperacionPermisoBuscado.Ver = PerfilOperacionPermiso.Ver;
-
-
-
                     var respNewPerfilOperacionPermiso = PerfilOperacionPermisoData.UpdatePerfilOperacionPermiso(PerfilOperacionPermisoBuscado);
-                        if (respNewPerfilOperacionPermiso > 0)
-                        {
-                        respAltaPerfilOperacionPermiso.Id = PerfilOperacionPermisoBuscado.Id.ToString();
-                            respAltaPerfilOperacionPermiso.Codigo = "200";
-                        
-                            return respAltaPerfilOperacionPermiso;
-
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                    catch (Exception ex)
+                    if (respNewPerfilOperacionPermiso > 0)
                     {
-
+                        respAltaPerfilOperacionPermiso.Id = PerfilOperacionPermisoBuscado.Id;
+                        respAltaPerfilOperacionPermiso.Codigo = "200";
+                        return respAltaPerfilOperacionPermiso;
+                    }
+                    else
+                    {
                         return null;
                     }
-            }
-
-            
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }            
         }
-
         public PerfilOperacionPermiso FindPerfilOperacionPermiso(long idPerfilOperacionPermiso){
-
-            PerfilOperacionPermiso respAltaPerfilOperacionPermiso = new();
-
-            respAltaPerfilOperacionPermiso = PerfilOperacionPermisoData.FindPerfilOperacionPermiso(idPerfilOperacionPermiso);
-            if(respAltaPerfilOperacionPermiso==null){
+            PerfilOperacionPermiso respAltaPerfilOperacionPermiso = PerfilOperacionPermisoData.FindPerfilOperacionPermiso(idPerfilOperacionPermiso);
+            if (respAltaPerfilOperacionPermiso == null)
+            {
                 respAltaPerfilOperacionPermiso.Id = -1;
             }
-          
-              return respAltaPerfilOperacionPermiso;
+            return respAltaPerfilOperacionPermiso;
         }
-
          public List<PerfilOperacionPermiso> FindAllPerfilOperacionPermiso(){
-            List<PerfilOperacionPermiso> resPerfilOperacionPermisoRet = new List<PerfilOperacionPermiso>();
-            resPerfilOperacionPermisoRet =  PerfilOperacionPermisoData.FindAllPerfilOperacionPermiso();
-           
+            List<PerfilOperacionPermiso> resPerfilOperacionPermisoRet = PerfilOperacionPermisoData.FindAllPerfilOperacionPermiso();
             return resPerfilOperacionPermisoRet;
         }
-
-       
-
-
     }
 }

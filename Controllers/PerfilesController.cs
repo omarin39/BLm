@@ -142,29 +142,28 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-         public ActionResult Put([FromBody] RequestPerfiles ReqPerfil)
-        //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult Put([FromBody] RequestPerfiles ReqPerfil)
         {
             try
             {
-                 ResponsePerfiles result = ProcPerfil.UpdatePerfil(ReqPerfil);
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
-                    else
-                    {
-                        return NotFound("Perfil not found");
-                    }
+                ResponseGral result = ProcPerfil.UpdatePerfil(ReqPerfil);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Perfil not found");
+                }
 
-                
+
             }
             catch (Exception e)
             {
                 return NotFound("Perfil not found");
-               
+
             }
-         
+
         }
 
 

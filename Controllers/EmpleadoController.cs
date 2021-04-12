@@ -159,14 +159,9 @@ namespace APIRest.Controllers
          public ActionResult Put([FromBody] RequestEmpleado ReqEmpleado)
         //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseEmpleado> ResponseWS = new();
-            ResponseEmpleado ComplementoResponseWS = new();
-           
-
-
             try
             {
-                 ResponseEmpleado result = ProcEmpleado.UpdateEmpleado(ReqEmpleado);//Async();//.FindProcessLog(id);
+                 ResponseGral result = ProcEmpleado.UpdateEmpleado(ReqEmpleado);//Async();//.FindProcessLog(id);
                     if (result != null)
                     {
                         return Ok(result);

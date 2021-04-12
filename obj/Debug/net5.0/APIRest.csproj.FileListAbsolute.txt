@@ -291,3 +291,5 @@ C:\Proyectos\BLMOVIL\APIRest\obj\Debug\net5.0\APIRest.dll
 C:\Proyectos\BLMOVIL\APIRest\obj\Debug\net5.0\ref\APIRest.dll
 C:\Proyectos\BLMOVIL\APIRest\obj\Debug\net5.0\APIRest.pdb
 C:\Proyectos\BLMOVIL\APIRest\obj\Debug\net5.0\APIRest.genruntimeconfig.cache
+C:\Proyectos\BLMOVIL\APIRest\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Proyectos\BLMOVIL\APIRest\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll

@@ -18,28 +18,23 @@ namespace APIRest.Controllers.Process
         public DataProcessLog processLogData = new();
        
 // public async Task<List<ProcessLog>> FindAllProcessLogAsync(){
-        public ResponseProcessLog AddProcessLog(RequestProcessLog processLog)
+        public ResponseGral AddProcessLog(RequestProcessLog processLog)
         {
-            ResponseProcessLog respAltaProcessLog = new();
+            ResponseGral respAltaProcessLog = new();
             try
             {
-                
-
                 ProcessLog logNewRegistro = new();
                 logNewRegistro.Ip = processLog.IP;
                 logNewRegistro.Fecha = processLog.Fecha;
                 logNewRegistro.Data = processLog.Data;
                 logNewRegistro.Respuesta = processLog.Respuesta;
                 logNewRegistro.Codigo= processLog.Codigo;
-
                 long respNewUSR = processLogData.AddProcessLog(logNewRegistro);
                 if(respNewUSR >0)
                 {
-                    respAltaProcessLog.Id = respNewUSR.ToString();
+                    respAltaProcessLog.Id = respNewUSR;
                     respAltaProcessLog.Codigo = "200";
-                    
                     return respAltaProcessLog;
-
                 }
                 else
                 {
@@ -48,70 +43,56 @@ namespace APIRest.Controllers.Process
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
 
-        public ResponseProcessLog UpdateProcessLog( RequestProcessLog processLog)
+        public ResponseGral UpdateProcessLog( RequestProcessLog processLog)
         {
-            ResponseProcessLog respAltaProcessLog = new();
-            ProcessLog updAltaProcessLog = new();
-
+            ResponseGral respAltaProcessLog = new();
             var processLogBuscado = FindProcessLog(processLog.Id);
-            if(processLogBuscado==null){
-                 return respAltaProcessLog;
-            }else{
+            if (processLogBuscado == null)
+            {
+                return respAltaProcessLog;
+            }
+            else
+            {
                 try
+                {
+                    processLogBuscado.Ip = processLog.IP;
+                    processLogBuscado.Fecha = processLog.Fecha;
+                    processLogBuscado.Data = processLog.Data;
+                    processLogBuscado.Respuesta = processLog.Respuesta;
+                    processLogBuscado.Codigo = processLog.Codigo;
+                    var respNewLOG = processLogData.UpdateProcessLog(processLogBuscado);
+                    if (respNewLOG > 0)
                     {
-
-                        processLogBuscado.Ip=processLog.IP;
-                        processLogBuscado.Fecha=processLog.Fecha;
-                        processLogBuscado.Data=processLog.Data;
-                        processLogBuscado.Respuesta=processLog.Respuesta;
-                        processLogBuscado.Codigo=processLog.Codigo;
-
-
-                        var respNewLOG = processLogData.UpdateProcessLog(processLogBuscado);
-                        if (respNewLOG > 0)
-                        {
-                            respAltaProcessLog.Id = processLogBuscado.Id.ToString();
-                            respAltaProcessLog.Codigo = "200";
-                        
-                            return respAltaProcessLog;
-
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                        respAltaProcessLog.Id = processLogBuscado.Id;
+                        respAltaProcessLog.Codigo = "200";
+                        return respAltaProcessLog;
                     }
-                    catch (Exception ex)
+                    else
                     {
-
                         return null;
                     }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
-
-            
         }
 
         public ProcessLog FindProcessLog(long idProcessLog){
-
-            ProcessLog respAltaProcessLog = new();
-
-            respAltaProcessLog = processLogData.FindProcessLog(idProcessLog);
+            ProcessLog respAltaProcessLog = processLogData.FindProcessLog(idProcessLog);
             if(respAltaProcessLog==null){
                 respAltaProcessLog.Id = -1;
             }
-          
-              return respAltaProcessLog;
+            return respAltaProcessLog;
         }
 
          public List<ProcessLog> FindAllProcessLog(){
-            List<ProcessLog> resProcessLogRet = new List<ProcessLog>();
-            resProcessLogRet =  processLogData.FindAllProcessLog();
-           
+            List<ProcessLog> resProcessLogRet = processLogData.FindAllProcessLog();
             return resProcessLogRet;
         }
 

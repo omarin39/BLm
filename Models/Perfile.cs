@@ -9,7 +9,6 @@ namespace APIRest.Models
     {
         public Perfile()
         {
-            Empleados = new HashSet<Empleado>();
             PerfilOperacionPermisos = new HashSet<PerfilOperacionPermiso>();
         }
 
@@ -17,7 +16,6 @@ namespace APIRest.Models
         public string Perfil { get; set; }
         public bool Activo { get; set; }
 
-        public virtual ICollection<Empleado> Empleados { get; set; }
         public virtual ICollection<PerfilOperacionPermiso> PerfilOperacionPermisos { get; set; }
     }
 }

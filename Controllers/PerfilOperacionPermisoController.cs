@@ -157,16 +157,10 @@ namespace APIRest.Controllers
 
         [HttpPut()]
          public ActionResult Put([FromBody] RequestPerfilOperacionPermiso ReqPerfilOperacionPermiso)
-        //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
-            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
-           
-
-
             try
             {
-                 ResponsePerfilOperacionPermiso result = procPerfilOperacionPermiso.UpdatePerfilOperacionPermiso(ReqPerfilOperacionPermiso);//Async();//.FindProcessLog(id);
+                ResponseGral result = procPerfilOperacionPermiso.UpdatePerfilOperacionPermiso(ReqPerfilOperacionPermiso);//Async();//.FindProcessLog(id);
                     if (result != null)
                     {
                         return Ok(result);
@@ -175,19 +169,11 @@ namespace APIRest.Controllers
                     {
                         return NotFound("PerfilOperacionPermiso not found");
                     }
-
-                
             }
             catch (Exception e)
             {
                 return NotFound("PerfilOperacionPermiso not found");
-               
             }
-         
         }
-
-
-
-
     }
 }

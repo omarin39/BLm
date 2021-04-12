@@ -32,7 +32,6 @@ namespace APIRest.Models
         public virtual DepartamentoNivel1 DepartamentoIdDepartamentoNivel1Navigation { get; set; }
         public virtual DepartamentoNivel2 DepartamentoIdDepartamentoNivel2Navigation { get; set; }
         public virtual DepartamentoNivel3 DepartamentoIdDepartamentoNivel3Navigation { get; set; }
-        public virtual Perfile IdPerfilNavigation { get; set; }
         public virtual Idioma IdiomaIdIdiomaNavigation { get; set; }
         public virtual Puesto PuestosIdPuestoNavigation { get; set; }
         public virtual UnidadNegocio UnidadNegocioIdUnidadNegocioNavigation { get; set; }

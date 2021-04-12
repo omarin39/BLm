@@ -12,32 +12,22 @@ using System.Threading.Tasks;
 namespace APIRest.Controllers.Process
 {
     public class ProcessPerfil
-    {
-        private ResponsePerfiles ResponseWS = new();
-       
+    {       
         public DataPerfil perfilData = new();
-       
-// public async Task<List<ProcessLog>> FindAllProcessLogAsync(){
-        public ResponsePerfiles AddPerfil(RequestPerfiles perfil)
+        public ResponseGral AddPerfil(RequestPerfiles perfil)
         {
-            ResponsePerfiles respAltaPerfil = new();
+            ResponseGral respAltaPerfil = new();
             try
             {
-                
-
                 Perfile logNewRegistro = new();
                 logNewRegistro.Perfil = perfil.Perfil;
                 logNewRegistro.Activo = perfil.Activo;
-                
-
                 long respNewUSR = perfilData.AddPerfil(logNewRegistro);
                 if(respNewUSR >0)
                 {
-                    respAltaPerfil.Id = respNewUSR.ToString();
+                    respAltaPerfil.Id = respNewUSR;
                     respAltaPerfil.Codigo = "200";
-                    
                     return respAltaPerfil;
-
                 }
                 else
                 {
@@ -46,73 +36,54 @@ namespace APIRest.Controllers.Process
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
 
-        public ResponsePerfiles UpdatePerfil( RequestPerfiles perfil)
+        public ResponseGral UpdatePerfil( RequestPerfiles perfil)
         {
-            ResponsePerfiles respAltaPerfil = new();
-            Perfile updAltaPerfil = new();
-
+            ResponseGral respAltaPerfil = new();
             var perfilBuscado = FindPerfil(perfil.Id);
-            if(perfilBuscado==null){
-                 return respAltaPerfil;
-            }else{
+            if (perfilBuscado == null)
+            {
+                return respAltaPerfil;
+            }
+            else
+            {
                 try
+                {
+                    perfilBuscado.Perfil = perfil.Perfil;
+                    perfilBuscado.Activo = perfil.Activo;
+                    var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado);
+                    if (respNewPerfil > 0)
                     {
-
-                        perfilBuscado.Perfil=perfil.Perfil;
-                        perfilBuscado.Activo=perfil.Activo;
-                      
-
-
-                        var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado);
-                        if (respNewPerfil > 0)
-                        {
-                            respAltaPerfil.Id = perfilBuscado.Id.ToString();
-                            respAltaPerfil.Codigo = "200";
-                        
-                            return respAltaPerfil;
-
-                        }
-                        else
-                        {
-                            return null;
-                        }
+                        respAltaPerfil.Id = perfilBuscado.Id;
+                        respAltaPerfil.Codigo = "200";
+                        return respAltaPerfil;
                     }
-                    catch (Exception ex)
+                    else
                     {
-
                         return null;
                     }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
-
-            
         }
-
         public Perfile FindPerfil(long idPerfil){
-
-            Perfile respAltaPerfil = new();
-
-            respAltaPerfil = perfilData.FindPerfil(idPerfil);
-            if(respAltaPerfil==null){
+            Perfile respAltaPerfil = perfilData.FindPerfil(idPerfil);
+            if (respAltaPerfil == null)
+            {
                 respAltaPerfil.Id = -1;
             }
-          
-              return respAltaPerfil;
+            return respAltaPerfil;
         }
-
-         public List<Perfile> FindAllPerfil(){
-            List<Perfile> resPerfilRet = new List<Perfile>();
-            resPerfilRet =  perfilData.FindAllPerfil();
-           
+        public List<Perfile> FindAllPerfil()
+        {
+            List<Perfile> resPerfilRet = perfilData.FindAllPerfil();
             return resPerfilRet;
         }
-
-       
-
-
     }
 }

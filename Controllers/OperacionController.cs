@@ -166,7 +166,7 @@ namespace APIRest.Controllers
 
             try
             {
-                 ResponseOperacion result = procOperacion.UpdateOperacion(ReqOperacion);//Async();//.FindProcessLog(id);
+                 ResponseGral result = procOperacion.UpdateOperacion(ReqOperacion);//Async();//.FindProcessLog(id);
                     if (result != null)
                     {
                         return Ok(result);
