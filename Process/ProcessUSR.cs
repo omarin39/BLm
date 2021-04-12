@@ -22,7 +22,7 @@ namespace APIRest.Controllers.Process
         public DataResourceValidaciones _ParamValidaUSR = new();
         public DataEmpleados empleadoData = new();
         public DataDepartamentos departamentoData = new();
-        public DataPlantas plantasData = new();
+        public DataPlanta plantasData = new();
         public DataPuesto puestoData = new();
         public DataUnidadNegocio unidadNegocioData = new();
         public DataCentroCosto cecoData = new();

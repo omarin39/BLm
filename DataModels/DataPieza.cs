@@ -7,31 +7,31 @@ using System.Threading.Tasks;
 
 namespace APIRest.DataModels
 {
-    public class DataPlantas
+    public class DataPieza
     {
         private readonly Carta_vContext _context;
 
-        public DataPlantas()
+        public DataPieza()
         {
             _context = new Carta_vContext();
         }
 
-        public async Task<List<Planta>> FindAllPlantas()
+        public List<Pieza> FindAllPiezas()
         {
-            return await _context.Plantas.ToListAsync();
+            return  _context.Piezas.ToList();
         }
-        public Planta FindPlanta(string Planta)
+        public Pieza FindPieza(string Pieza)
         {
-            return _context.Plantas.AsNoTracking().SingleOrDefault(us => us.Acronimo == Planta);
+            return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.Nombre == Pieza);
         }
 
-        public long AddPlanta(Planta NewPlanta)
+        public long AddPieza(Pieza NewPieza)
         {
             try
             {
-                var plantaRes = _context.Plantas.Add(NewPlanta);
+                var PiezaRes = _context.Piezas.Add(NewPieza);
                 _context.SaveChanges();
-                return Int32.Parse(plantaRes.Entity.IdPlanta.ToString());
+                return Int32.Parse(PiezaRes.Entity.IdPieza.ToString());
             }
             catch (Exception ex)
             {
@@ -40,11 +40,11 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdatePlanta(Planta _planta)
+        public int UpdatePieza(Pieza _Pieza)
         {
             try
             {
-                _context.Plantas.Update(_planta);
+                _context.Piezas.Update(_Pieza);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
