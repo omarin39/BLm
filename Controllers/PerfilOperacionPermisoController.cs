@@ -87,7 +87,7 @@ namespace APIRest.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<RequestPerfilOperacionPermiso> Find(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult<RequestPerfilOperacionPermiso> Find(long idPerfil) //idPerfil
         {
             List<ResponsePerfilOperacionPermiso> ResponseWS = new();
             ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
@@ -95,13 +95,13 @@ namespace APIRest.Controllers
 
             try
             {
-                if (id == 0)
+                if (idPerfil <= 0)
                 {
                     return NotFound("PerfilOperacionPermiso not found");
                 }
                 else
                 {
-                    var result = procPerfilOperacionPermiso.FindPerfilOperacionPermiso(id);
+                    var result = procPerfilOperacionPermiso.FindPerfilOperacionPermiso(idPerfil);
                     if (result != null)
                     {
                         return Ok(result);
@@ -123,8 +123,46 @@ namespace APIRest.Controllers
         }
 
 
+       
+        [HttpGet("FindPorPerfil/{idPerfil}")]
+        public ActionResult<List<ResponsePerfilOperacionPermisoJoined>> FindPorPerfil(long idPerfil) 
+        {
+            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
+            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
+
+
+            try
+            {
+                if (idPerfil <= 0)
+                {
+                    return NotFound("PerfilOperacionPermiso not found");
+                }
+                else
+                {
+                    var result = procPerfilOperacionPermiso.FindPerfilOperacionPermisoJoined(idPerfil);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("PerfilOperacionPermiso not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("PerfilOperacionPermiso not found");
+
+            }
+
+        }
+
+
         [HttpGet()]
-        public ActionResult<List<PerfilOperacionPermiso>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult<List<PerfilOperacionPermiso>> FindAll() 
         {
             List<ResponsePerfilOperacionPermiso> ResponseWS = new();
             ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
@@ -132,7 +170,7 @@ namespace APIRest.Controllers
 
             try
             {
-                 List<PerfilOperacionPermiso> result = procPerfilOperacionPermiso.FindAllPerfilOperacionPermiso();//Async();//.FindProcessLog(id);
+                 List<PerfilOperacionPermiso> result = procPerfilOperacionPermiso.FindAllPerfilOperacionPermiso();
                     if (result != null)
                     {
                         return result;

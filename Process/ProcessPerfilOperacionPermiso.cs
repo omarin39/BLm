@@ -79,12 +79,20 @@ namespace APIRest.Controllers.Process
                 }
             }            
         }
-        public PerfilOperacionPermiso FindPerfilOperacionPermiso(long idPerfilOperacionPermiso){
+
+        public PerfilOperacionPermiso FindPerfilOperacionPermiso(long idPerfilOperacionPermiso)
+        {
             PerfilOperacionPermiso respAltaPerfilOperacionPermiso = PerfilOperacionPermisoData.FindPerfilOperacionPermiso(idPerfilOperacionPermiso);
             if (respAltaPerfilOperacionPermiso == null)
             {
                 respAltaPerfilOperacionPermiso.Id = -1;
             }
+            return respAltaPerfilOperacionPermiso;
+        }
+
+        public List<ResponsePerfilOperacionPermisoJoined> FindPerfilOperacionPermisoJoined(long idPerfil){
+
+            List<ResponsePerfilOperacionPermisoJoined> respAltaPerfilOperacionPermiso = PerfilOperacionPermisoData.FindPerfilOperacionPermisoJoined(idPerfil);
             return respAltaPerfilOperacionPermiso;
         }
          public List<PerfilOperacionPermiso> FindAllPerfilOperacionPermiso(){

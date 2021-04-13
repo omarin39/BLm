@@ -1,4 +1,5 @@
 ﻿using APIRest.Models;
+using APIRest.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,22 @@ namespace APIRest.DataModels
         {
             return  _context.PerfilOperacionPermisos.ToList();
         }
+
         public PerfilOperacionPermiso FindPerfilOperacionPermiso(long idPerfilOperacionPermiso)
         {
             return _context.PerfilOperacionPermisos.AsNoTracking().SingleOrDefault(us => us.Id == idPerfilOperacionPermiso);
+        }
+
+        public List<ResponsePerfilOperacionPermisoJoined> FindPerfilOperacionPermisoJoined(long idPerfil)
+        {
+            var query = from pop in _context.Set<PerfilOperacionPermiso>().Where(pop => pop.IdPerfil == idPerfil)
+                        join o in _context.Set<Operacione>()
+                            on pop.IdOperacion equals o.Id
+                        select new ResponsePerfilOperacionPermisoJoined { Id=pop.Id,IdOperacion=pop.IdOperacion, Operacion=o.Operacion, Crear=pop.Crear,Editar=pop.Editar,Eliminar=pop.Eliminar,Ver= (bool)pop.Ver  };
+
+            List<ResponsePerfilOperacionPermisoJoined> res = query.ToList();
+
+            return res;
         }
 
         public long AddPerfilOperacionPermiso(PerfilOperacionPermiso NewPerfilOperacionPermiso)
