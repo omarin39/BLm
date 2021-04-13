@@ -80,6 +80,34 @@ namespace APIRest.Controllers.Process
             }            
         }
 
+        public int AddPerfilOperacionPermisoList(List<RequestPerfilOperacionPermisoItem> reqPerfilOperacionPermisoList)
+        {
+
+            RequestPerfilOperacionPermiso perfilOperacionPermiso;
+
+            try
+            {
+                for (int i = 0; i < reqPerfilOperacionPermisoList.Count; i++)
+                {
+                    perfilOperacionPermiso = new RequestPerfilOperacionPermiso();
+                    perfilOperacionPermiso.IdPerfil = reqPerfilOperacionPermisoList[i].IdPerfil;
+                    perfilOperacionPermiso.IdOpercion = reqPerfilOperacionPermisoList[i].IdOpercion;
+                    perfilOperacionPermiso.Crear = reqPerfilOperacionPermisoList[i].Crear;
+                    perfilOperacionPermiso.Editar = reqPerfilOperacionPermisoList[i].Editar;
+                    perfilOperacionPermiso.Eliminar = reqPerfilOperacionPermisoList[i].Eliminar;
+                    perfilOperacionPermiso.Ver = reqPerfilOperacionPermisoList[i].Ver;
+                    AddPerfilOperacionPermiso(perfilOperacionPermiso);
+                }
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+           
+        }
+
         public PerfilOperacionPermiso FindPerfilOperacionPermiso(long idPerfilOperacionPermiso)
         {
             PerfilOperacionPermiso respAltaPerfilOperacionPermiso = PerfilOperacionPermisoData.FindPerfilOperacionPermiso(idPerfilOperacionPermiso);

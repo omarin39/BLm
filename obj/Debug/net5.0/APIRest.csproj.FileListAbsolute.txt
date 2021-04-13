@@ -294,3 +294,4 @@ C:\Proyectos\BLMOVIL\APIRest\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Proyectos\BLMOVIL\APIRest\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.csprojAssemblyReference.cache

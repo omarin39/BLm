@@ -83,6 +83,36 @@ namespace APIRest.Controllers
         }
 
 
+        [HttpPost("PostPerfilOperacionPermiso")]
+        public ActionResult Post([FromBody] List<RequestPerfilOperacionPermisoItem> reqPerfilOperacionPermisoList)
+        {
+            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
+            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
+    
+
+            try
+            {
+                if (reqPerfilOperacionPermisoList.Count > 0)
+                {
+                    var result = procPerfilOperacionPermiso.AddPerfilOperacionPermisoList(reqPerfilOperacionPermisoList);
+                    return Ok(result);
+
+                }
+                else
+                {
+                    return NotFound("PerfilOperacionPermiso not found");
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("PerfilOperacionPermiso not found");
+
+            }
+
+        }
+
+
 
 
 
