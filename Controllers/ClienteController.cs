@@ -89,10 +89,6 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public ActionResult<RequestCliente> Find(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseCliente> ResponseWS = new();
-            ResponseCliente ComplementoResponseWS = new();
-           
-
             try
             {
                 if (id == 0)
@@ -159,11 +155,6 @@ namespace APIRest.Controllers
          public ActionResult Put([FromBody] RequestCliente ReqCliente)
         //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseCliente> ResponseWS = new();
-            ResponseCliente ComplementoResponseWS = new();
-           
-
-
             try
             {
                  ResponseGral result = procCliente.UpdateCliente(ReqCliente);//Async();//.FindProcessLog(id);

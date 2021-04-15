@@ -46,13 +46,6 @@ namespace APIRest.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] RequestEmpleado ReqEmpleado)
         {
-            List<ResponseEmpleado> ResponseWS = new();
-            ResponseEmpleado ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
-
             try
             {
                 if (ReqEmpleado.Nombre != null)
@@ -89,10 +82,6 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public ActionResult<RequestEmpleado> Find(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseEmpleado> ResponseWS = new();
-            ResponseEmpleado ComplementoResponseWS = new();
-           
-
             try
             {
                 if (id == 0)
@@ -126,10 +115,6 @@ namespace APIRest.Controllers
         [HttpGet()]
         public ActionResult<List<Empleado>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseEmpleado> ResponseWS = new();
-            ResponseEmpleado ComplementoResponseWS = new();
-           
-
             try
             {
                  List<Empleado> result = ProcEmpleado.FindAllEmpleado();//Async();//.FindProcessLog(id);
