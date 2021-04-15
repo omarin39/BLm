@@ -250,8 +250,8 @@ namespace APIRest.Controllers.Process
                 {
                     // se crea nuevo departamento
                     Departamento newDepartamento = new();
-                    seridDepaNombre.Departamento1 = nombreDepa;
-                    seridDepaNombre.IdDepartamentExt = idDepa_externo;
+                    newDepartamento.Departamento1 = nombreDepa;
+                    newDepartamento.IdDepartamentExt = idDepa_externo;
                     var respNewDepto = departamentoData.AddDepartamento(newDepartamento);
                     idDepa_externoret = respNewDepto;
                 }
