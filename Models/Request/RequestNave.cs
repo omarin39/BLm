@@ -11,6 +11,7 @@ namespace APIRest.Models.Request
         public long IdNave { get; set; }     
         public string nombre { get; set; }
         public string descripcion { get; set; }
+        public long PlantasIdPlanta { get; set; }
         public bool Activo { get; set; }
         
     }

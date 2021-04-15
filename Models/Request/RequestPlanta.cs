@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace APIRest.Models.Request
 {
     public class RequestPlanta
-    {   
-        public long IdPlanta { get; set; }     
-        public string acronimo { get; set; }
-        public string planta { get; set; }
-        public bool Activo { get; set; }
-        
+    {
+        public long IdPlanta { get; set; }
+        public string Acronimo { get; set; }
+        public string Planta1 { get; set; }
+        public bool? Activo { get; set; }
+
     }
 }

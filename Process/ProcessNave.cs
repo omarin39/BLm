@@ -23,6 +23,7 @@ namespace APIRest.Controllers.Process
                 Nafe logNewRegistro = new();
                 logNewRegistro.Nombre = Nave.nombre;
                 logNewRegistro.Descripcion = Nave.descripcion;
+                logNewRegistro.PlantasIdPlanta = Nave.PlantasIdPlanta;
                 logNewRegistro.Activo = Nave.Activo;
                 long respNewUSR = NaveData.AddNave(logNewRegistro);
                 if(respNewUSR >0)
@@ -75,7 +76,7 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Nafe FindNave(String Nave){
+        public Nafe FindNave(string Nave){
             Nafe respAltaNave = NaveData.FindNave(Nave);
             if (respAltaNave == null)
             {
@@ -83,10 +84,15 @@ namespace APIRest.Controllers.Process
             }
             return respAltaNave;
         }
-    
+        public List<Nafe> FindNavePlanta(string Nave)
+        {
+            List<Nafe> respAltaNave = NaveData.FindNavePlanta(Nave);
+            return respAltaNave;
+        }
 
 
-    public List<Nafe> FindAllNave()
+
+        public List<Nafe> FindAllNave()
     {
         List<Nafe> resNaveRet = NaveData.FindAllNaves();
         return resNaveRet;

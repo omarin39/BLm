@@ -18,7 +18,7 @@ namespace APIRest.DataModels
 
         public List<Planta> FindAllPlantas()
         {
-            return  _context.Plantas.ToList();
+            return  _context.Plantas.Include("Naves").ToList();
         }
         public Planta FindPlanta(string Planta)
         {

@@ -48,7 +48,7 @@ namespace APIRest.Controllers
         {
             try
             {
-                if (ReqPlanta.planta != null)
+                if (ReqPlanta.Planta1 != null)
                 {
                     var result = procPlanta.AddPlanta(ReqPlanta);
                     if (result != null)

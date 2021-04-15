@@ -53,6 +53,22 @@ namespace APIRest.Controllers
                     var result = ProcPerfil.AddPerfil(ReqPerfil);
                     if (result != null)
                     {
+                        ProcessOperacion ProOper = new();
+                        ProcessPerfilOperacionPermiso insPer = new();
+                        List<RequestPerfilOperacionPermisoItem> _Lstpermiso = new();
+                        List<Operacione> LstOper = ProOper.FindAllOperacion();
+                        foreach (var item in LstOper)
+                        {
+                            RequestPerfilOperacionPermisoItem _permiso = new();
+                            _permiso.IdOpercion = item.Id;
+                            _permiso.IdPerfil = result.Id;
+                            _permiso.Crear = false;
+                            _permiso.Ver = false;
+                            _permiso.Eliminar = false;
+                            _permiso.Editar = false;
+                            _Lstpermiso.Add(_permiso);
+                        }
+                        insPer.AddPerfilOperacionPermisoList(_Lstpermiso);
                         return Ok(result);
                     }
                     else

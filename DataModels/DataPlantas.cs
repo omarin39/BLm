@@ -7,35 +7,31 @@ using System.Threading.Tasks;
 
 namespace APIRest.DataModels
 {
-    public class DataNave
+    public class DataPlantas
     {
         private readonly Carta_vContext _context;
 
-        public DataNave()
+        public DataPlantas()
         {
             _context = new Carta_vContext();
         }
 
-        public List<Nafe> FindAllNaves()
+        public async Task<List<Planta>> FindAllPlantas()
         {
-            return  _context.Naves.ToList();
+            return await _context.Plantas.ToListAsync();
         }
-        public Nafe FindNave(string Nave)
+        public Planta FindPlanta(string Planta)
         {
-            return _context.Naves.AsNoTracking().SingleOrDefault(us => us.Nombre == Nave);
-        }
-        public List<Nafe> FindNavePlanta(string Nave)
-        {
-            return _context.Naves.Where(us => us.PlantasIdPlanta == long.Parse(Nave)).ToList();
+            return _context.Plantas.AsNoTracking().SingleOrDefault(us => us.Acronimo == Planta);
         }
 
-        public long AddNave(Nafe NewNave)
+        public long AddPlanta(Planta NewPlanta)
         {
             try
             {
-                var NaveRes = _context.Naves.Add(NewNave);
+                var plantaRes = _context.Plantas.Add(NewPlanta);
                 _context.SaveChanges();
-                return Int32.Parse(NaveRes.Entity.IdNave.ToString());
+                return Int32.Parse(plantaRes.Entity.IdPlanta.ToString());
             }
             catch (Exception ex)
             {
@@ -44,11 +40,11 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdateNave(Nafe _Nave)
+        public int UpdatePlanta(Planta _planta)
         {
             try
             {
-                _context.Naves.Update(_Nave);
+                _context.Plantas.Update(_planta);
                 return _context.SaveChanges();
             }
             catch (Exception ex)

@@ -21,8 +21,8 @@ namespace APIRest.Controllers.Process
             try
             {
                 Planta logNewRegistro = new();
-                logNewRegistro.Planta1 = Planta.planta;
-                logNewRegistro.Acronimo = Planta.acronimo;
+                logNewRegistro.Planta1 = Planta.Planta1;
+                logNewRegistro.Acronimo = Planta.Acronimo;
                 logNewRegistro.Activo = Planta.Activo;
                 long respNewUSR = PlantaData.AddPlanta(logNewRegistro);
                 if(respNewUSR >0)
@@ -45,7 +45,7 @@ namespace APIRest.Controllers.Process
         public ResponseGral UpdatePlanta( RequestPlanta Planta)
         {
             ResponseGral respAltaPlanta = new();
-            var PlantaBuscado = FindPlanta(Planta.planta);
+            var PlantaBuscado = FindPlanta(Planta.Planta1);
             if (PlantaBuscado == null)
             {
                 return respAltaPlanta;
@@ -54,8 +54,8 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    PlantaBuscado.Planta1 = Planta.planta;
-                    PlantaBuscado.Acronimo = Planta.acronimo;
+                    PlantaBuscado.Planta1 = Planta.Planta1;
+                    PlantaBuscado.Acronimo = Planta.Acronimo;
                     PlantaBuscado.Activo = Planta.Activo;
                     var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscado);
                     if (respNewPlanta > 0)
@@ -86,12 +86,12 @@ namespace APIRest.Controllers.Process
     
 
 
-    public List<Planta> FindAllPlanta()
-    {
-        List<Planta> resPlantaRet = PlantaData.FindAllPlantas();
-        return resPlantaRet;
+        public List<Planta> FindAllPlanta()
+        {
+            List<Planta> resPlantaRet = PlantaData.FindAllPlantas();
+            return resPlantaRet;
+        }
+
+
     }
-
-
-}
 }

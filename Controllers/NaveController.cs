@@ -110,6 +110,30 @@ namespace APIRest.Controllers
             }
          
         }
+        [HttpGet("FindNavePlanta/{Planta}")]
+        public ActionResult<List<RequestNave>> FindNavePlanta(string Planta)
+        {
+            try
+            {
+                if (Planta == "")
+                {
+                    return NotFound("Nave not found");
+                }
+                else
+                {
+                    var result = procNave.FindNavePlanta(Planta);
+                    return Ok(result);
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Nave not found");
+
+            }
+
+        }
 
 
         [HttpGet()]

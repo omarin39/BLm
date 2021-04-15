@@ -119,7 +119,7 @@ namespace APIRest.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                //long id_planta =getPlanta(RegBien.Planta);
+                long id_planta = FindPlanta(RegBien.Planta);
                 long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento);
                 long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto);
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
@@ -172,7 +172,7 @@ namespace APIRest.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                //long id_planta =getPlanta(RegBien.Planta);
+                long id_planta = FindPlanta(RegBien.Planta);
                 long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento);
                 long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto);
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
