@@ -42,10 +42,27 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePlanta( RequestPlanta Planta)
+        public ResponseGral UpdatePlanta( RequestPlanta planta)
         {
             ResponseGral respAltaPlanta = new();
-            var PlantaBuscado = FindPlanta(Planta.Planta1);
+
+            //Valida si una plata tiene naves asociadas
+            if (planta.Activo == false)
+            {
+                DataNave naveData = new();
+                List<Nafe> resNavesRet = naveData.FindAllNavesPorPlanta(planta.IdPlanta);
+                if (resNavesRet.Count > 0)
+                {
+                    respAltaPlanta.Id = planta.IdPlanta;
+                    respAltaPlanta.Codigo = "503";
+                    respAltaPlanta.Mensaje = "La planta no puede desactivarse, por que tiene " + resNavesRet.Count.ToString() + " naves asociadas.";
+                    return respAltaPlanta;
+                }
+            }
+
+
+
+            var PlantaBuscado = FindPlanta(planta.Planta1);
             if (PlantaBuscado == null)
             {
                 return respAltaPlanta;
@@ -54,9 +71,9 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    PlantaBuscado.Planta1 = Planta.Planta1;
-                    PlantaBuscado.Acronimo = Planta.Acronimo;
-                    PlantaBuscado.Activo = Planta.Activo;
+                    PlantaBuscado.Planta1 = planta.Planta1;
+                    PlantaBuscado.Acronimo = planta.Acronimo;
+                    PlantaBuscado.Activo = planta.Activo;
                     var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscado);
                     if (respNewPlanta > 0)
                     {

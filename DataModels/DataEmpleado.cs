@@ -55,5 +55,12 @@ namespace APIRest.DataModels
             }
 
         }
+
+        internal List<Empleado> FindAllEmpleadosPorPerfil(long idPerfil)
+        {
+            var empleados= _context.Empleados.Where(us => us.IdPerfil == idPerfil);
+
+            return empleados.ToList();
+        }
     }
 }

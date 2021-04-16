@@ -224,11 +224,12 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-         public ActionResult Put([FromBody] RequestPerfilOperacionPermiso ReqPerfilOperacionPermiso)
+         public ActionResult Put([FromBody] RequestPerfilOperacionPermiso reqPerfilOperacionPermiso)
         {
             try
             {
-                ResponseGral result = procPerfilOperacionPermiso.UpdatePerfilOperacionPermiso(ReqPerfilOperacionPermiso);//Async();//.FindProcessLog(id);
+               
+                ResponseGral result = procPerfilOperacionPermiso.UpdatePerfilOperacionPermiso(reqPerfilOperacionPermiso);//Async();//.FindProcessLog(id);
                     if (result != null)
                     {
                         return Ok(result);

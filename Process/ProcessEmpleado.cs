@@ -118,5 +118,14 @@ namespace APIRest.Controllers.Process
             List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleado();          
             return ResEmpleadoRet;
         }
+
+        
+            public List<Empleado> FindAllEmpleadosPorPerfil(long idPerfil)
+        {
+            List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleadosPorPerfil(idPerfil);
+            return ResEmpleadoRet;
+        }
+
+
     }
 }

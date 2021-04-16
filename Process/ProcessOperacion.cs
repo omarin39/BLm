@@ -23,11 +23,32 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Operacion = operacion.Operacion;
                 logNewRegistro.NombreMenu = operacion.Nombre_Menu;
                 logNewRegistro.NombrePagina = operacion.Nombre_Pagina;
+                logNewRegistro.IdMenu = operacion.Id_Menu;
                 logNewRegistro.Activo = operacion.Activo;
-                long respNewUSR = operacionData.AddOperacion(logNewRegistro);
-                if(respNewUSR >0)
+                long respNewOperacion = operacionData.AddOperacion(logNewRegistro);
+                if(respNewOperacion > 0)
                 {
-                    respAltaOperacion.Id = respNewUSR;
+
+                    ProcessPerfil ProcPerfil = new();
+                    ProcessPerfilOperacionPermiso procPerfilOperacionPermiso = new();
+
+                    List<Perfile> lstPerfiles = ProcPerfil.FindAllPerfil();
+
+                    foreach (var perfil in lstPerfiles)
+                    {
+                        var _permiso = new RequestPerfilOperacionPermiso();
+                        _permiso.IdOpercion = respNewOperacion;
+                        _permiso.IdPerfil = perfil.Id;
+                        _permiso.Crear = false;
+                        _permiso.Ver = false;
+                        _permiso.Eliminar = false;
+                        _permiso.Editar = false;
+                        
+
+                        var result = procPerfilOperacionPermiso.AddPerfilOperacionPermiso(_permiso);
+                    }
+
+                    respAltaOperacion.Id = respNewOperacion;
                     respAltaOperacion.Codigo = "200";
                     return respAltaOperacion;
                 }

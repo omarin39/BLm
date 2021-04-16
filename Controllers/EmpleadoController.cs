@@ -111,6 +111,38 @@ namespace APIRest.Controllers
          
         }
 
+        [HttpGet("FindAllEmpleadosPorPerfil/{idPerfil}")]
+        public ActionResult<List<Empleado>> FindAllEmpleadosPorPerfil(long idPerfil)
+        {
+            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
+            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
+
+
+            try
+            {
+                if (idPerfil <= 0)
+                {
+                    return NotFound("Empleado not found");
+                }
+                else
+                {
+                    var result = ProcEmpleado.FindAllEmpleadosPorPerfil(idPerfil);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("Empleado not found");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound("Empleado not found");
+            }
+        }
+
 
         [HttpGet()]
         public ActionResult<List<Empleado>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)

@@ -151,6 +151,10 @@ namespace APIRest.Controllers
                 {
                     return Ok(result);
                 }
+                else if (result.Codigo == "503")
+                {
+                    return Ok(result);
+                }
                 else
                 {
                     return NotFound("Planta not found");

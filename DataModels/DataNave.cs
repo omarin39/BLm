@@ -57,5 +57,12 @@ namespace APIRest.DataModels
             }
 
         }
+
+        public List<Nafe> FindAllNavesPorPlanta(long idPlanta)
+        {
+            var naves = _context.Naves.Where(us => us.PlantasIdPlanta == idPlanta);
+
+            return naves.ToList();
+        }
     }
 }

@@ -43,6 +43,39 @@ namespace APIRest.Controllers.Process
         public ResponseGral UpdatePerfil( RequestPerfiles perfil)
         {
             ResponseGral respAltaPerfil = new();
+
+            if (perfil.Id == 1 && perfil.Activo==false)
+            {
+                respAltaPerfil.Id = perfil.Id;
+                respAltaPerfil.Codigo = "501";
+                respAltaPerfil.Mensaje = "El perfil de Administrador no puede desactivarse";
+                return respAltaPerfil;
+
+            }
+           else  if (perfil.Id == 2 && perfil.Activo == false)
+            {
+                respAltaPerfil.Id = perfil.Id;
+                respAltaPerfil.Codigo = "502";
+                respAltaPerfil.Mensaje = "El perfil de Usuario no puede desactivarse";
+                return respAltaPerfil;
+
+            }
+            //Valida si un perfil dif a admin o usuer tiene usuarios asociados
+            if (perfil.Id > 2 && perfil.Activo == false)
+            {
+                DataEmpleado empleadoData = new();
+                List<Empleado> resEmpleadoRet = empleadoData.FindAllEmpleadosPorPerfil(perfil.Id);
+                if (resEmpleadoRet.Count > 0)
+                {
+                    respAltaPerfil.Id = perfil.Id;
+                    respAltaPerfil.Codigo = "503";
+                    respAltaPerfil.Mensaje = "El perfil no puede desactivarse, por que tiene "+resEmpleadoRet.Count.ToString() +" empleados asociados.";
+                    return respAltaPerfil;
+                }
+            }
+
+
+
             var perfilBuscado = FindPerfil(perfil.Id);
             if (perfilBuscado == null)
             {

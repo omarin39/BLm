@@ -43,10 +43,17 @@ namespace APIRest.Controllers.Process
                 return null;
             }
         }
-        public ResponseGral UpdatePerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso)
+        public ResponseGral UpdatePerfilOperacionPermiso(RequestPerfilOperacionPermiso perfilOperacionPermiso)
         {
             ResponseGral respAltaPerfilOperacionPermiso = new();
-            var PerfilOperacionPermisoBuscado = FindPerfilOperacionPermiso(PerfilOperacionPermiso.Id);
+
+
+           
+
+
+
+            var PerfilOperacionPermisoBuscado = FindPerfilOperacionPermiso(perfilOperacionPermiso.Id);
+
             if (PerfilOperacionPermisoBuscado == null)
             {
                 return respAltaPerfilOperacionPermiso;
@@ -55,13 +62,15 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    PerfilOperacionPermisoBuscado.IdPerfil = PerfilOperacionPermiso.IdPerfil;
-                    PerfilOperacionPermisoBuscado.IdOperacion = PerfilOperacionPermiso.IdOpercion;
-                    PerfilOperacionPermisoBuscado.Crear = PerfilOperacionPermiso.Crear;
-                    PerfilOperacionPermisoBuscado.Editar = PerfilOperacionPermiso.Editar;
-                    PerfilOperacionPermisoBuscado.Eliminar = PerfilOperacionPermiso.Eliminar;
-                    PerfilOperacionPermisoBuscado.Ver = PerfilOperacionPermiso.Ver;
+                    PerfilOperacionPermisoBuscado.IdPerfil = perfilOperacionPermiso.IdPerfil;
+                    PerfilOperacionPermisoBuscado.IdOperacion = perfilOperacionPermiso.IdOpercion;
+                    PerfilOperacionPermisoBuscado.Crear = perfilOperacionPermiso.Crear;
+                    PerfilOperacionPermisoBuscado.Editar = perfilOperacionPermiso.Editar;
+                    PerfilOperacionPermisoBuscado.Eliminar = perfilOperacionPermiso.Eliminar;
+                    PerfilOperacionPermisoBuscado.Ver = perfilOperacionPermiso.Ver;
+
                     var respNewPerfilOperacionPermiso = PerfilOperacionPermisoData.UpdatePerfilOperacionPermiso(PerfilOperacionPermisoBuscado);
+
                     if (respNewPerfilOperacionPermiso > 0)
                     {
                         respAltaPerfilOperacionPermiso.Id = PerfilOperacionPermisoBuscado.Id;

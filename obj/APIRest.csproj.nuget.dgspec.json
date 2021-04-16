@@ -1,25 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj": {}
+    "C:\\Users\\herna\\Documents\\BLm\\APIRest.csproj": {}
   },
   "projects": {
-    "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj": {
+    "C:\\Users\\herna\\Documents\\BLm\\APIRest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj",
+        "projectUniqueName": "C:\\Users\\herna\\Documents\\BLm\\APIRest.csproj",
         "projectName": "APIRest",
-        "projectPath": "C:\\Proyectos\\BLMOVIL\\APIRest\\APIRest.csproj",
-        "packagesPath": "C:\\Users\\omari\\.nuget\\packages\\",
-        "outputPath": "C:\\Proyectos\\BLMOVIL\\APIRest\\obj\\",
+        "projectPath": "C:\\Users\\herna\\Documents\\BLm\\APIRest.csproj",
+        "packagesPath": "C:\\Users\\herna\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\herna\\Documents\\BLm\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\omari\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\herna\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -77,11 +72,11 @@
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.1.1, )"
+              "version": "[6.1.2, )"
             },
             "Swashbuckle.AspNetCore.Swagger": {
               "target": "Package",
-              "version": "[6.1.1, )"
+              "version": "[6.1.2, )"
             }
           },
           "imports": [
@@ -102,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.104\\RuntimeIdentifierGraph.json"
         }
       }
     }

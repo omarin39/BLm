@@ -48,10 +48,7 @@ namespace APIRest.Controllers
         {
             List<ResponseOperacion> ResponseWS = new();
             ResponseOperacion ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
+
 
             try
             {

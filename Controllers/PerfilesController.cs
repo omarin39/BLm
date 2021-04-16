@@ -163,7 +163,11 @@ namespace APIRest.Controllers
             try
             {
                 ResponseGral result = ProcPerfil.UpdatePerfil(ReqPerfil);
-                if (result != null)
+                if (result.Codigo == "200")
+                {
+                    return Ok(result);
+                }
+                else if (result.Codigo == "501" || result.Codigo == "502" || result.Codigo == "503")
                 {
                     return Ok(result);
                 }
