@@ -17,7 +17,8 @@ namespace APIRest.Models.Request
         public string FechaIngreso { get; set; }
         public string Email { get; set; }
         public long IdPlanta { get; set; }
-        public string Planta { get; set; }
+        public string AcronimoPlanta { get; set; }
+        public string DescripcionPlanta { get; set; }
         public int IdDepartamento { get; set; }
         public string Departamento { get; set; }
         public int IdDepNivel1 { get; set; }

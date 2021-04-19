@@ -80,17 +80,17 @@ namespace APIRest.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<RequestPlanta> Find(string planta)
+        public ActionResult<RequestPlanta> Find(long IdPlantaExt)
         {
             try
             {
-                if (planta == "")
+                if (IdPlantaExt >0)
                 {
                     return NotFound("Planta not found");
                 }
                 else
                 {
-                    var result = procPlanta.FindPlanta(planta);
+                    var result = procPlanta.FindPlanta(IdPlantaExt);
                     if (result != null)
                     {
                         return Ok(result);

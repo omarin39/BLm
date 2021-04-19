@@ -119,7 +119,7 @@ namespace APIRest.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                long id_planta = FindPlanta(RegBien.Planta);
+                long id_planta = FindPlanta(RegBien.IdPlanta,RegBien.AcronimoPlanta, RegBien.DescripcionPlanta);
                 long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento);
                 long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto);
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
@@ -172,7 +172,7 @@ namespace APIRest.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                long id_planta = FindPlanta(RegBien.Planta);
+                long id_planta = FindPlanta(RegBien.IdPlanta, RegBien.AcronimoPlanta, RegBien.DescripcionPlanta);
                 long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento);
                 long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto);
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
@@ -213,16 +213,18 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public long FindPlanta(string idPlanta){
+        public long FindPlanta(long idPlantaExt, string AcronimoPlanta, string DescPlanta){
             long idPlantaret = 0;
-            var resPlanta = plantasData.FindPlanta(idPlanta);
+            var resPlanta = plantasData.FindPlanta(idPlantaExt);
             if(resPlanta!=null){
                 idPlantaret=resPlanta.IdPlanta;
             }
             else
             {
                 Planta newPlanta = new();
-                newPlanta.Acronimo = idPlanta;
+                newPlanta.Acronimo = AcronimoPlanta;
+                newPlanta.IdPlantaExt = idPlantaExt;
+                newPlanta.Planta1 = DescPlanta;
                 var respNewPlanta = plantasData.AddPlanta(newPlanta);
                 idPlantaret = respNewPlanta;
             }

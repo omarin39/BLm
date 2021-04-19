@@ -62,7 +62,7 @@ namespace APIRest.Controllers.Process
 
 
 
-            var PlantaBuscado = FindPlanta(planta.Planta1);
+            var PlantaBuscado = FindPlanta(planta.IdPlantaExt);
             if (PlantaBuscado == null)
             {
                 return respAltaPlanta;
@@ -71,6 +71,7 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
+                    PlantaBuscado.IdPlantaExt = planta.IdPlantaExt;
                     PlantaBuscado.Planta1 = planta.Planta1;
                     PlantaBuscado.Acronimo = planta.Acronimo;
                     PlantaBuscado.Activo = planta.Activo;
@@ -92,8 +93,8 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Planta FindPlanta(String planta){
-            Planta respAltaPlanta = PlantaData.FindPlanta(planta);
+        public Planta FindPlanta(long IdPlantaExt){
+            Planta respAltaPlanta = PlantaData.FindPlanta(IdPlantaExt);
             if (respAltaPlanta == null)
             {
                 respAltaPlanta.IdPlanta = -1;

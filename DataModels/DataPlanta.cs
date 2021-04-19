@@ -20,9 +20,9 @@ namespace APIRest.DataModels
         {
             return  _context.Plantas.Include("Naves").ToList();
         }
-        public Planta FindPlanta(string Planta)
+        public Planta FindPlanta(long idPlantaExt)
         {
-            return _context.Plantas.AsNoTracking().SingleOrDefault(us => us.Planta1 == Planta);
+            return _context.Plantas.AsNoTracking().SingleOrDefault(us => us.IdPlantaExt == idPlantaExt);
         }
 
         public long AddPlanta(Planta NewPlanta)
