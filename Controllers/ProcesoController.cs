@@ -48,7 +48,7 @@ namespace APIRest.Controllers
         {
             try
             {
-                if (ReqProceso.nombre != null)
+                if (ReqProceso.Codigo != null)
                 {
                     var result = procProceso.AddProceso(ReqProceso);
                     if (result != null)

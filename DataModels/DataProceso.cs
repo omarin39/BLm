@@ -22,7 +22,7 @@ namespace APIRest.DataModels
         }
         public Proceso FindProceso(string Proceso)
         {
-            return _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Nombre == Proceso);
+            return _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Codigo == Proceso);
         }
 
         public long AddProceso(Proceso NewProceso)

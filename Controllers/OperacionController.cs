@@ -46,9 +46,6 @@ namespace APIRest.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] RequestOperacion ReqOperacion)
         {
-            List<ResponseOperacion> ResponseWS = new();
-            ResponseOperacion ComplementoResponseWS = new();
-
 
             try
             {
