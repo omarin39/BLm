@@ -37,7 +37,7 @@ namespace APIRest.Controllers.Process
                     foreach (var perfil in lstPerfiles)
                     {
                         var _permiso = new RequestPerfilOperacionPermiso();
-                        _permiso.IdOpercion = respNewOperacion;
+                        _permiso.IdOperacion = respNewOperacion;
                         _permiso.IdPerfil = perfil.Id;
                         _permiso.Crear = false;
                         _permiso.Ver = false;

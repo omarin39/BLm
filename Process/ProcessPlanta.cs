@@ -22,6 +22,7 @@ namespace APIRest.Controllers.Process
             {
                 Planta logNewRegistro = new();
                 logNewRegistro.Planta1 = Planta.Planta1;
+                logNewRegistro.IdPlantaExt = Planta.IdPlantaExt;
                 logNewRegistro.Acronimo = Planta.Acronimo;
                 logNewRegistro.Activo = Planta.Activo;
                 long respNewUSR = PlantaData.AddPlanta(logNewRegistro);

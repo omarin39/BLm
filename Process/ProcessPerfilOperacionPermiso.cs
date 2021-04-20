@@ -21,7 +21,7 @@ namespace APIRest.Controllers.Process
             {
                 PerfilOperacionPermiso logNewRegistro = new();
                 logNewRegistro.IdPerfil = PerfilOperacionPermiso.IdPerfil;
-                logNewRegistro.IdOperacion = PerfilOperacionPermiso.IdOpercion;
+                logNewRegistro.IdOperacion = PerfilOperacionPermiso.IdOperacion;
                 logNewRegistro.Crear = PerfilOperacionPermiso.Crear;
                 logNewRegistro.Editar = PerfilOperacionPermiso.Editar;
                 logNewRegistro.Eliminar = PerfilOperacionPermiso.Eliminar;
@@ -63,7 +63,7 @@ namespace APIRest.Controllers.Process
                 try
                 {
                     PerfilOperacionPermisoBuscado.IdPerfil = perfilOperacionPermiso.IdPerfil;
-                    PerfilOperacionPermisoBuscado.IdOperacion = perfilOperacionPermiso.IdOpercion;
+                    PerfilOperacionPermisoBuscado.IdOperacion = perfilOperacionPermiso.IdOperacion;
                     PerfilOperacionPermisoBuscado.Crear = perfilOperacionPermiso.Crear;
                     PerfilOperacionPermisoBuscado.Editar = perfilOperacionPermiso.Editar;
                     PerfilOperacionPermisoBuscado.Eliminar = perfilOperacionPermiso.Eliminar;
@@ -100,7 +100,7 @@ namespace APIRest.Controllers.Process
                 {
                     perfilOperacionPermiso = new RequestPerfilOperacionPermiso();
                     perfilOperacionPermiso.IdPerfil = reqPerfilOperacionPermisoList[i].IdPerfil;
-                    perfilOperacionPermiso.IdOpercion = reqPerfilOperacionPermisoList[i].IdOpercion;
+                    perfilOperacionPermiso.IdOperacion = reqPerfilOperacionPermisoList[i].IdOpercion;
                     perfilOperacionPermiso.Crear = reqPerfilOperacionPermisoList[i].Crear;
                     perfilOperacionPermiso.Editar = reqPerfilOperacionPermisoList[i].Editar;
                     perfilOperacionPermiso.Eliminar = reqPerfilOperacionPermisoList[i].Eliminar;
