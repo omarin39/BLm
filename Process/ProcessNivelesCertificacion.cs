@@ -21,7 +21,15 @@ namespace APIRest.Controllers.Process
             try
             {
                 NivelesCertificacion logNewRegistro = new();
+                logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.nombreNivelCertificacion;
                 logNewRegistro.DescNivelCertificacion = NivelesCertificacion.desc_nivel_certificacion;
+                logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.dificultadNivelCertificacion;
+                logNewRegistro.Color = NivelesCertificacion.color;
+                logNewRegistro.Activo = NivelesCertificacion.activo;
+             
+
+
+
                 long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro);
                 if(respNewUSR >0)
                 {
@@ -48,7 +56,15 @@ namespace APIRest.Controllers.Process
             }else{
                 try
                 {
+                    
+                    nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.nombreNivelCertificacion;
                     nivelesCertificacionBuscado.DescNivelCertificacion = NivelesCertificacion.desc_nivel_certificacion;
+                    nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.dificultadNivelCertificacion;
+                    nivelesCertificacionBuscado.Color = NivelesCertificacion.color;
+                    nivelesCertificacionBuscado.Activo = NivelesCertificacion.activo;
+
+
+
                     var respNewNivelesCertificacion = NivelesCertificacionData.UpdateNivelesCertificacion(nivelesCertificacionBuscado);
                     if (respNewNivelesCertificacion > 0)
                     {
