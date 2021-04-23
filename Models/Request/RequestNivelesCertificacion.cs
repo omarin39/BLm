@@ -8,12 +8,12 @@ namespace APIRest.Models.Request
 {
     public class RequestNivelesCertificacion
     {
-        public long Id { get; set; }
-        public String nombreNivelCertificacion { get; set; }
-        public String desc_nivel_certificacion { get; set; }
-        public int dificultadNivelCertificacion { get; set; }
-        public String color { get; set; }
-        public bool activo { get; set; }
+        public long IdNivelCertificacion { get; set; }
+        public string NombreNivelCertificacion { get; set; }
+        public string DescNivelCertificacion { get; set; }
+        public int DificultadNivelCertificacion { get; set; }
+        public string Color { get; set; }
+        public bool Activo { get; set; }
 
 
     }

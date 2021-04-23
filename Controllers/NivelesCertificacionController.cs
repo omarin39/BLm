@@ -46,16 +46,9 @@ namespace APIRest.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] RequestNivelesCertificacion ReqNivelesCertificacion)
         {
-            List<ResponseNivelesCertificacion> ResponseWS = new();
-            ResponseNivelesCertificacion ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
-
             try
             {
-                if (ReqNivelesCertificacion.desc_nivel_certificacion != null)
+                if (ReqNivelesCertificacion.NombreNivelCertificacion != null)
                 {
                     var result = procNivelesCertificacion.AddNivelesCertificacion(ReqNivelesCertificacion); //.ProcesaUSER(ReqUser, Configuration);
                     if (result != null)
@@ -89,10 +82,6 @@ namespace APIRest.Controllers
         [HttpGet("{id}")]
         public ActionResult<RequestNivelesCertificacion> Find(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseNivelesCertificacion> ResponseWS = new();
-            ResponseNivelesCertificacion ComplementoResponseWS = new();
-           
-
             try
             {
                 if (id == 0)
@@ -126,10 +115,6 @@ namespace APIRest.Controllers
         [HttpGet()]
         public ActionResult<List<NivelesCertificacion>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseNivelesCertificacion> ResponseWS = new();
-            ResponseNivelesCertificacion ComplementoResponseWS = new();
-           
-
             try
             {
                  List<NivelesCertificacion> result = procNivelesCertificacion.FindAllNivelesCertificacion();//Async();//.FindProcessLog(id);

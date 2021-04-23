@@ -1,24 +1,13 @@
 ﻿using APIRest.Common;
 using APIRest.Controllers.Process;
-using APIRest.DataModels;
-using APIRest.Helpers;
 using APIRest.Models;
 using APIRest.Models.Request;
 using APIRest.Models.Response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
-using NWebsec.AspNetCore.Core.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 
 
 namespace APIRest.Controllers

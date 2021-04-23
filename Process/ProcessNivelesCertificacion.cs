@@ -21,11 +21,11 @@ namespace APIRest.Controllers.Process
             try
             {
                 NivelesCertificacion logNewRegistro = new();
-                logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.nombreNivelCertificacion;
-                logNewRegistro.DescNivelCertificacion = NivelesCertificacion.desc_nivel_certificacion;
-                logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.dificultadNivelCertificacion;
-                logNewRegistro.Color = NivelesCertificacion.color;
-                logNewRegistro.Activo = NivelesCertificacion.activo;
+                logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
+                logNewRegistro.DescNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
+                logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
+                logNewRegistro.Color = NivelesCertificacion.Color;
+                logNewRegistro.Activo = NivelesCertificacion.Activo;
              
 
 
@@ -50,18 +50,18 @@ namespace APIRest.Controllers.Process
         public ResponseGral UpdateNivelesCertificacion(RequestNivelesCertificacion NivelesCertificacion)
         {
             ResponseGral respAltaNivelesCertificacion = new();
-            var nivelesCertificacionBuscado = FindNivelesCertificacion(NivelesCertificacion.Id);
+            var nivelesCertificacionBuscado = FindNivelesCertificacion(NivelesCertificacion.IdNivelCertificacion);
             if(nivelesCertificacionBuscado==null){
                  return respAltaNivelesCertificacion;
             }else{
                 try
                 {
                     
-                    nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.nombreNivelCertificacion;
-                    nivelesCertificacionBuscado.DescNivelCertificacion = NivelesCertificacion.desc_nivel_certificacion;
-                    nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.dificultadNivelCertificacion;
-                    nivelesCertificacionBuscado.Color = NivelesCertificacion.color;
-                    nivelesCertificacionBuscado.Activo = NivelesCertificacion.activo;
+                    nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
+                    nivelesCertificacionBuscado.DescNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
+                    nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
+                    nivelesCertificacionBuscado.Color = NivelesCertificacion.Color;
+                    nivelesCertificacionBuscado.Activo = NivelesCertificacion.Activo;
 
 
 

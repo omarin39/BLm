@@ -14,6 +14,5 @@ namespace APIRest.Models.Request
         public int orden { get; set; }
         public long idIdioma { get; set; }
         public long idNivelCertificcion { get; set; }
-
     }
 }
