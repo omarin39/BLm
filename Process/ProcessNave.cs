@@ -72,10 +72,16 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    NaveBuscado.Nombre = Nave.nombre;
-                    NaveBuscado.Descripcion = Nave.descripcion;
-                    NaveBuscado.Activo = Nave.Activo;
-                    var respNewNave = NaveData.UpdateNave(NaveBuscado);
+                    var NaveBuscadox = new Nafe { 
+                        IdNave= NaveBuscado.IdNave,
+                        PlantasIdPlanta= NaveBuscado.PlantasIdPlanta,
+                    Nombre= Nave.nombre,
+                    Descripcion= Nave.descripcion,
+                    Activo= Nave.Activo
+                    };
+
+
+                    var respNewNave = NaveData.UpdateNave(NaveBuscadox);
                     if (respNewNave > 0)
                     {
                         respAltaNave.Id = NaveBuscado.IdNave;
@@ -93,26 +99,82 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Nafe FindNave(string Nave){
+        public ResponseNave FindNave(string Nave){
             Nafe respAltaNave = NaveData.FindNave(Nave);
             if (respAltaNave == null)
             {
                 respAltaNave.IdNave = -1;
             }
-            return respAltaNave;
+
+
+
+            // return respAltaNave;
+            var result = new ResponseNave
+                    {
+                        IdNave = respAltaNave.IdNave,
+                        Nombre = respAltaNave.Nombre,
+                        Descripcion = respAltaNave.Descripcion,
+                        PlantasIdPlanta = respAltaNave.PlantasIdPlanta,
+                        Activo = (bool)respAltaNave.Activo,
+                        PlantasIdPlantaNavigation = respAltaNave.PlantasIdPlantaNavigation,
+                        LineasProduccions = respAltaNave.LineasProduccions.Count,
+                        MáquinasFisicas = respAltaNave.MáquinasFisicas
+                    };
+
+
+            return result;
+
+
+
         }
-        public List<Nafe> FindNavePlanta(string Nave)
+        public List<ResponseNave> FindNavePlanta(string Nave)
         {
             List<Nafe> respAltaNave = NaveData.FindNavePlanta(Nave);
-            return respAltaNave;
+            /*
+            return respAltaNave;*/
+            var result = respAltaNave.Select((nave, i) =>
+                   new ResponseNave
+                   {
+                       IdNave = nave.IdNave,
+                       Nombre = nave.Nombre,
+                       Descripcion = nave.Descripcion,
+                       PlantasIdPlanta = nave.PlantasIdPlanta,
+                       Activo = (bool)nave.Activo,
+                       PlantasIdPlantaNavigation = nave.PlantasIdPlantaNavigation,
+                       LineasProduccions = nave.LineasProduccions.Count,
+                       MáquinasFisicas = nave.MáquinasFisicas
+                   }).ToList();
+
+
+            return result;
         }
 
 
 
-        public List<Nafe> FindAllNave()
+        public List<ResponseNave> FindAllNave()
     {
         List<Nafe> resNaveRet = NaveData.FindAllNaves();
-        return resNaveRet;
+
+           // List<Nafe> resNaveRet = NaveData.FindAllNaves();
+
+            var result = resNaveRet.Select((nave, i) =>
+                      new ResponseNave
+                      {
+                          IdNave = nave.IdNave,
+                          Nombre = nave.Nombre,
+                          Descripcion = nave.Descripcion,
+                          PlantasIdPlanta = nave.PlantasIdPlanta,
+                          Activo = (bool)nave.Activo,
+                          PlantasIdPlantaNavigation= nave.PlantasIdPlantaNavigation,
+                          LineasProduccions= nave.LineasProduccions.Count,
+                          MáquinasFisicas= nave.MáquinasFisicas
+                      }).ToList();
+
+
+            return result;
+
+
+           // return resNaveRet;
     }
 
 

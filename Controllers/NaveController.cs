@@ -79,7 +79,7 @@ namespace APIRest.Controllers
 
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{Nave}")]
         public ActionResult<RequestNave> Find(string Nave)
         {
             try
@@ -137,12 +137,12 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<Nafe>> FindAll()
+        public ActionResult<List<ResponseNave>> FindAll()
         {
             try
             {
                
-                List<Nafe> result = procNave.FindAllNave();
+                List<ResponseNave> result = procNave.FindAllNave();
                 if (result != null)
                     {
                         return result;

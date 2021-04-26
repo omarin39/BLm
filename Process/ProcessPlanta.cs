@@ -72,11 +72,19 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    PlantaBuscado.IdPlantaExt = planta.IdPlantaExt;
-                    PlantaBuscado.Planta1 = planta.Planta1;
-                    PlantaBuscado.Acronimo = planta.Acronimo;
-                    PlantaBuscado.Activo = planta.Activo;
-                    var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscado);
+
+                    var PlantaBuscadox = new Planta
+                    {
+                        Planta1 = planta.Planta1,
+                        Acronimo = planta.Acronimo,
+                        Activo = planta.Activo,
+                        IdPlanta = PlantaBuscado.IdPlanta,
+                        IdPlantaExt = PlantaBuscado.IdPlantaExt,
+                    };
+
+
+
+                    var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscadox);
                     if (respNewPlanta > 0)
                     {
                         respAltaPlanta.Id = PlantaBuscado.IdPlanta;
@@ -94,21 +102,48 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Planta FindPlanta(long IdPlantaExt){
+        public ResponsePlanta FindPlanta(long IdPlantaExt){
             Planta respAltaPlanta = PlantaData.FindPlanta(IdPlantaExt);
             if (respAltaPlanta == null)
             {
                 respAltaPlanta.IdPlanta = -1;
             }
-            return respAltaPlanta;
+
+            var result = new ResponsePlanta
+            {
+                IdPlanta = respAltaPlanta.IdPlanta,
+                IdPlantaExt = respAltaPlanta.IdPlantaExt,
+                Acronimo = respAltaPlanta.Acronimo,
+                Activo = (bool)respAltaPlanta.Activo,
+                Planta1= respAltaPlanta.Planta1,
+                Naves = respAltaPlanta.Naves.Count,
+
+            };
+
+
+            return result;
+            //return respAltaPlanta;
         }
     
 
 
-        public List<Planta> FindAllPlanta()
+        public List<ResponsePlanta> FindAllPlanta()
         {
             List<Planta> resPlantaRet = PlantaData.FindAllPlantas();
-            return resPlantaRet;
+            // return resPlantaRet;
+            var result = resPlantaRet.Select((planta, i) =>
+                      new ResponsePlanta
+                      {
+                          IdPlanta = planta.IdPlanta,
+                          IdPlantaExt = planta.IdPlantaExt,
+                          Acronimo = planta.Acronimo,
+                          Planta1 = planta.Planta1,
+                          Activo = (bool)planta.Activo,
+                          Naves = planta.Naves.Count,
+                      }).ToList();
+
+
+            return result;
         }
 
 

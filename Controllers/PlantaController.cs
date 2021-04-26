@@ -79,12 +79,12 @@ namespace APIRest.Controllers
 
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{IdPlantaExt}")]
         public ActionResult<RequestPlanta> Find(long IdPlantaExt)
         {
             try
             {
-                if (IdPlantaExt >0)
+                if (IdPlantaExt < 0)
                 {
                     return NotFound("Planta not found");
                 }
@@ -113,12 +113,12 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<Planta>> FindAll()
+        public ActionResult<List<ResponsePlanta>> FindAll()
         {
             try
             {
                
-                List<Planta> result = procPlanta.FindAllPlanta();
+                List<ResponsePlanta> result = procPlanta.FindAllPlanta();
                 if (result != null)
                     {
                         return result;
