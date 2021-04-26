@@ -9,6 +9,7 @@ namespace APIRest.Models
     {
         public Nafe()
         {
+            LineasProduccions = new HashSet<LineasProduccion>();
             MáquinasFisicas = new HashSet<MáquinasFisica>();
         }
 
@@ -19,6 +20,7 @@ namespace APIRest.Models
         public bool? Activo { get; set; }
 
         public virtual Planta PlantasIdPlantaNavigation { get; set; }
+        public virtual ICollection<LineasProduccion> LineasProduccions { get; set; }
         public virtual ICollection<MáquinasFisica> MáquinasFisicas { get; set; }
     }
 }

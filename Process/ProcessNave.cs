@@ -46,6 +46,23 @@ namespace APIRest.Controllers.Process
         public ResponseGral UpdateNave( RequestNave Nave)
         {
             ResponseGral respAltaNave = new();
+           
+
+            //Valida si una nave esta asociada a una linea de produccion
+            if (Nave.Activo == false)
+             {
+                 DataNave naveData = new();
+                 List<LineasProduccion> resNavesRet = naveData.FindAllNavesPorLineaProduccion(Nave.IdNave);
+                 if (resNavesRet.Count > 0)
+                 {
+                    respAltaNave.Id = Nave.IdNave;
+                    respAltaNave.Codigo = "503";
+                    respAltaNave.Mensaje = "La Linea de Produccion no puede desactivarse, por que tiene " + resNavesRet.Count.ToString() + " naves asociadas.";
+                     return respAltaNave;
+                 }
+             }
+
+
             var NaveBuscado = FindNave(Nave.nombre);
             if (NaveBuscado == null)
             {

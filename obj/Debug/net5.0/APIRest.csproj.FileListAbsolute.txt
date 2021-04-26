@@ -294,4 +294,3 @@ C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.dll
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\ref\APIRest.dll
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.pdb
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.genruntimeconfig.cache
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.csprojAssemblyReference.cache

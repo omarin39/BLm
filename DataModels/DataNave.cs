@@ -64,5 +64,12 @@ namespace APIRest.DataModels
 
             return naves.ToList();
         }
+
+        public List<LineasProduccion> FindAllNavesPorLineaProduccion(long id)
+        {
+            var naves = _context.LineasProduccions.Where(us => us.IdNave == id);
+
+            return naves.ToList();
+        }
     }
 }
