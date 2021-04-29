@@ -12,7 +12,7 @@ namespace APIRest.Process
     public class ProcessMenu
     {
         public DataMenu MenuData = new();
-        public ResponseGral AddMenu(RequestMenu _menu)
+        public ResponseGral AddMenu(RequestMenu _menu, String ip)
         {
             ResponseGral respAltaMenu = new();
             try
@@ -21,7 +21,7 @@ namespace APIRest.Process
                 logNewRegistro.NombreMenu= _menu.NombreMenu;
                 logNewRegistro.Operaciones= _menu.Operaciones;
                 logNewRegistro.Activo = _menu.Activo;
-                long respNewUSR = MenuData.AddMenu(logNewRegistro);
+                long respNewUSR = MenuData.AddMenu(logNewRegistro,ip);
                 if (respNewUSR > 0)
                 {
                     respAltaMenu.Id = respNewUSR;
@@ -38,7 +38,7 @@ namespace APIRest.Process
                 return null;
             }
         }
-        public ResponseGral UpdateMenu(RequestMenu _menu)
+        public ResponseGral UpdateMenu(RequestMenu _menu, String ip)
         {
             ResponseGral respUpdateMenu = new();
             var MenuBuscado = FindMenu(_menu.Id);
@@ -53,7 +53,7 @@ namespace APIRest.Process
                     MenuBuscado.NombreMenu = _menu.NombreMenu;
                     MenuBuscado.Operaciones = _menu.Operaciones;
                     MenuBuscado.Activo = _menu.Activo;
-                    var respNewMenu = MenuData.UpdateMenu(MenuBuscado);
+                    var respNewMenu = MenuData.UpdateMenu(MenuBuscado,ip);
                     if (respNewMenu > 0)
                     {
                         respUpdateMenu.Id = MenuBuscado.Id;

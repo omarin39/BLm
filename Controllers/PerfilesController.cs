@@ -29,10 +29,9 @@ namespace APIRest.Controllers
     {
         private JsonMediaTypeFormatter _formatter = new();
         private ProcessPerfil ProcPerfil = new();
-       // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public PerfilesController(IConfiguration configuration)
@@ -44,13 +43,16 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPerfiles ReqPerfil)
+        public ActionResult Post([FromBody] RequestPerfiles req,string ip)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (ReqPerfil.Perfil != null)
+                
+
+                if (req.Perfil != null)
                 {
-                    var result = ProcPerfil.AddPerfil(ReqPerfil);
+                    var result = ProcPerfil.AddPerfil(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         ProcessOperacion ProOper = new();
@@ -68,23 +70,26 @@ namespace APIRest.Controllers
                             _permiso.Editar = false;
                             _Lstpermiso.Add(_permiso);
                         }
-                        insPer.AddPerfilOperacionPermisoList(_Lstpermiso);
+                        insPer.AddPerfilOperacionPermisoList(_Lstpermiso, ip);
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Perfil not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Perfil not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Perfil not found");
               
             }
@@ -129,12 +134,12 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<Perfile>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult<List<Perfile>> FindAll() 
         {
             try
             {
                 //List<Perfile> result = ProcPerfil.FindAllPerfil().Where(v=>v.Activo==true).ToList();//Async();//.FindProcessLog(id);
-                List<Perfile> result = ProcPerfil.FindAllPerfil();//Async();//.FindProcessLog(id);
+                List<Perfile> result = ProcPerfil.FindAllPerfil();
                 if (result != null)
                     {
                         return result;
@@ -158,11 +163,14 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestPerfiles ReqPerfil)
+        public ActionResult Put([FromBody] RequestPerfiles req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = ProcPerfil.UpdatePerfil(ReqPerfil);
+                
+
+                ResponseGral result = ProcPerfil.UpdatePerfil(req, remoteIpAddress.ToString());
                 if (result.Codigo == "200")
                 {
                     return Ok(result);
@@ -173,6 +181,7 @@ namespace APIRest.Controllers
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Perfil not found");
                 }
 
@@ -180,6 +189,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Perfil not found");
 
             }

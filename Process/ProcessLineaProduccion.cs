@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessLineaProduccion
     {       
         public DataLineaProduccion LineaProduccionData = new();
-        public ResponseGral AddLineaProduccion(RequestLineaProduccion LineaProduccion)
+        public ResponseGral AddLineaProduccion(RequestLineaProduccion LineaProduccion, String ip)
         {
             ResponseGral respAltaLineaProduccion = new();
             try
@@ -25,7 +25,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.NombreLinea = LineaProduccion.NombreLinea;
                 logNewRegistro.DescripcionLinea = LineaProduccion.DescripcionLinea;
                 logNewRegistro.Activo = LineaProduccion.Activo;
-                long respNewUSR = LineaProduccionData.AddLineaProduccion(logNewRegistro);
+                long respNewUSR = LineaProduccionData.AddLineaProduccion(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaLineaProduccion.Id = respNewUSR;
@@ -43,7 +43,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdateLineaProduccion( RequestLineaProduccion LineaProduccion)
+        public ResponseGral UpdateLineaProduccion( RequestLineaProduccion LineaProduccion, String ip)
         {
             ResponseGral respAltaLineaProduccion = new();
 
@@ -77,7 +77,7 @@ namespace APIRest.Controllers.Process
                     LineaProduccionBuscado.NombreLinea = LineaProduccion.NombreLinea;
                     LineaProduccionBuscado.DescripcionLinea = LineaProduccion.DescripcionLinea;
                     LineaProduccionBuscado.Activo = LineaProduccion.Activo;
-                    var respNewLineaProduccion = LineaProduccionData.UpdateLineaProduccion(LineaProduccionBuscado);
+                    var respNewLineaProduccion = LineaProduccionData.UpdateLineaProduccion(LineaProduccionBuscado,ip);
                     if (respNewLineaProduccion > 0)
                     {
                         respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
@@ -103,7 +103,17 @@ namespace APIRest.Controllers.Process
             }
             return respAltaLineaProduccion;
         }
-    
+
+        public LineasProduccion FindLineaProduccionNave(long IdLineaProduccionExt)
+        {
+            LineasProduccion respAltaLineaProduccion = LineaProduccionData.FindLineaProduccionNave(IdLineaProduccionExt);
+            if (respAltaLineaProduccion == null)
+            {
+                respAltaLineaProduccion.Id = -1;
+            }
+            return respAltaLineaProduccion;
+        }
+
 
 
         public List<LineasProduccion> FindAllLineaProduccion()

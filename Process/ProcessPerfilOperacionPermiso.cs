@@ -14,7 +14,7 @@ namespace APIRest.Controllers.Process
     public class ProcessPerfilOperacionPermiso
     {       
         public DataPerfilOperacionPermiso PerfilOperacionPermisoData = new();
-        public ResponseGral AddPerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso)
+        public ResponseGral AddPerfilOperacionPermiso(RequestPerfilOperacionPermiso PerfilOperacionPermiso, String ip)
         {
             ResponseGral respAltaPerfilOperacionPermiso = new();
             try
@@ -26,7 +26,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Editar = PerfilOperacionPermiso.Editar;
                 logNewRegistro.Eliminar = PerfilOperacionPermiso.Eliminar;
                 logNewRegistro.Ver = PerfilOperacionPermiso.Ver;
-                long respNewUSR = PerfilOperacionPermisoData.AddPerfilOperacionPermiso(logNewRegistro);
+                long respNewUSR = PerfilOperacionPermisoData.AddPerfilOperacionPermiso(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPerfilOperacionPermiso.Id = respNewUSR;
@@ -43,12 +43,9 @@ namespace APIRest.Controllers.Process
                 return null;
             }
         }
-        public ResponseGral UpdatePerfilOperacionPermiso(RequestPerfilOperacionPermiso perfilOperacionPermiso)
+        public ResponseGral UpdatePerfilOperacionPermiso(RequestPerfilOperacionPermiso perfilOperacionPermiso, String ip)
         {
             ResponseGral respAltaPerfilOperacionPermiso = new();
-
-
-           
 
 
 
@@ -69,7 +66,7 @@ namespace APIRest.Controllers.Process
                     PerfilOperacionPermisoBuscado.Eliminar = perfilOperacionPermiso.Eliminar;
                     PerfilOperacionPermisoBuscado.Ver = perfilOperacionPermiso.Ver;
 
-                    var respNewPerfilOperacionPermiso = PerfilOperacionPermisoData.UpdatePerfilOperacionPermiso(PerfilOperacionPermisoBuscado);
+                    var respNewPerfilOperacionPermiso = PerfilOperacionPermisoData.UpdatePerfilOperacionPermiso(PerfilOperacionPermisoBuscado,ip);
 
                     if (respNewPerfilOperacionPermiso > 0)
                     {
@@ -89,7 +86,7 @@ namespace APIRest.Controllers.Process
             }            
         }
 
-        public int AddPerfilOperacionPermisoList(List<RequestPerfilOperacionPermisoItem> reqPerfilOperacionPermisoList)
+        public int AddPerfilOperacionPermisoList(List<RequestPerfilOperacionPermisoItem> reqPerfilOperacionPermisoList, String ip)
         {
 
             RequestPerfilOperacionPermiso perfilOperacionPermiso;
@@ -105,7 +102,7 @@ namespace APIRest.Controllers.Process
                     perfilOperacionPermiso.Editar = reqPerfilOperacionPermisoList[i].Editar;
                     perfilOperacionPermiso.Eliminar = reqPerfilOperacionPermisoList[i].Eliminar;
                     perfilOperacionPermiso.Ver = reqPerfilOperacionPermisoList[i].Ver;
-                    AddPerfilOperacionPermiso(perfilOperacionPermiso);
+                    AddPerfilOperacionPermiso(perfilOperacionPermiso,ip);
                 }
 
                 return 1;

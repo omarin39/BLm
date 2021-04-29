@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataEmpleado
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataEmpleado()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public  List<Empleado> FindAllEmpleado()
@@ -25,32 +26,33 @@ namespace APIRest.DataModels
             return _context.Empleados.SingleOrDefault(us => us.IdEmpleado == idEmpleado);
         }
 
-        public long AddEmpleado(Empleado NewEmpleado)
+        public long AddEmpleado(Empleado item,string ip)
         {
             try
             {
-                var empleadoRes = _context.Empleados.Add(NewEmpleado);
+                var empleadoRes = _context.Empleados.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(empleadoRes.Entity.IdEmpleado.ToString());
             }
             catch (Exception ex)
             {
-
-                //var r = ex.InnerException.Message;
-                //return 0;
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 throw new Exception(ex.InnerException.Message);
             }
         }
 
-        public int UpdateEmpleado(Empleado editEmpleado)
+        public int UpdateEmpleado(Empleado item,string ip)
         {
             try
             {
                 //_context.Empleados.Update(editEmpleado);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0;
             }
 
@@ -59,7 +61,7 @@ namespace APIRest.DataModels
         internal List<Empleado> FindAllEmpleadosPorPerfil(long idPerfil)
         {
             var empleados= _context.Empleados.Where(us => us.IdPerfil == idPerfil);
-
+           
             return empleados.ToList();
         }
     }

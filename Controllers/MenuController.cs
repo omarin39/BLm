@@ -18,6 +18,8 @@ namespace APIRest.Controllers
         private ProcessMenu procMenu= new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
+
         public MenuController(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,31 +27,37 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestMenu ReqMenu)
+        public ActionResult Post([FromBody] RequestMenu req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (!string.IsNullOrEmpty(ReqMenu.NombreMenu))
+               
+
+                if (!string.IsNullOrEmpty(req.NombreMenu))
                 {
-                    var result = procMenu.AddMenu(ReqMenu);
+                    var result = procMenu.AddMenu(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Menu not inserted");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Menu required");
                 }
 
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Menu not found");
 
             }
@@ -111,17 +119,21 @@ namespace APIRest.Controllers
 
         }
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestMenu ReqMenu)
+        public ActionResult Put([FromBody] RequestMenu req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procMenu.UpdateMenu(ReqMenu);
+              
+
+                ResponseGral result = procMenu.UpdateMenu(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Menu not found");
                 }
 
@@ -129,6 +141,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Menu not found");
 
             }

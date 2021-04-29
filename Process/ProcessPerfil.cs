@@ -14,7 +14,7 @@ namespace APIRest.Controllers.Process
     public class ProcessPerfil
     {       
         public DataPerfil perfilData = new();
-        public ResponseGral AddPerfil(RequestPerfiles perfil)
+        public ResponseGral AddPerfil(RequestPerfiles perfil, String ip)
         {
             ResponseGral respAltaPerfil = new();
             try
@@ -22,7 +22,7 @@ namespace APIRest.Controllers.Process
                 Perfile logNewRegistro = new();
                 logNewRegistro.Perfil = perfil.Perfil;
                 logNewRegistro.Activo = perfil.Activo;
-                long respNewUSR = perfilData.AddPerfil(logNewRegistro);
+                long respNewUSR = perfilData.AddPerfil(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPerfil.Id = respNewUSR;
@@ -40,7 +40,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePerfil( RequestPerfiles perfil)
+        public ResponseGral UpdatePerfil( RequestPerfiles perfil, String ip)
         {
             ResponseGral respAltaPerfil = new();
 
@@ -87,7 +87,7 @@ namespace APIRest.Controllers.Process
                 {
                     perfilBuscado.Perfil = perfil.Perfil;
                     perfilBuscado.Activo = perfil.Activo;
-                    var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado);
+                    var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado,ip);
                     if (respNewPerfil > 0)
                     {
                         respAltaPerfil.Id = perfilBuscado.Id;

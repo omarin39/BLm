@@ -32,7 +32,7 @@ namespace APIRest.Controllers
        // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public EmpleadoController(IConfiguration configuration)
@@ -44,25 +44,29 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestEmpleado ReqEmpleado)
+        public ActionResult Post([FromBody] RequestEmpleado req)
         {
             try
             {
-                if (ReqEmpleado.Nombre != null)
+                var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+
+                if (req.Nombre != null)
                 {
-                    var result = ProcEmpleado.AddEmpleado(ReqEmpleado); 
+                    var result = ProcEmpleado.AddEmpleado(req, remoteIpAddress.ToString()); 
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Empleado not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Empleado not found");
                 }
                
@@ -143,13 +147,12 @@ namespace APIRest.Controllers
             }
         }
 
-
         [HttpGet()]
-        public ActionResult<List<Empleado>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult<List<Empleado>> FindAll()
         {
             try
             {
-                 List<Empleado> result = ProcEmpleado.FindAllEmpleado();//Async();//.FindProcessLog(id);
+                 List<Empleado> result = ProcEmpleado.FindAllEmpleado();
                     if (result != null)
                     {
                         return result;
@@ -169,29 +172,30 @@ namespace APIRest.Controllers
          
         }
 
-
-
-
         [HttpPut()]
-         public ActionResult Put([FromBody] RequestEmpleado ReqEmpleado)
-        //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
-        {
+         public ActionResult Put([FromBody] RequestEmpleado req)
+        
+        { 
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                 ResponseGral result = ProcEmpleado.UpdateEmpleado(ReqEmpleado);//Async();//.FindProcessLog(id);
+               
+                ResponseGral result = ProcEmpleado.UpdateEmpleado(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Empleado not found");
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
+                    return NotFound("Empleado not found");
                     }
 
                 
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Empleado not found");
                
             }

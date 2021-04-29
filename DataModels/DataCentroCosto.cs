@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataCentroCosto
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataCentroCosto()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public async Task<List<CentroCosto>> FindAllCECO()
@@ -29,25 +30,28 @@ namespace APIRest.DataModels
             return resultadoBusqueda;
         }
 
-        public long AddCECO(CentroCosto NewCECO)
+        public long AddCECO(CentroCosto item,string ip)
         {
             try
             {
-                var CECORes = _context.CentroCostos.Add(NewCECO);
+                var CECORes = _context.CentroCostos.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(CECORes.Entity.IdCentroCosto.ToString());
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0;
             }
         }
 
-        public long UpdateCECO(CentroCosto _CECO)
+        public long UpdateCECO(CentroCosto item, string ip)
         {
             try
             {
-                _context.CentroCostos.Update(_CECO);
+                _context.CentroCostos.Update(item);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
                 
             }

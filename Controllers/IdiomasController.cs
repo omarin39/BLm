@@ -24,6 +24,7 @@ namespace APIRest.Controllers
         // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
         public IdiomasController(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,25 +33,28 @@ namespace APIRest.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestIdiomas ReqIdioma)
+        public ActionResult Post([FromBody] RequestIdiomas req)
         {           
             try
             {
-                if (ReqIdioma.Idioma1 != null)
+                var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+                if (req.Idioma1 != null)
                 {
-                    var result = ProcIdioma.AddIdioma(ReqIdioma);
+                    var result = ProcIdioma.AddIdioma(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Language not inserted");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Language required");
                 }
 
@@ -119,18 +123,21 @@ namespace APIRest.Controllers
         }
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestIdiomas ReqIdioma)
+        public ActionResult Put([FromBody] RequestIdiomas req)
         {
-
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = ProcIdioma.UpdateIdioma(ReqIdioma);
+               
+
+                ResponseGral result = ProcIdioma.UpdateIdioma(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Language not found");
                 }
 
@@ -138,6 +145,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Language not found");
 
             }

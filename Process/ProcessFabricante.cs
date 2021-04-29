@@ -14,7 +14,7 @@ namespace APIRest.Controllers.Process
     public class ProcessFabricante
     {       
         public DataFabricante FabricanteData = new();
-        public ResponseGral AddFabricante(RequestFabricante Fabricante)
+        public ResponseGral AddFabricante(RequestFabricante Fabricante, String ip)
         {
             ResponseGral respAltaFabricante = new();
             try
@@ -25,7 +25,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Email = Fabricante.Email;
                 logNewRegistro.Telefono = Fabricante.Telefono;
                 logNewRegistro.Activo = Fabricante.Activo;
-                long respNewUSR = FabricanteData.AddFabricante(logNewRegistro);
+                long respNewUSR = FabricanteData.AddFabricante(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaFabricante.Id = respNewUSR;
@@ -42,7 +42,7 @@ namespace APIRest.Controllers.Process
                 return null;
             }
         }
-        public ResponseGral UpdateFabricante(RequestFabricante Fabricante)
+        public ResponseGral UpdateFabricante(RequestFabricante Fabricante, String ip)
         {
             ResponseGral respAltaFabricante = new();
             var FabricanteBuscado = FindFabricante(Fabricante.IdFabricante);
@@ -56,7 +56,7 @@ namespace APIRest.Controllers.Process
                     FabricanteBuscado.Email = Fabricante.Email;
                     FabricanteBuscado.Telefono = Fabricante.Telefono;
                     FabricanteBuscado.Activo = Fabricante.Activo;
-                    var respNewFabricante = FabricanteData.UpdateFabricante(FabricanteBuscado);
+                    var respNewFabricante = FabricanteData.UpdateFabricante(FabricanteBuscado,ip);
                     if (respNewFabricante > 0)
                     {
                         respAltaFabricante.Id = FabricanteBuscado.IdFabricante;

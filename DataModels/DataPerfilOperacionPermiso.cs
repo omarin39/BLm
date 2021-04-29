@@ -11,10 +11,11 @@ namespace APIRest.DataModels
     public class DataPerfilOperacionPermiso
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataPerfilOperacionPermiso()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public  List<PerfilOperacionPermiso> FindAllPerfilOperacionPermiso()
@@ -39,31 +40,34 @@ namespace APIRest.DataModels
             return res;
         }
 
-        public long AddPerfilOperacionPermiso(PerfilOperacionPermiso NewPerfilOperacionPermiso)
+        public long AddPerfilOperacionPermiso(PerfilOperacionPermiso item,string ip)
         {
             try
             {
-                var PerfilOperacionPermisoRes = _context.PerfilOperacionPermisos.Add(NewPerfilOperacionPermiso);
+                var PerfilOperacionPermisoRes = _context.PerfilOperacionPermisos.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(PerfilOperacionPermisoRes.Entity.Id.ToString());
             }
             catch (Exception ex)
             {
-
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 var r = ex.Message;
                 return 0;
             }
         }
 
-        public int UpdatePerfilOperacionPermiso(PerfilOperacionPermiso editPerfilOperacionPermiso)
+        public int UpdatePerfilOperacionPermiso(PerfilOperacionPermiso item,string ip)
         {
             try
             {
-                _context.PerfilOperacionPermisos.Update(editPerfilOperacionPermiso);
+                _context.PerfilOperacionPermisos.Update(item);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0;
             }
 

@@ -32,7 +32,7 @@ namespace APIRest.Controllers
        // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public OperacionController(IConfiguration configuration)
@@ -44,32 +44,37 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestOperacion ReqOperacion)
+        public ActionResult Post([FromBody] RequestOperacion req)
         {
-
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (ReqOperacion.Operacion != null)
+               
+
+                if (req.Operacion != null)
                 {
-                    var result = procOperacion.AddOperacion(ReqOperacion); //.ProcesaUSER(ReqUser, Configuration);
+                    var result = procOperacion.AddOperacion(req, remoteIpAddress.ToString()); 
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Operacion not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Operacion not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Operacion not found");
               
             }
@@ -150,30 +155,33 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-         public ActionResult Put([FromBody] RequestOperacion ReqOperacion)
-        //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+         public ActionResult Put([FromBody] RequestOperacion req)
         {
             List<ResponseOperacion> ResponseWS = new();
             ResponseOperacion ComplementoResponseWS = new();
-           
 
 
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                 ResponseGral result = procOperacion.UpdateOperacion(ReqOperacion);//Async();//.FindProcessLog(id);
+               
+
+                ResponseGral result = procOperacion.UpdateOperacion(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Operacion not found");
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
+                    return NotFound("Operacion not found");
                     }
 
                 
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Operacion not found");
                
             }

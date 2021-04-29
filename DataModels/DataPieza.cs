@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataPieza
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataPieza()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public List<Pieza> FindAllPiezas()
@@ -25,30 +26,33 @@ namespace APIRest.DataModels
             return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.Nombre == Pieza);
         }
 
-        public long AddPieza(Pieza NewPieza)
+        public long AddPieza(Pieza item,string ip)
         {
             try
             {
-                var PiezaRes = _context.Piezas.Add(NewPieza);
+                var PiezaRes = _context.Piezas.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(PiezaRes.Entity.IdPieza.ToString());
             }
             catch (Exception ex)
             {
-
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 var r = ex.Message;
                 return 0;
             }
         }
-        public int UpdatePieza(Pieza _Pieza)
+        public int UpdatePieza(Pieza item,string ip)
         {
             try
             {
-                _context.Piezas.Update(_Pieza);
+                _context.Piezas.Update(item);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0;
             }
 

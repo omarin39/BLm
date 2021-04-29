@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataEmpleados
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataEmpleados()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public async Task<List<Empleado>> FindAllEmpleados()
@@ -25,31 +26,33 @@ namespace APIRest.DataModels
             return _context.Empleados.SingleOrDefault(us => us.NNomina == noNomina);
         }
 
-        public long AddEmpleado(Empleado NewEmpleado)
+        public long AddEmpleado(Empleado item,string ip)
         {
             try
             {
-                var empleadoRes = _context.Empleados.Add(NewEmpleado);
+                var empleadoRes = _context.Empleados.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(empleadoRes.Entity.IdEmpleado.ToString());
             }
             catch (Exception ex)
             {
-
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 var r = ex.Message;
                 return 0; ;
             }
         }
 
-        public int UpdateEmpleado(Empleado editEmpleado)
+        public int UpdateEmpleado(Empleado item,string ip)
         {
             try
             {
-                //_context.Empleados.Update(editEmpleado);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0;
             }
 

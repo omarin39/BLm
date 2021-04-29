@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessNave
     {       
         public DataNave NaveData = new();
-        public ResponseGral AddNave(RequestNave Nave)
+        public ResponseGral AddNave(RequestNave Nave, String ip)
         {
             ResponseGral respAltaNave = new();
             try
@@ -25,7 +25,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Descripcion = Nave.descripcion;
                 logNewRegistro.PlantasIdPlanta = Nave.PlantasIdPlanta;
                 logNewRegistro.Activo = Nave.Activo;
-                long respNewUSR = NaveData.AddNave(logNewRegistro);
+                long respNewUSR = NaveData.AddNave(logNewRegistro, ip);
                 if(respNewUSR >0)
                 {
                     respAltaNave.Id = respNewUSR;
@@ -43,7 +43,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdateNave( RequestNave Nave)
+        public ResponseGral UpdateNave( RequestNave Nave, String ip)
         {
             ResponseGral respAltaNave = new();
            
@@ -52,7 +52,7 @@ namespace APIRest.Controllers.Process
             if (Nave.Activo == false)
              {
                  DataNave naveData = new();
-                 List<LineasProduccion> resNavesRet = naveData.FindAllNavesPorLineaProduccion(Nave.IdNave);
+                 List<LineasProduccion> resNavesRet = naveData.FindAllNavesPorLineaProduccion(Nave.IdNave,ip);
                  if (resNavesRet.Count > 0)
                  {
                     respAltaNave.Id = Nave.IdNave;
@@ -81,7 +81,7 @@ namespace APIRest.Controllers.Process
                     };
 
 
-                    var respNewNave = NaveData.UpdateNave(NaveBuscadox);
+                    var respNewNave = NaveData.UpdateNave(NaveBuscadox,ip);
                     if (respNewNave > 0)
                     {
                         respAltaNave.Id = NaveBuscado.IdNave;
@@ -155,8 +155,6 @@ namespace APIRest.Controllers.Process
     {
         List<Nafe> resNaveRet = NaveData.FindAllNaves();
 
-           // List<Nafe> resNaveRet = NaveData.FindAllNaves();
-
             var result = resNaveRet.Select((nave, i) =>
                       new ResponseNave
                       {
@@ -170,11 +168,7 @@ namespace APIRest.Controllers.Process
                           MáquinasFisicas= nave.MáquinasFisicas
                       }).ToList();
 
-
             return result;
-
-
-           // return resNaveRet;
     }
 
 

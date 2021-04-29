@@ -14,7 +14,7 @@ namespace APIRest.Controllers.Process
     public class ProcessOperacion
     {       
         public DataOperacion operacionData = new();
-        public ResponseGral AddOperacion(RequestOperacion operacion)
+        public ResponseGral AddOperacion(RequestOperacion operacion, String ip)
         {
             ResponseGral respAltaOperacion = new();
             try
@@ -25,7 +25,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.NombrePagina = operacion.Nombre_Pagina;
                 logNewRegistro.IdMenu = operacion.Id_Menu;
                 logNewRegistro.Activo = operacion.Activo;
-                long respNewOperacion = operacionData.AddOperacion(logNewRegistro);
+                long respNewOperacion = operacionData.AddOperacion(logNewRegistro,ip);
                 if(respNewOperacion > 0)
                 {
 
@@ -45,7 +45,7 @@ namespace APIRest.Controllers.Process
                         _permiso.Editar = false;
                         
 
-                        var result = procPerfilOperacionPermiso.AddPerfilOperacionPermiso(_permiso);
+                        var result = procPerfilOperacionPermiso.AddPerfilOperacionPermiso(_permiso, ip);
                     }
 
                     respAltaOperacion.Id = respNewOperacion;
@@ -62,7 +62,7 @@ namespace APIRest.Controllers.Process
                 return null;
             }
         }
-        public ResponseGral UpdateOperacion(RequestOperacion operacion)
+        public ResponseGral UpdateOperacion(RequestOperacion operacion, String ip)
         {
             ResponseGral respAltaOperacion = new();
             var operacionBuscado = FindOperacion(operacion.Id);
@@ -78,7 +78,7 @@ namespace APIRest.Controllers.Process
                     operacionBuscado.NombreMenu = operacion.Nombre_Menu;
                     operacionBuscado.NombrePagina = operacion.Nombre_Pagina;
                     operacionBuscado.Activo = operacion.Activo;
-                    var respNewOperacion = operacionData.UpdateOperacion(operacionBuscado);
+                    var respNewOperacion = operacionData.UpdateOperacion(operacionBuscado,ip);
                     if (respNewOperacion > 0)
                     {
                         respAltaOperacion.Id = operacionBuscado.Id;

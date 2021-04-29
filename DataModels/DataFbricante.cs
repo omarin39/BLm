@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataFabricante
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataFabricante()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public  List<Fabricante> FindAllFabricante()
@@ -25,31 +26,34 @@ namespace APIRest.DataModels
             return _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.IdFabricante == idFabricante);
         }
 
-        public long AddFabricante(Fabricante NewFabricante)
+        public long AddFabricante(Fabricante item,string ip)
         {
             try
             {
-                var FabricanteRes = _context.Fabricantes.Add(NewFabricante);
+                var FabricanteRes = _context.Fabricantes.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(FabricanteRes.Entity.IdFabricante.ToString());
             }
             catch (Exception ex)
             {
-
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 var r = ex.Message;
                 return 0;
             }
         }
 
-        public int UpdateFabricante(Fabricante editFabricante)
+        public int UpdateFabricante(Fabricante item,string ip)
         {
             try
             {
-                _context.Fabricantes.Update(editFabricante);
+                _context.Fabricantes.Update(item);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0;
             }
 

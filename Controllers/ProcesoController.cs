@@ -32,7 +32,7 @@ namespace APIRest.Controllers
       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public ProcesoController(IConfiguration configuration)
@@ -44,31 +44,36 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestProceso ReqProceso)
+        public ActionResult Post([FromBody] RequestProceso req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (ReqProceso.Codigo != null)
+               
+                if (req.Codigo != null)
                 {
-                    var result = procProceso.AddProceso(ReqProceso);
+                    var result = procProceso.AddProceso(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Proceso not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Proceso not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Proceso not found");
               
             }
@@ -142,17 +147,20 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestProceso ReqProceso)
+        public ActionResult Put([FromBody] RequestProceso req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procProceso.UpdateProceso(ReqProceso);
+               
+                ResponseGral result = procProceso.UpdateProceso(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Proceso not found");
                 }
 
@@ -160,6 +168,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Proceso not found");
 
             }

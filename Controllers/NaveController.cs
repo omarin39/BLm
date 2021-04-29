@@ -6,6 +6,7 @@ using APIRest.Models;
 using APIRest.Models.Request;
 using APIRest.Models.Response;
 using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Serialization;
@@ -32,7 +33,7 @@ namespace APIRest.Controllers
       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public NaveController(IConfiguration configuration)
@@ -44,31 +45,36 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestNave ReqNave)
+        public ActionResult Post([FromBody] RequestNave req)
         {
+
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (ReqNave.nombre != null)
+                if (req.nombre != null)
                 {
-                    var result = procNave.AddNave(ReqNave);
+                    var result = procNave.AddNave(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Nave not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Nave not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Nave not found");
               
             }
@@ -115,6 +121,7 @@ namespace APIRest.Controllers
         {
             try
             {
+              
                 if (Planta == "")
                 {
                     return NotFound("Nave not found");
@@ -141,7 +148,7 @@ namespace APIRest.Controllers
         {
             try
             {
-               
+                
                 List<ResponseNave> result = procNave.FindAllNave();
                 if (result != null)
                     {
@@ -166,17 +173,21 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestNave ReqNave)
+        public ActionResult Put([FromBody] RequestNave req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procNave.UpdateNave(ReqNave);
+               
+
+                ResponseGral result = procNave.UpdateNave(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Nave not found");
                 }
 
@@ -184,6 +195,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Nave not found");
 
             }

@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessPreguntaGeneral
     {       
         public DataPreguntaPtGeneral PreguntaGeneralData = new();
-        public ResponseGral AddPreguntaGeneral(RequestPreguntaGeneral PreguntaGeneral)
+        public ResponseGral AddPreguntaGeneral(RequestPreguntaGeneral PreguntaGeneral, String ip)
         {
             ResponseGral respAltaPreguntaGeneral = new();
             try
@@ -26,7 +26,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Orden = PreguntaGeneral.orden;
                 logNewRegistro.IdiomaIdIdioma = PreguntaGeneral.idIdioma;
                 logNewRegistro.NivelesCertificacionIdNivelCertificacion = PreguntaGeneral.idNivelCertificcion;
-                long respNewUSR = PreguntaGeneralData.AddPregunta(logNewRegistro);
+                long respNewUSR = PreguntaGeneralData.AddPregunta(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPreguntaGeneral.Id = respNewUSR;
@@ -44,24 +44,11 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePreguntaGeneral( RequestPreguntaGeneral PreguntaGeneral)
+        public ResponseGral UpdatePreguntaGeneral( RequestPreguntaGeneral PreguntaGeneral, String ip)
         {
             ResponseGral respAltaPreguntaGeneral = new();
 
-            //Valida si una plata tiene naves asociadas
-           /* if (PreguntaGeneral.Activo == false)
-            {
-                DataNave naveData = new();
-                List<Nafe> resNavesRet = naveData.FindAllNavesPorPreguntaGeneral(PreguntaGeneral.IdPreguntaGeneral);
-                if (resNavesRet.Count > 0)
-                {
-                    respAltaPreguntaGeneral.Id = PreguntaGeneral.IdPreguntaGeneral;
-                    respAltaPreguntaGeneral.Codigo = "503";
-                    respAltaPreguntaGeneral.Mensaje = "La PreguntaGeneral no puede desactivarse, por que tiene " + resNavesRet.Count.ToString() + " naves asociadas.";
-                    return respAltaPreguntaGeneral;
-                }
-            }*/
-
+  
 
 
             var PreguntaGeneralBuscado = FindPreguntaGeneral(PreguntaGeneral.pregunta);
@@ -81,7 +68,7 @@ namespace APIRest.Controllers.Process
                     PreguntaGeneralBuscado.NivelesCertificacionIdNivelCertificacion = PreguntaGeneral.idNivelCertificcion;
 
 
-                    var respNewPreguntaGeneral = PreguntaGeneralData.UpdatePregunta(PreguntaGeneralBuscado);
+                    var respNewPreguntaGeneral = PreguntaGeneralData.UpdatePregunta(PreguntaGeneralBuscado,ip);
                     if (respNewPreguntaGeneral > 0)
                     {
                         respAltaPreguntaGeneral.Id = PreguntaGeneralBuscado.IdPreguntaPt;

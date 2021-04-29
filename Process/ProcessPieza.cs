@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessPieza
     {       
         public DataPieza PiezaData = new();
-        public ResponseGral AddPieza(RequestPieza Pieza)
+        public ResponseGral AddPieza(RequestPieza Pieza, String ip)
         {
             ResponseGral respAltaPieza = new();
             try
@@ -24,7 +24,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Nombre = Pieza.nombre;
                 logNewRegistro.Descripción = Pieza.descripcion;
                 logNewRegistro.Activo = Pieza.Activo;
-                long respNewUSR = PiezaData.AddPieza(logNewRegistro);
+                long respNewUSR = PiezaData.AddPieza(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPieza.Id = respNewUSR;
@@ -42,7 +42,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePieza( RequestPieza Pieza)
+        public ResponseGral UpdatePieza( RequestPieza Pieza, String ip)
         {
             ResponseGral respAltaPieza = new();
             var PiezaBuscado = FindPieza(Pieza.nombre);
@@ -57,7 +57,7 @@ namespace APIRest.Controllers.Process
                     PiezaBuscado.Nombre = Pieza.nombre;
                     PiezaBuscado.Descripción = Pieza.descripcion;
                     PiezaBuscado.Activo = Pieza.Activo;
-                    var respNewPieza = PiezaData.UpdatePieza(PiezaBuscado);
+                    var respNewPieza = PiezaData.UpdatePieza(PiezaBuscado,ip);
                     if (respNewPieza > 0)
                     {
                         respAltaPieza.Id = PiezaBuscado.IdPieza;

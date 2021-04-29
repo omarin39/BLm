@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessProceso
     {       
         public DataProceso ProcesoData = new();
-        public ResponseGral AddProceso(RequestProceso Proceso)
+        public ResponseGral AddProceso(RequestProceso Proceso, String ip)
         {
             ResponseGral respAltaProceso = new();
             try
@@ -25,7 +25,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Descripcion = Proceso.Descripcion;
                 logNewRegistro.Codigo= Proceso.Codigo;
                 logNewRegistro.Activo = Proceso.Activo;
-                long respNewUSR = ProcesoData.AddProceso(logNewRegistro);
+                long respNewUSR = ProcesoData.AddProceso(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaProceso.Id = respNewUSR;
@@ -43,7 +43,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdateProceso( RequestProceso Proceso)
+        public ResponseGral UpdateProceso( RequestProceso Proceso, String ip)
         {
             ResponseGral respAltaProceso = new();
             var ProcesoBuscado = FindProceso(Proceso.Codigo);
@@ -59,7 +59,7 @@ namespace APIRest.Controllers.Process
                     ProcesoBuscado.Descripcion = Proceso.Descripcion;
                     ProcesoBuscado.Codigo = Proceso.Codigo;
                     ProcesoBuscado.Activo = Proceso.Activo;
-                    var respNewProceso = ProcesoData.UpdateProceso(ProcesoBuscado);
+                    var respNewProceso = ProcesoData.UpdateProceso(ProcesoBuscado,ip);
                     if (respNewProceso > 0)
                     {
                         respAltaProceso.Id = ProcesoBuscado.IdProceso;

@@ -10,7 +10,7 @@ namespace APIRest.Controllers.Process
     public class ProcessEmpleado
     {
         public DataEmpleado empleadoData = new();
-        public ResponseGral AddEmpleado(RequestEmpleado empleado)
+        public ResponseGral AddEmpleado(RequestEmpleado empleado, String ip)
         {
             ResponseGral respAltaEmpleado = new();
             try
@@ -46,7 +46,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                 logNewRegistro.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                 logNewRegistro.IdPerfil = empleado.IdPerfil;
-                long respNewUSR = empleadoData.AddEmpleado(logNewRegistro);
+                long respNewUSR = empleadoData.AddEmpleado(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaEmpleado.Id = respNewUSR;
@@ -63,7 +63,7 @@ namespace APIRest.Controllers.Process
                 throw new Exception(ex.Message);
             }
         }
-        public ResponseGral UpdateEmpleado( RequestEmpleado empleado)
+        public ResponseGral UpdateEmpleado( RequestEmpleado empleado, String ip)
         {
             ResponseGral respAltaEmpleado = new();
             var empleadoBuscado = FindEmpleado(empleado.IdEmpleado);
@@ -89,7 +89,7 @@ namespace APIRest.Controllers.Process
                     empleadoBuscado.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                     empleadoBuscado.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                     empleadoBuscado.IdPerfil = empleado.IdPerfil;
-                    var respNewEmpleado = empleadoData.UpdateEmpleado(empleadoBuscado);
+                    var respNewEmpleado = empleadoData.UpdateEmpleado(empleadoBuscado,ip);
                     if (respNewEmpleado > 0)
                     {
                         respAltaEmpleado.Id = empleadoBuscado.IdEmpleado;

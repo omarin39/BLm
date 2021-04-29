@@ -26,7 +26,7 @@ namespace APIRest.Controllers.Process
         public DataPuesto puestoData = new();
         public DataUnidadNegocio unidadNegocioData = new();
         public DataCentroCosto cecoData = new();
-        public async Task<ResponseUsers> ProcesaUSER(List<RequestUsers> ReqUser, IConfiguration configuration)
+        public async Task<ResponseUsers> ProcesaUSER(List<RequestUsers> ReqUser, IConfiguration configuration, String ip)
         {
             ResponseWS.Mal = new();
             ResponseWS.Bien = new();
@@ -37,14 +37,14 @@ namespace APIRest.Controllers.Process
 
             if (DatosProcesados.Bien.Count() > 0)
             {
-                ResponseWS.Bien = ExecUsr(DatosProcesados.Bien);
+                ResponseWS.Bien = ExecUsr(DatosProcesados.Bien,ip);
             }
             ResponseWS.Mal= DatosProcesados.Mal;
             ResponseWS.Codigo = 200;
             return ResponseWS;
         }
 
-        public List<ComplementosSuccessResponse> ExecUsr(List<RequestUsers> RegBien)
+        public List<ComplementosSuccessResponse> ExecUsr(List<RequestUsers> RegBien, String ip)
         {
             List<ComplementosSuccessResponse> RegistrosOk = new();
             ComplementosSuccessResponse regProcesados = new();
@@ -62,7 +62,7 @@ namespace APIRest.Controllers.Process
                         if (existe != null)
                         {
                             //SI EXISTE se trata como una modificacion
-                            regProcesados = UpdateUsr(RegistroUSR, existe);
+                            regProcesados = UpdateUsr(RegistroUSR, existe,ip);
                             if (regProcesados != null)
                             {
                                 RegistrosOk.Add(regProcesados);
@@ -76,7 +76,7 @@ namespace APIRest.Controllers.Process
                         else
                         {
                             //empleado no existe
-                            regProcesados = AddUsr(RegistroUSR);
+                            regProcesados = AddUsr(RegistroUSR,ip);
                             if (regProcesados != null) {
                                 RegistrosOk.Add(regProcesados);
                             }
@@ -90,7 +90,7 @@ namespace APIRest.Controllers.Process
                         //pendiente
                         break;
                     case "M":
-                        regProcesados = UpdateUsr(RegistroUSR, existe);
+                        regProcesados = UpdateUsr(RegistroUSR, existe,ip);
                         if (regProcesados != null)
                         {
                             RegistrosOk.Add(regProcesados);
@@ -109,7 +109,7 @@ namespace APIRest.Controllers.Process
 
         }
 
-        public ComplementosSuccessResponse AddUsr(RequestUsers RegBien)
+        public ComplementosSuccessResponse AddUsr(RequestUsers RegBien, String ip)
         {
             ComplementosSuccessResponse respAltaUsr = new();
             try
@@ -119,11 +119,11 @@ namespace APIRest.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                long id_planta = FindPlanta(RegBien.IdPlanta,RegBien.AcronimoPlanta, RegBien.DescripcionPlanta);
-                long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento);
-                long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto);
-                long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
-                long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno);
+                long id_planta = FindPlanta(RegBien.IdPlanta,RegBien.AcronimoPlanta, RegBien.DescripcionPlanta,ip);
+                long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento,ip);
+                long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto, ip);
+                long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad,ip);
+                long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno,ip);
 
                 Empleado empleadoNewRegistro = new();
                 empleadoNewRegistro.NNomina = RegBien.NoNomina.ToString();
@@ -141,7 +141,7 @@ namespace APIRest.Controllers.Process
                 empleadoNewRegistro.IdiomaIdIdioma = 1;
                 empleadoNewRegistro.IdPerfil = 2;
 
-                var respNewUSR = empleadoData.AddEmpleado(empleadoNewRegistro);
+                var respNewUSR = empleadoData.AddEmpleado(empleadoNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaUsr.Id_user = respNewUSR.ToString();
@@ -162,7 +162,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ComplementosSuccessResponse UpdateUsr(RequestUsers RegBien, Empleado _Empleado)
+        public ComplementosSuccessResponse UpdateUsr(RequestUsers RegBien, Empleado _Empleado, String ip)
         {
             ComplementosSuccessResponse respAltaUsr = new();
             try
@@ -172,11 +172,11 @@ namespace APIRest.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                long id_planta = FindPlanta(RegBien.IdPlanta, RegBien.AcronimoPlanta, RegBien.DescripcionPlanta);
-                long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento);
-                long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto);
-                long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad);
-                long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno);
+                long id_planta = FindPlanta(RegBien.IdPlanta, RegBien.AcronimoPlanta, RegBien.DescripcionPlanta, ip);
+                long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento, ip);
+                long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto, ip);
+                long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad,ip);
+                long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno,ip);
 
                 _Empleado.NNomina = RegBien.NoNomina.ToString();
                 _Empleado.Nombre = RegBien.Nombre;
@@ -192,7 +192,7 @@ namespace APIRest.Controllers.Process
                 _Empleado.CentroCostoIdCentroCosto = id_CECO;
 
 
-                var respNewUSR = empleadoData.UpdateEmpleado(_Empleado);
+                var respNewUSR = empleadoData.UpdateEmpleado(_Empleado,ip);
                 if (respNewUSR > 0)
                 {
                     respAltaUsr.Id_user = respNewUSR.ToString();
@@ -213,7 +213,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public long FindPlanta(long idPlantaExt, string AcronimoPlanta, string DescPlanta){
+        public long FindPlanta(long idPlantaExt, string AcronimoPlanta, string DescPlanta,string ip){
             long idPlantaret = 0;
             var resPlanta = plantasData.FindPlanta(idPlantaExt);
             if(resPlanta!=null){
@@ -225,13 +225,13 @@ namespace APIRest.Controllers.Process
                 newPlanta.Acronimo = AcronimoPlanta;
                 newPlanta.IdPlantaExt = idPlantaExt;
                 newPlanta.Planta1 = DescPlanta;
-                var respNewPlanta = plantasData.AddPlanta(newPlanta);
+                var respNewPlanta = plantasData.AddPlanta(newPlanta,ip);
                 idPlantaret = respNewPlanta;
             }
             return idPlantaret;
         }
 
-        public long FindDepartamento(long idDepa_externo, string nombreDepa)
+        public long FindDepartamento(long idDepa_externo, string nombreDepa,string ip)
         {
             long idDepa_externoret = 0;
             //busqueda por id_externo
@@ -254,7 +254,7 @@ namespace APIRest.Controllers.Process
                     Departamento newDepartamento = new();
                     newDepartamento.Departamento1 = nombreDepa;
                     newDepartamento.IdDepartamentExt = idDepa_externo;
-                    var respNewDepto = departamentoData.AddDepartamento(newDepartamento);
+                    var respNewDepto = departamentoData.AddDepartamento(newDepartamento, ip);
                     idDepa_externoret = respNewDepto;
                 }
                 
@@ -262,7 +262,7 @@ namespace APIRest.Controllers.Process
             return idDepa_externoret;
         }
 
-        public long FindPuesto(long idPuesto_externo,string nombrePuesto)
+        public long FindPuesto(long idPuesto_externo,string nombrePuesto,string ip)
         {
             long idPuestoret = 0;
             //busqueda por id_externo
@@ -301,7 +301,7 @@ namespace APIRest.Controllers.Process
                     Puesto newPuesto = new();
                     newPuesto.DescPuesto = nombrePuesto;
                     newPuesto.IdPuestoExt = idPuesto_externo;
-                    var respNewPuesto = puestoData.AddPuesto(newPuesto);
+                    var respNewPuesto = puestoData.AddPuesto(newPuesto, ip);
                     idPuestoret = respNewPuesto;
                 }
 
@@ -309,7 +309,7 @@ namespace APIRest.Controllers.Process
             return idPuestoret;
         }
 
-        public long FindUnidadNegocio(string nombreUnidad)
+        public long FindUnidadNegocio(string nombreUnidad,string ip)
         {
             long idUnidadret = 0;
             var resUnidadN = unidadNegocioData.FindUnidadNegocio(nombreUnidad);
@@ -322,14 +322,14 @@ namespace APIRest.Controllers.Process
             {
                 UnidadNegocio NewUnidadN = new();
                 NewUnidadN.DescUnidadNegocio = nombreUnidad;
-                var respNewUnidadN = unidadNegocioData.AddUnidadNeg(NewUnidadN);
+                var respNewUnidadN = unidadNegocioData.AddUnidadNeg(NewUnidadN, ip);
                 idUnidadret = respNewUnidadN;
 
             }
             return idUnidadret;
 
         }
-        public long FindCECO(string nombreCECO,long idCECO_ext, long dueno)
+        public long FindCECO(string nombreCECO,long idCECO_ext, long dueno,string ip)
         {
             long idCECOret = 0;
             var resCECO = cecoData.FindCECO(nombreCECO);
@@ -344,7 +344,7 @@ namespace APIRest.Controllers.Process
                 NewCECO.DescCentroCosto = nombreCECO;
                 NewCECO.DuenoCeco = dueno;
                 NewCECO.IdCentroCostoExt = idCECO_ext;
-                var respCECO = cecoData.AddCECO(NewCECO);
+                var respCECO = cecoData.AddCECO(NewCECO, ip);
                 idCECOret = respCECO;
 
             }

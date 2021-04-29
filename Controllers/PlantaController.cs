@@ -32,7 +32,7 @@ namespace APIRest.Controllers
       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public PlantaController(IConfiguration configuration)
@@ -44,31 +44,37 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPlanta ReqPlanta)
+        public ActionResult Post([FromBody] RequestPlanta req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (ReqPlanta.IdPlantaExt != null)
+              
+
+                if (req.IdPlantaExt != null)
                 {
-                    var result = procPlanta.AddPlanta(ReqPlanta);
+                    var result = procPlanta.AddPlanta(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Planta not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Planta not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Planta not found");
               
             }
@@ -142,11 +148,13 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestPlanta ReqPlanta)
+        public ActionResult Put([FromBody] RequestPlanta req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procPlanta.UpdatePlanta(ReqPlanta);
+               
+                ResponseGral result = procPlanta.UpdatePlanta(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
@@ -157,6 +165,7 @@ namespace APIRest.Controllers
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Planta not found");
                 }
 
@@ -164,6 +173,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Planta not found");
 
             }

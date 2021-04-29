@@ -32,7 +32,7 @@ namespace APIRest.Controllers
        // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public PiezaController(IConfiguration configuration)
@@ -44,31 +44,37 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPieza ReqPieza)
+        public ActionResult Post([FromBody] RequestPieza req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (ReqPieza.nombre != null)
+               
+
+                if (req.nombre != null)
                 {
-                    var result = procPieza.AddPieza(ReqPieza);
+                    var result = procPieza.AddPieza(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Pieza not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Pieza not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Pieza not found");
               
             }
@@ -142,17 +148,20 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestPieza ReqPieza)
+        public ActionResult Put([FromBody] RequestPieza req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procPieza.UpdatePieza(ReqPieza);
+               
+                ResponseGral result = procPieza.UpdatePieza(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Pieza not found");
                 }
 
@@ -160,6 +169,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Pieza not found");
 
             }

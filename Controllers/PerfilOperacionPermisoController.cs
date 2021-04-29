@@ -32,7 +32,7 @@ namespace APIRest.Controllers
        // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public PerfilOperacionPermisoController(IConfiguration configuration)
@@ -44,38 +44,40 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPerfilOperacionPermiso ReqPerfilOperacionPermiso)
+        public ActionResult Post([FromBody] RequestPerfilOperacionPermiso req)
         {
             List<ResponsePerfilOperacionPermiso> ResponseWS = new();
             ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
 
             try
             {
-                if (ReqPerfilOperacionPermiso.IdPerfil != null)
+               
+
+                if (req.IdPerfil != null)
                 {
-                    var result = procPerfilOperacionPermiso.AddPerfilOperacionPermiso(ReqPerfilOperacionPermiso); //.ProcesaUSER(ReqUser, Configuration);
+                    var result = procPerfilOperacionPermiso.AddPerfilOperacionPermiso(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("PerfilOperacionPermiso not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("PerfilOperacionPermiso not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("PerfilOperacionPermiso not found");
               
             }
@@ -84,28 +86,32 @@ namespace APIRest.Controllers
 
 
         [HttpPost("PostPerfilOperacionPermiso")]
-        public ActionResult Post([FromBody] List<RequestPerfilOperacionPermisoItem> reqPerfilOperacionPermisoList)
+        public ActionResult Post([FromBody] List<RequestPerfilOperacionPermisoItem> req)
         {
             List<ResponsePerfilOperacionPermiso> ResponseWS = new();
             ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
-    
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
 
             try
             {
-                if (reqPerfilOperacionPermisoList.Count > 0)
+               
+
+                if (req.Count > 0)
                 {
-                    var result = procPerfilOperacionPermiso.AddPerfilOperacionPermisoList(reqPerfilOperacionPermisoList);
+                    var result = procPerfilOperacionPermiso.AddPerfilOperacionPermisoList(req, remoteIpAddress.ToString());
                     return Ok(result);
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("PerfilOperacionPermiso not found");
                 }
 
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("PerfilOperacionPermiso not found");
 
             }
@@ -228,8 +234,8 @@ namespace APIRest.Controllers
         {
             try
             {
-               
-                ResponseGral result = procPerfilOperacionPermiso.UpdatePerfilOperacionPermiso(reqPerfilOperacionPermiso);//Async();//.FindProcessLog(id);
+                var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+                ResponseGral result = procPerfilOperacionPermiso.UpdatePerfilOperacionPermiso(reqPerfilOperacionPermiso, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);

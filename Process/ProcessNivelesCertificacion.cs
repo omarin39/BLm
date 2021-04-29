@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     {
         private ResponseNivelesCertificacion ResponseWS = new();
         public DataNivelesCertificacion NivelesCertificacionData = new();
-        public ResponseGral AddNivelesCertificacion(RequestNivelesCertificacion NivelesCertificacion)
+        public ResponseGral AddNivelesCertificacion(RequestNivelesCertificacion NivelesCertificacion, String ip)
         {
             ResponseGral respAltaNivelesCertificacion = new();
             try
@@ -30,7 +30,7 @@ namespace APIRest.Controllers.Process
 
 
 
-                long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro);
+                long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaNivelesCertificacion.Id = respNewUSR;
@@ -47,7 +47,7 @@ namespace APIRest.Controllers.Process
                 return null;
             }
         }
-        public ResponseGral UpdateNivelesCertificacion(RequestNivelesCertificacion NivelesCertificacion)
+        public ResponseGral UpdateNivelesCertificacion(RequestNivelesCertificacion NivelesCertificacion, String ip)
         {
             ResponseGral respAltaNivelesCertificacion = new();
             var nivelesCertificacionBuscado = FindNivelesCertificacion(NivelesCertificacion.IdNivelCertificacion);
@@ -65,7 +65,7 @@ namespace APIRest.Controllers.Process
 
 
 
-                    var respNewNivelesCertificacion = NivelesCertificacionData.UpdateNivelesCertificacion(nivelesCertificacionBuscado);
+                    var respNewNivelesCertificacion = NivelesCertificacionData.UpdateNivelesCertificacion(nivelesCertificacionBuscado,ip);
                     if (respNewNivelesCertificacion > 0)
                     {
                         respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;

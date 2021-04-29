@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessPlanta
     {       
         public DataPlanta PlantaData = new();
-        public ResponseGral AddPlanta(RequestPlanta Planta)
+        public ResponseGral AddPlanta(RequestPlanta Planta, String ip)
         {
             ResponseGral respAltaPlanta = new();
             try
@@ -25,7 +25,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.IdPlantaExt = Planta.IdPlantaExt;
                 logNewRegistro.Acronimo = Planta.Acronimo;
                 logNewRegistro.Activo = Planta.Activo;
-                long respNewUSR = PlantaData.AddPlanta(logNewRegistro);
+                long respNewUSR = PlantaData.AddPlanta(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPlanta.Id = respNewUSR;
@@ -43,7 +43,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePlanta( RequestPlanta planta)
+        public ResponseGral UpdatePlanta( RequestPlanta planta, String ip)
         {
             ResponseGral respAltaPlanta = new();
 
@@ -84,7 +84,7 @@ namespace APIRest.Controllers.Process
 
 
 
-                    var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscadox);
+                    var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscadox,ip);
                     if (respNewPlanta > 0)
                     {
                         respAltaPlanta.Id = PlantaBuscado.IdPlanta;

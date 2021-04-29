@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataDepartamentos
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataDepartamentos()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public async Task<List<Departamento>> FindAllDepartamentos()
@@ -38,32 +39,35 @@ namespace APIRest.DataModels
             return resultadobusqueda;
         }
 
-        public long AddDepartamento(Departamento NewDepartamento)
+        public long AddDepartamento(Departamento item,string ip)
         {
             try
             {
-                var departamentoRes = _context.Departamentos.Add(NewDepartamento);
+                var departamentoRes = _context.Departamentos.Add(item);
                 _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(departamentoRes.Entity.IdDepartamento.ToString());
             }
             catch (Exception ex)
             {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 var r =  ex.Message;
                 return 0;
             }
             
         }
 
-        public long UpdateDepartamento(Departamento _depto)
+        public long UpdateDepartamento(Departamento item,string ip)
         {
             try
             {
-                _context.Departamentos.Update(_depto);
+                _context.Departamentos.Update(item);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
-
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
                 return 0; ;
             }
 

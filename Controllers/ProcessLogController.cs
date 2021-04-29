@@ -29,7 +29,7 @@ namespace APIRest.Controllers
     {
         private JsonMediaTypeFormatter _formatter = new();
         private ProcessProcessLog ProcLOG = new();
-       // private ValidaDatosRequest _validaReq = new();
+       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
         
@@ -48,22 +48,21 @@ namespace APIRest.Controllers
         {
             List<ResponseProcessLog> ResponseWS = new();
             ResponseProcessLog ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
 
             try
             {
+             
+              
                 if (ReqProcessLog.Data != null)
                 {
-                    var result = ProcLOG.AddProcessLog(ReqProcessLog); //.ProcesaUSER(ReqUser, Configuration);
+                    var result = ProcLOG.AddProcessLog(ReqProcessLog);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                       // procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Process Log not found");
                     }
 
@@ -156,6 +155,7 @@ namespace APIRest.Controllers
         {
             try
             {
+               
                 ResponseGral result = ProcLOG.UpdateProcessLog(ReqProcessLog);
                 if (result != null)
                 {
@@ -163,6 +163,7 @@ namespace APIRest.Controllers
                 }
                 else
                 {
+                   // procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("Process Log not found");
                 }
 

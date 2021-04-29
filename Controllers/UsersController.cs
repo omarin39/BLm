@@ -22,7 +22,7 @@ namespace APIRest.Controllers
         private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public UsersController(IConfiguration configuration)
@@ -34,7 +34,7 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] List<RequestUsers> ReqUser)
+        public async Task<ActionResult> Post([FromBody] List<RequestUsers> req)
         {
             List<ResponseUsers> ResponseWS = new();
             ResponseUsers ComplementoResponseWS = new();
@@ -42,18 +42,20 @@ namespace APIRest.Controllers
             ComplementosSuccessResponse SuccWS = new();
             ComplementoResponseWS.Mal = new();
             ComplementoResponseWS.Bien = new();
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
 
             try
             {
-                if (ReqUser[0].User != null)
+                if (req[0].User != null)
                 {
-                    var result = await ProcUSR.ProcesaUSER(ReqUser, Configuration);
+                    var result = await ProcUSR.ProcesaUSER(req, Configuration, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Role not found");
                     }
 
@@ -72,6 +74,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 failWS.Codigo = "801";
                 failWS.Mensaje = "Error: " + e.Message;
                 failWS.Operacion = "Null";

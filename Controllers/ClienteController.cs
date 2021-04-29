@@ -32,7 +32,7 @@ namespace APIRest.Controllers
        // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public ClienteController(IConfiguration configuration)
@@ -46,36 +46,41 @@ namespace APIRest.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] RequestCliente ReqCliente)
         {
+
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+
+
             List<ResponseCliente> ResponseWS = new();
             ResponseCliente ComplementoResponseWS = new();
-            //ComplementosFailResponse failWS = new();
-            //ComplementosSuccessResponse SuccWS = new();
-            //ComplementoResponseWS.Mal = new();
-            //ComplementoResponseWS.Bien = new();
+  
 
             try
             {
                 if (ReqCliente.Nombre != null)
                 {
-                    var result = procCliente.AddCliente(ReqCliente); //.ProcesaUSER(ReqUser, Configuration);
+                    var result = procCliente.AddCliente(ReqCliente, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(ReqCliente, System.Reflection.MethodBase.GetCurrentMethod().Name),"Error al contactar el server", 401);
                         return NotFound("Cliente not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(ReqCliente, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
+
                     return NotFound("Cliente not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(ReqCliente, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Cliente not found");
               
             }
@@ -153,11 +158,11 @@ namespace APIRest.Controllers
 
         [HttpPut()]
          public ActionResult Put([FromBody] RequestCliente ReqCliente)
-        //public ActionResult<ProcessLog> Update() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
             try
             {
-                 ResponseGral result = procCliente.UpdateCliente(ReqCliente);//Async();//.FindProcessLog(id);
+                var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+                ResponseGral result = procCliente.UpdateCliente(ReqCliente, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);

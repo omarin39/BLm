@@ -32,7 +32,7 @@ namespace APIRest.Controllers
       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public LineaProduccionController(IConfiguration configuration)
@@ -44,31 +44,37 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestLineaProduccion reqLineaProduccion)
+        public ActionResult Post([FromBody] RequestLineaProduccion req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (reqLineaProduccion.NombreLinea != null)
+               
+
+                if (req.NombreLinea != null)
                 {
-                    var result = procLineaProduccion.AddLineaProduccion(reqLineaProduccion);
+                    var result = procLineaProduccion.AddLineaProduccion(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("LineaProduccion not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("LineaProduccion not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("LineaProduccion not found");
               
             }
@@ -84,7 +90,7 @@ namespace APIRest.Controllers
         {
             try
             {
-                if (IdLineaProduccionExt >0)
+                if (IdLineaProduccionExt <= 0)
                 {
                     return NotFound("LineaProduccion not found");
                 }
@@ -109,6 +115,38 @@ namespace APIRest.Controllers
                
             }
          
+        }
+
+        [HttpGet("{idNave}")]
+        public ActionResult<RequestLineaProduccion> FindLineaProduccionNave(long IdLineaProduccionExt)
+        {
+            try
+            {
+                if (IdLineaProduccionExt <= 0)
+                {
+                    return NotFound("LineaProduccion not found");
+                }
+                else
+                {
+                    var result = procLineaProduccion.FindLineaProduccionNave(IdLineaProduccionExt);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("LineaProduccion not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("LineaProduccion not found");
+
+            }
+
         }
 
 
@@ -142,11 +180,14 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestLineaProduccion ReqLineaProduccion)
+        public ActionResult Put([FromBody] RequestLineaProduccion req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procLineaProduccion.UpdateLineaProduccion(ReqLineaProduccion);
+                
+
+                ResponseGral result = procLineaProduccion.UpdateLineaProduccion(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
@@ -157,6 +198,7 @@ namespace APIRest.Controllers
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("LineaProduccion not found");
                 }
 
@@ -164,6 +206,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("LineaProduccion not found");
 
             }

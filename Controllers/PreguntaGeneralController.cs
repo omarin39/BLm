@@ -32,7 +32,7 @@ namespace APIRest.Controllers
       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
         public PreguntaGeneralController(IConfiguration configuration)
@@ -44,31 +44,36 @@ namespace APIRest.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPreguntaGeneral reqPreguntaGeneral)
+        public ActionResult Post([FromBody] RequestPreguntaGeneral req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                if (reqPreguntaGeneral.pregunta != null)
+               
+                if (req.pregunta != null)
                 {
-                    var result = procPreguntaGeneral.AddPreguntaGeneral(reqPreguntaGeneral);
+                    var result = procPreguntaGeneral.AddPreguntaGeneral(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("PreguntaGeneral not found");
                     }
 
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("PreguntaGeneral not found");
                 }
                
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("PreguntaGeneral not found");
               
             }
@@ -142,11 +147,13 @@ namespace APIRest.Controllers
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestPreguntaGeneral ReqPreguntaGeneral)
+        public ActionResult Put([FromBody] RequestPreguntaGeneral req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                ResponseGral result = procPreguntaGeneral.UpdatePreguntaGeneral(ReqPreguntaGeneral);
+               
+                ResponseGral result = procPreguntaGeneral.UpdatePreguntaGeneral(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
@@ -157,6 +164,7 @@ namespace APIRest.Controllers
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                     return NotFound("PreguntaGeneral not found");
                 }
 
@@ -164,6 +172,7 @@ namespace APIRest.Controllers
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("PreguntaGeneral not found");
 
             }

@@ -12,7 +12,7 @@ namespace APIRest.Process
     public class ProcessIdioma
     {
         public DataIdioma IdiomaData = new();
-        public ResponseGral AddIdioma(RequestIdiomas _idioma)
+        public ResponseGral AddIdioma(RequestIdiomas _idioma, String ip)
         {
             ResponseGral respAltaIdioma = new();
             try
@@ -21,7 +21,7 @@ namespace APIRest.Process
                 logNewRegistro.CodigoIdioma = _idioma.CodigoIdioma;
                 logNewRegistro.Idioma1 = _idioma.Idioma1;
                 logNewRegistro.Activo = _idioma.Activo;
-                long respNewIdioma = IdiomaData.AddIdioma(logNewRegistro);
+                long respNewIdioma = IdiomaData.AddIdioma(logNewRegistro,ip);
                 if (respNewIdioma > 0)
                 {
                     respAltaIdioma.Id = respNewIdioma;
@@ -38,7 +38,7 @@ namespace APIRest.Process
                 return null;
             }
         }
-        public ResponseGral UpdateIdioma(RequestIdiomas _idioma)
+        public ResponseGral UpdateIdioma(RequestIdiomas _idioma, String ip)
         {
             ResponseGral respAltaIdioma = new();
             var IdiomaBuscado = FindIdioma(_idioma.IdIdioma);
@@ -53,7 +53,7 @@ namespace APIRest.Process
                     IdiomaBuscado.Idioma1 = _idioma.Idioma1;
                     IdiomaBuscado.CodigoIdioma = _idioma.CodigoIdioma;
                     IdiomaBuscado.Activo = _idioma.Activo;
-                    var respNewIdioma = IdiomaData.UpdateIdioma(IdiomaBuscado);
+                    var respNewIdioma = IdiomaData.UpdateIdioma(IdiomaBuscado,ip);
                     if (respNewIdioma > 0)
                     {
                         respAltaIdioma.Id = IdiomaBuscado.IdIdioma;

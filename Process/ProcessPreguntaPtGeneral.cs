@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessPreguntaPtGeneral
     {       
         public DataPreguntaPtGeneral PreguntaData = new();
-        public ResponseGral AddPregunta(RequestPreguntaPtGeneral Pregunta)
+        public ResponseGral AddPregunta(RequestPreguntaPtGeneral Pregunta, String ip)
         {
             ResponseGral respAltaPregunta = new();
             try
@@ -26,7 +26,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Orden = Pregunta.orden;
                 logNewRegistro.IdiomaIdIdioma = Pregunta.idiomaIdIdioma;
                 logNewRegistro.NivelesCertificacionIdNivelCertificacion = Pregunta.idNiveCertificacion;
-                long respNewUSR = PreguntaData.AddPregunta(logNewRegistro);
+                long respNewUSR = PreguntaData.AddPregunta(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPregunta.Id = respNewUSR;
@@ -44,7 +44,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePregunta(RequestPreguntaPtGeneral Pregunta)
+        public ResponseGral UpdatePregunta(RequestPreguntaPtGeneral Pregunta, String ip)
         {
             ResponseGral respAltaPregunta = new();
             var PreguntaBuscado = FindPregunta(Pregunta.pregunta);
@@ -65,7 +65,7 @@ namespace APIRest.Controllers.Process
                     PreguntaBuscado.NivelesCertificacionIdNivelCertificacion = Pregunta.idNiveCertificacion;
 
 
-                    var respNewPregunta = PreguntaData.UpdatePregunta(PreguntaBuscado);
+                    var respNewPregunta = PreguntaData.UpdatePregunta(PreguntaBuscado,ip);
                     if (respNewPregunta > 0)
                     {
                         respAltaPregunta.Id = PreguntaBuscado.IdPreguntaPt;

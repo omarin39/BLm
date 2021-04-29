@@ -17,6 +17,7 @@ namespace APIRest.Controllers
         private ProcessFabricante procFabricante = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
         public FabricanteController(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,24 +25,28 @@ namespace APIRest.Controllers
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
         [HttpPost]
-        public ActionResult Post([FromBody] RequestFabricante ReqFabricante)
+        public ActionResult Post([FromBody] RequestFabricante req)
         {
             try
             {
-                if (ReqFabricante.Nombre != null)
+                var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+
+                if (req.Nombre != null)
                 {
-                    var result = procFabricante.AddFabricante(ReqFabricante);
+                    var result = procFabricante.AddFabricante(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
                         return NotFound("Fabricante not found");
                     }
                 }
                 else
                 {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
                     return NotFound("Fabricante not found");
                 }
             }
@@ -100,24 +105,28 @@ namespace APIRest.Controllers
             }
         }
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestFabricante ReqFabricante)
+        public ActionResult Put([FromBody] RequestFabricante req)
         {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-                 ResponseGral result = procFabricante.UpdateFabricante(ReqFabricante);
+               
+                ResponseGral result = procFabricante.UpdateFabricante(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Fabricante not found");
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
+                    return NotFound("Fabricante not found");
                     }
 
                 
             }
             catch (Exception e)
             {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
                 return NotFound("Fabricante not found");
                
             }

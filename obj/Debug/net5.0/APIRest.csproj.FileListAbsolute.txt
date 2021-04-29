@@ -227,6 +227,12 @@ C:\Proyectos\BLMOVIL\APIRest\obj\Debug\net5.0\APIRest.pdb
 C:\Proyectos\BLMOVIL\APIRest\obj\Debug\net5.0\APIRest.genruntimeconfig.cache
 C:\Proyectos\BLMOVIL\APIRest\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Proyectos\BLMOVIL\APIRest\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.AssemblyInfoInputs.cache
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.AssemblyInfo.cs
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.csproj.CoreCompileInputs.cache
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\appsettings.json
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\APIRest.exe
@@ -279,12 +285,6 @@ C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.AssemblyInfoInputs.cache
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.AssemblyInfo.cs
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.csproj.CoreCompileInputs.cache
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\staticwebassets\APIRest.StaticWebAssets.Manifest.cache
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\staticwebassets\APIRest.StaticWebAssets.xml
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\scopedcss\bundle\APIRest.styles.css
@@ -294,3 +294,4 @@ C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.dll
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\ref\APIRest.dll
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.pdb
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.genruntimeconfig.cache
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRest.csprojAssemblyReference.cache

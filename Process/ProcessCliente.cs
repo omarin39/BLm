@@ -10,7 +10,7 @@ namespace APIRest.Controllers.Process
     public class ProcessCliente
     {
         public DataCliente ClienteData = new();
-        public ResponseGral AddCliente(RequestCliente Cliente)
+        public ResponseGral AddCliente(RequestCliente Cliente, String ip)
         {
             ResponseGral respAltaCliente = new();
             try
@@ -21,7 +21,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.Email = Cliente.Email;
                 logNewRegistro.Telefono = Cliente.Telefono;
                 logNewRegistro.Activo = Cliente.Activo;
-                long respNewUSR = ClienteData.AddCliente(logNewRegistro);
+                long respNewUSR = ClienteData.AddCliente(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaCliente.Id = respNewUSR;
@@ -38,7 +38,7 @@ namespace APIRest.Controllers.Process
                 return null;
             }
         }
-        public ResponseGral UpdateCliente(RequestCliente Cliente)
+        public ResponseGral UpdateCliente(RequestCliente Cliente, String ip)
         {
             ResponseGral respAltaCliente = new();
             var clienteBuscado = FindCliente(Cliente.IdCliente);
@@ -55,7 +55,7 @@ namespace APIRest.Controllers.Process
                     clienteBuscado.Email = Cliente.Email;
                     clienteBuscado.Telefono = Cliente.Telefono;
                     clienteBuscado.Activo = Cliente.Activo;
-                    var respNewCliente = ClienteData.UpdateCliente(clienteBuscado);
+                    var respNewCliente = ClienteData.UpdateCliente(clienteBuscado, ip);
                     if (respNewCliente > 0)
                     {
                         respAltaCliente.Id = clienteBuscado.IdCliente;

@@ -15,7 +15,7 @@ namespace APIRest.Controllers.Process
     public class ProcessCertificacion
     {       
         public DataCertificacion CertificacionData = new();
-        public ResponseGral AddCertificacion(RequestCertificacion Certificacion)
+        public ResponseGral AddCertificacion(RequestCertificacion Certificacion, String ip)
         {
             ResponseGral respAltaCertificacion = new();
             try
@@ -34,7 +34,7 @@ namespace APIRest.Controllers.Process
                 logNewRegistro.FechaResponsable = Certificacion.fechaResponsable;
                 logNewRegistro.Resultado = Certificacion.resultado;
                 logNewRegistro.Activo = Certificacion.Activo;
-                long respNewUSR = CertificacionData.AddCertificacion(logNewRegistro);
+                long respNewUSR = CertificacionData.AddCertificacion(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaCertificacion.Id = respNewUSR;
@@ -52,7 +52,7 @@ namespace APIRest.Controllers.Process
             }
         }
 
-        public ResponseGral UpdateCertificacion( RequestCertificacion Certificacion)
+        public ResponseGral UpdateCertificacion( RequestCertificacion Certificacion, String ip)
         {
             ResponseGral respAltaCertificacion = new();
             var CertificacionBuscado = FindCertificacion(Certificacion.idCertificacion);
@@ -80,7 +80,7 @@ namespace APIRest.Controllers.Process
                     CertificacionBuscado.Resultado = Certificacion.resultado;
                     CertificacionBuscado.Activo = Certificacion.Activo;
 
-                    var respNewCertificacion = CertificacionData.UpdateCertificacion(CertificacionBuscado);
+                    var respNewCertificacion = CertificacionData.UpdateCertificacion(CertificacionBuscado,ip);
                     if (respNewCertificacion > 0)
                     {
                         respAltaCertificacion.Id = CertificacionBuscado.IdCertificacion;

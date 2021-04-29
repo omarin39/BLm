@@ -10,10 +10,11 @@ namespace APIRest.DataModels
     public class DataUnidadNegocio
     {
         private readonly Carta_vContext _context;
-
+        private Controllers.Process.Process_Log procLog;
         public DataUnidadNegocio()
         {
             _context = new Carta_vContext();
+            procLog = new Controllers.Process.Process_Log();
         }
 
         public async Task<List<UnidadNegocio>> FindAllUnidadNegocio() {
@@ -23,24 +24,35 @@ namespace APIRest.DataModels
             UnidadNegocio ResultadoUnidad = _context.UnidadNegocios.AsNoTracking().SingleOrDefault(uN => uN.DescUnidadNegocio == unidadNegocio);
             return ResultadoUnidad;
         }
-        public long AddUnidadNeg(UnidadNegocio NewUnidad)
-        {
-            var respUnidad = _context.UnidadNegocios.Add(NewUnidad);
-            _context.SaveChanges();
-            return Int32.Parse(respUnidad.Entity.IdUnidadNegocio.ToString());
-        }
-
-        public long UpdateUnidaddNeg(UnidadNegocio _Unegocio)//(long id_puestoExterno, string nombrePuesto)
+        public long AddUnidadNeg(UnidadNegocio item,string ip)
         {
             try
             {
-                _context.UnidadNegocios.Update(_Unegocio);
+                var respUnidad = _context.UnidadNegocios.Add(item);
+                _context.SaveChanges();
+
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
+                return Int32.Parse(respUnidad.Entity.IdUnidadNegocio.ToString());
+            }
+            catch (Exception ex)
+            {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
+                return 0;
+            }
+        }
+
+        public long UpdateUnidaddNeg(UnidadNegocio item,string ip)//(long id_puestoExterno, string nombrePuesto)
+        {
+            try
+            {
+                _context.UnidadNegocios.Update(item);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
             catch (Exception ex)
             {
-
-                return 0; ;
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
+                return 0;
             }
         }
     }
