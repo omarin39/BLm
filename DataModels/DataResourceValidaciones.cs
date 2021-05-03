@@ -1,11 +1,11 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataResourceValidaciones
     {
@@ -13,10 +13,10 @@ namespace APIRest.DataModels
         //{
         //    _context = context;
         //}
-        public async Task<List<ResourceValidacionesCampo>> FindAllDatosValida()
+        public async Task<List<ResourceValidacionCampo>> FindAllDatosValida()
         {
-            using var context = new Carta_vContext();
-            return await context.ResourceValidacionesCampos.ToListAsync();
+            using var context = new CARTAVContext();
+            return await context.ResourceValidacionCampos.ToListAsync();
         }
         //public IReadOnlyList<ResourceValidacionesCampo> DatosValida()
         //{

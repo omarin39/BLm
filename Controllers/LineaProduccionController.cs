@@ -1,27 +1,17 @@
-﻿using APIRest.Common;
-using APIRest.Controllers.Process;
-using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Controllers.Process;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
-using NWebsec.AspNetCore.Core.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 
 
-namespace APIRest.Controllers
+namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -151,12 +141,12 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<LineasProduccion>> FindAll()
+        public ActionResult<List<LineaProduccion>> FindAll()
         {
             try
             {
                
-                List<LineasProduccion> result = procLineaProduccion.FindAllLineaProduccion();
+                List<LineaProduccion> result = procLineaProduccion.FindAllLineaProduccion();
                 if (result != null)
                     {
                         return result;

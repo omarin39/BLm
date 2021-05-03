@@ -1,14 +1,15 @@
-﻿using APIRest.Common;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
+using APIRestV2.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace APIRest.Helpers
+namespace APIRestV2.Helpers
 {
 
     public class ValidaDatosRequest 
@@ -25,7 +26,7 @@ namespace APIRest.Helpers
         }
 
 
-        public ResponseUsersValida ValidaRequestUSER(List<RequestUsers> ReqUser, List<ResourceValidacionesCampo> CamposValida, IConfiguration configuration)
+        public ResponseUsersValida ValidaRequestUSER(List<RequestUsers> ReqUser, List<ResourceValidacionCampo> CamposValida, IConfiguration configuration)
         {
             IConfiguration Configuration = configuration;
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
@@ -43,7 +44,7 @@ namespace APIRest.Helpers
                         if (prop.Name != "Operacion" && prop.Name != "User" && prop.Name != "Pass")
                         {
 
-                            ResourceValidacionesCampo ValidaActual = new();
+                            ResourceValidacionCampo ValidaActual = new();
                             foreach (var item in CamposValida)
                             {
                                 if (item.Nombre.ToUpper() == prop.Name.ToUpper())
@@ -161,11 +162,11 @@ namespace APIRest.Helpers
             return ValorPropiedad.ToString().Length > 0;
         }
 
-        public bool ValidaTamaño(object ValorPropiedad, ResourceValidacionesCampo ValidaActual)
+        public bool ValidaTamaño(object ValorPropiedad, ResourceValidacionCampo ValidaActual)
         {
             return ValorPropiedad.ToString().Length <= Int32.Parse(ValidaActual.TamañoCampo.ToString());
         }
-        public void CrearErrorRequerido(ResourceValidacionesCampo ValidaActual, RequestUsers reqUSR, PropertyInfo prop)
+        public void CrearErrorRequerido(ResourceValidacionCampo ValidaActual, RequestUsers reqUSR, PropertyInfo prop)
         {
             ComplementosFailResponse failWSERR = new();            
             failWSERR.Codigo = ValidaActual.CodigoErrorRequerido.ToString();
@@ -176,7 +177,7 @@ namespace APIRest.Helpers
             cont++;
 
         }
-        public void CrearErrorFormato(ResourceValidacionesCampo ValidaActual, RequestUsers reqUSR, PropertyInfo prop)
+        public void CrearErrorFormato(ResourceValidacionCampo ValidaActual, RequestUsers reqUSR, PropertyInfo prop)
         {
             ComplementosFailResponse failWSERR = new();
             failWSERR.Codigo = ValidaActual.CodigoErrorFormato.ToString();

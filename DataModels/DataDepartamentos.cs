@@ -1,19 +1,19 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataDepartamentos
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataDepartamentos()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
@@ -28,7 +28,7 @@ namespace APIRest.DataModels
             switch (tipoBusqueda)
             {
                 case 1:
-                    resultadobusqueda = _context.Departamentos.AsNoTracking().SingleOrDefault(us => us.IdDepartamentExt == id_depaExterno);
+                    resultadobusqueda = _context.Departamentos.AsNoTracking().SingleOrDefault(us => us.IdDepartamentExterno == id_depaExterno);
                     break;
                 case 2:
                     resultadobusqueda = _context.Departamentos.AsNoTracking().SingleOrDefault(us => us.Departamento1 == nombreDepa);

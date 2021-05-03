@@ -1,36 +1,36 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataPlanta
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataPlanta()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<Planta> FindAllPlantas()
+        public List<Plantum> FindAllPlantas()
         {
-            return  _context.Plantas.Include("Naves").ToList();
+            return  _context.Planta.Include("Naves").ToList();
         }
-        public Planta FindPlanta(long idPlantaExt)
+        public Plantum FindPlanta(long idPlantaExt)
         {
-            return _context.Plantas.AsNoTracking().SingleOrDefault(us => us.IdPlantaExt == idPlantaExt);
+            return _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idPlantaExt);
         }
 
-        public long AddPlanta(Planta item,string ip)
+        public long AddPlanta(Plantum item,string ip)
         {
             try
             {
-                var plantaRes = _context.Plantas.Add(item);
+                var plantaRes = _context.Planta.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(plantaRes.Entity.IdPlanta.ToString());
@@ -42,11 +42,11 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdatePlanta(Planta item,string ip)
+        public int UpdatePlanta(Plantum item,string ip)
         {
             try
             {
-                _context.Plantas.Update(item);
+                _context.Planta.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

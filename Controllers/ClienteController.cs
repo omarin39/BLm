@@ -1,27 +1,17 @@
-﻿using APIRest.Common;
-using APIRest.Controllers.Process;
-using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Controllers.Process;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
-using NWebsec.AspNetCore.Core.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 
 
-namespace APIRest.Controllers
+namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -32,7 +22,7 @@ namespace APIRest.Controllers
        // private ValidaDatosRequest _validaReq = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
+        private Controllers.Process.Process_Log procLog = new();
 
 
         public ClienteController(IConfiguration configuration)
@@ -48,11 +38,6 @@ namespace APIRest.Controllers
         {
 
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
-
-
-            List<ResponseCliente> ResponseWS = new();
-            ResponseCliente ComplementoResponseWS = new();
-  
 
             try
             {
@@ -127,10 +112,6 @@ namespace APIRest.Controllers
         [HttpGet()]
         public ActionResult<List<Cliente>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
-            List<ResponseCliente> ResponseWS = new();
-            ResponseCliente ComplementoResponseWS = new();
-           
-
             try
             {
                  List<Cliente> result = procCliente.FindAllCliente();//Async();//.FindProcessLog(id);

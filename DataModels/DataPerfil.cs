@@ -1,36 +1,36 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataPerfil
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataPerfil()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public  List<Perfile> FindAllPerfil()
+        public  List<Perfil> FindAllPerfil()
         {
-            return  _context.Perfiles.ToList();
+            return  _context.Perfils.ToList();
         }
-        public Perfile FindPerfil(long idPerfil)
+        public Perfil FindPerfil(long idPerfil)
         {
-            return _context.Perfiles.AsNoTracking().SingleOrDefault(us => us.Id == idPerfil);
+            return _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Id == idPerfil);
         }
 
-        public long AddPerfil(Perfile item,string ip)
+        public long AddPerfil(Perfil item,string ip)
         {
             try
             {
-                var perfilRes = _context.Perfiles.Add(item);
+                var perfilRes = _context.Perfils.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(perfilRes.Entity.Id.ToString());
@@ -43,11 +43,11 @@ namespace APIRest.DataModels
             }
         }
 
-        public int UpdatePerfil(Perfile item,string ip)
+        public int UpdatePerfil(Perfil item,string ip)
         {
             try
             {
-                _context.Perfiles.Update(item);
+                _context.Perfils.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

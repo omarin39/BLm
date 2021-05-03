@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class Proceso
     {
         public Proceso()
         {
-            PreguntasProcesos = new HashSet<PreguntasProceso>();
+            PreguntaProcesos = new HashSet<PreguntaProceso>();
         }
 
         public long IdProceso { get; set; }
@@ -18,6 +18,6 @@ namespace APIRest.Models
         public string Descripcion { get; set; }
         public bool? Activo { get; set; }
 
-        public virtual ICollection<PreguntasProceso> PreguntasProcesos { get; set; }
+        public virtual ICollection<PreguntaProceso> PreguntaProcesos { get; set; }
     }
 }

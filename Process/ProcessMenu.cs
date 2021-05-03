@@ -1,13 +1,13 @@
-﻿using APIRest.DataModels;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Process
+namespace APIRestV2.Process
 {
     public class ProcessMenu
     {
@@ -19,7 +19,7 @@ namespace APIRest.Process
             {
                 Menu logNewRegistro = new();
                 logNewRegistro.NombreMenu= _menu.NombreMenu;
-                logNewRegistro.Operaciones= _menu.Operaciones;
+                logNewRegistro.Operacions= _menu.Operaciones;
                 logNewRegistro.Activo = _menu.Activo;
                 long respNewUSR = MenuData.AddMenu(logNewRegistro,ip);
                 if (respNewUSR > 0)
@@ -51,7 +51,7 @@ namespace APIRest.Process
                 try
                 {
                     MenuBuscado.NombreMenu = _menu.NombreMenu;
-                    MenuBuscado.Operaciones = _menu.Operaciones;
+                    MenuBuscado.Operacions = _menu.Operaciones;
                     MenuBuscado.Activo = _menu.Activo;
                     var respNewMenu = MenuData.UpdateMenu(MenuBuscado,ip);
                     if (respNewMenu > 0)

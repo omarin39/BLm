@@ -1,9 +1,10 @@
-﻿using System;
+﻿using APIRestV2.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Models.Response
+namespace APIRestV2.Models.Response
 {
     public class ResponseNave
     {
@@ -13,8 +14,8 @@ namespace APIRest.Models.Response
         public long PlantasIdPlanta { get; set; }
         public bool? Activo { get; set; }
 
-        public virtual Planta PlantasIdPlantaNavigation { get; set; }
+        public virtual Plantum PlantasIdPlantaNavigation { get; set; }
         public int LineasProduccions { get; set; }
-        public virtual ICollection<MáquinasFisica> MáquinasFisicas { get; set; }
+        public virtual ICollection<MaquinaFisica> MáquinasFisicas { get; set; }
     }
 }

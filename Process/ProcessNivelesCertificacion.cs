@@ -1,15 +1,15 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessNivelesCertificacion
     {
@@ -20,9 +20,9 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaNivelesCertificacion = new();
             try
             {
-                NivelesCertificacion logNewRegistro = new();
+                NivelCertificacion logNewRegistro = new();
                 logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                logNewRegistro.DescNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
+                logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
                 logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
                 logNewRegistro.Color = NivelesCertificacion.Color;
                 logNewRegistro.Activo = NivelesCertificacion.Activo;
@@ -58,7 +58,7 @@ namespace APIRest.Controllers.Process
                 {
                     
                     nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                    nivelesCertificacionBuscado.DescNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
+                    nivelesCertificacionBuscado.DescripcionNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
                     nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
                     nivelesCertificacionBuscado.Color = NivelesCertificacion.Color;
                     nivelesCertificacionBuscado.Activo = NivelesCertificacion.Activo;
@@ -83,18 +83,18 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public NivelesCertificacion FindNivelesCertificacion(long idNivelesCertificacion)
+        public NivelCertificacion FindNivelesCertificacion(long idNivelesCertificacion)
         {
-            NivelesCertificacion respAltaNivelesCertificacion = NivelesCertificacionData.FindNivelesCertificacion(idNivelesCertificacion);
+            NivelCertificacion respAltaNivelesCertificacion = NivelesCertificacionData.FindNivelesCertificacion(idNivelesCertificacion);
             if (respAltaNivelesCertificacion == null)
             {
                 respAltaNivelesCertificacion.IdNivelCertificacion = -1;
             }
             return respAltaNivelesCertificacion;
         }
-        public List<NivelesCertificacion> FindAllNivelesCertificacion()
+        public List<NivelCertificacion> FindAllNivelesCertificacion()
         {
-            List<NivelesCertificacion> resNivelesCertificacionRet = NivelesCertificacionData.FindAllNivelesCertificacion();
+            List<NivelCertificacion> resNivelesCertificacionRet = NivelesCertificacionData.FindAllNivelesCertificacion();
             return resNivelesCertificacionRet;
         }
     }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Models.Request
+namespace APIRestV2.Models.Request
 {
     public class RequestCliente
     {

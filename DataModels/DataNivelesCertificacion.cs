@@ -1,36 +1,36 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataNivelesCertificacion
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataNivelesCertificacion()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public  List<NivelesCertificacion> FindAllNivelesCertificacion()
+        public  List<NivelCertificacion> FindAllNivelesCertificacion()
         {
-            return  _context.NivelesCertificacions.ToList();
+            return  _context.NivelCertificacions.ToList();
         }
-        public NivelesCertificacion FindNivelesCertificacion(long idNivelesCertificacion)
+        public NivelCertificacion FindNivelesCertificacion(long idNivelesCertificacion)
         {
-            return _context.NivelesCertificacions.AsNoTracking().SingleOrDefault(us => us.IdNivelCertificacion == idNivelesCertificacion);
+            return _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.IdNivelCertificacion == idNivelesCertificacion);
         }
 
-        public long AddNivelesCertificacion(NivelesCertificacion item,string ip)
+        public long AddNivelesCertificacion(NivelCertificacion item,string ip)
         {
             try
             {
-                var NivelesCertificacionRes = _context.NivelesCertificacions.Add(item);
+                var NivelesCertificacionRes = _context.NivelCertificacions.Add(item);
                 _context.SaveChanges();
 
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
@@ -44,11 +44,11 @@ namespace APIRest.DataModels
             }
         }
 
-        public int UpdateNivelesCertificacion(NivelesCertificacion item,string ip)
+        public int UpdateNivelesCertificacion(NivelCertificacion item,string ip)
         {
             try
             {
-                _context.NivelesCertificacions.Update(item);
+                _context.NivelCertificacions.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

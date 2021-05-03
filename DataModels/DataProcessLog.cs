@@ -1,19 +1,19 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataProcessLog
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
 
         public DataProcessLog()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
         }
 
         public  List<ProcessLog> FindAllProcessLog()

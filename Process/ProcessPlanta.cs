@@ -1,8 +1,8 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessPlanta
     {       
@@ -20,9 +20,9 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaPlanta = new();
             try
             {
-                Planta logNewRegistro = new();
-                logNewRegistro.Planta1 = Planta.Planta1;
-                logNewRegistro.IdPlantaExt = Planta.IdPlantaExt;
+                Plantum logNewRegistro = new();
+                logNewRegistro.Planta = Planta.Planta1;
+                logNewRegistro.IdPlantaExterno = Planta.IdPlantaExt;
                 logNewRegistro.Acronimo = Planta.Acronimo;
                 logNewRegistro.Activo = Planta.Activo;
                 long respNewUSR = PlantaData.AddPlanta(logNewRegistro,ip);
@@ -51,7 +51,7 @@ namespace APIRest.Controllers.Process
             if (planta.Activo == false)
             {
                 DataNave naveData = new();
-                List<Nafe> resNavesRet = naveData.FindAllNavesPorPlanta(planta.IdPlanta);
+                List<Nave> resNavesRet = naveData.FindAllNavesPorPlanta(planta.IdPlanta);
                 if (resNavesRet.Count > 0)
                 {
                     respAltaPlanta.Id = planta.IdPlanta;
@@ -73,13 +73,13 @@ namespace APIRest.Controllers.Process
                 try
                 {
 
-                    var PlantaBuscadox = new Planta
+                    var PlantaBuscadox = new Plantum
                     {
-                        Planta1 = planta.Planta1,
+                        Planta = planta.Planta1,
                         Acronimo = planta.Acronimo,
                         Activo = planta.Activo,
                         IdPlanta = PlantaBuscado.IdPlanta,
-                        IdPlantaExt = PlantaBuscado.IdPlantaExt,
+                        IdPlantaExterno = PlantaBuscado.IdPlantaExt,
                     };
 
 
@@ -103,7 +103,7 @@ namespace APIRest.Controllers.Process
             }
         }
         public ResponsePlanta FindPlanta(long IdPlantaExt){
-            Planta respAltaPlanta = PlantaData.FindPlanta(IdPlantaExt);
+            Plantum respAltaPlanta = PlantaData.FindPlanta(IdPlantaExt);
             if (respAltaPlanta == null)
             {
                 respAltaPlanta.IdPlanta = -1;
@@ -112,10 +112,10 @@ namespace APIRest.Controllers.Process
             var result = new ResponsePlanta
             {
                 IdPlanta = respAltaPlanta.IdPlanta,
-                IdPlantaExt = respAltaPlanta.IdPlantaExt,
+                IdPlantaExt = respAltaPlanta.IdPlantaExterno,
                 Acronimo = respAltaPlanta.Acronimo,
                 Activo = (bool)respAltaPlanta.Activo,
-                Planta1= respAltaPlanta.Planta1,
+                Planta1= respAltaPlanta.Planta,
                 Naves = respAltaPlanta.Naves.Count,
 
             };
@@ -129,15 +129,15 @@ namespace APIRest.Controllers.Process
 
         public List<ResponsePlanta> FindAllPlanta()
         {
-            List<Planta> resPlantaRet = PlantaData.FindAllPlantas();
+            List<Plantum> resPlantaRet = PlantaData.FindAllPlantas();
             // return resPlantaRet;
             var result = resPlantaRet.Select((planta, i) =>
                       new ResponsePlanta
                       {
                           IdPlanta = planta.IdPlanta,
-                          IdPlantaExt = planta.IdPlantaExt,
+                          IdPlantaExt = planta.IdPlantaExterno,
                           Acronimo = planta.Acronimo,
-                          Planta1 = planta.Planta1,
+                          Planta1 = planta.Planta,
                           Activo = (bool)planta.Activo,
                           Naves = planta.Naves.Count,
                       }).ToList();

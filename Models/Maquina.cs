@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class Maquina
     {
         public Maquina()
         {
-            MáquinasFisicas = new HashSet<MáquinasFisica>();
-            PreguntasMaquinas = new HashSet<PreguntasMaquina>();
+            MaquinaFisicas = new HashSet<MaquinaFisica>();
+            PreguntaMaquinas = new HashSet<PreguntaMaquina>();
         }
 
         public long IdMaquina { get; set; }
@@ -25,7 +25,7 @@ namespace APIRest.Models
 
         public virtual Fabricante FabricanteIdFabricanteNavigation { get; set; }
         public virtual TipoAcceso TipoAccesoIdTipoAccesoNavigation { get; set; }
-        public virtual ICollection<MáquinasFisica> MáquinasFisicas { get; set; }
-        public virtual ICollection<PreguntasMaquina> PreguntasMaquinas { get; set; }
+        public virtual ICollection<MaquinaFisica> MaquinaFisicas { get; set; }
+        public virtual ICollection<PreguntaMaquina> PreguntaMaquinas { get; set; }
     }
 }

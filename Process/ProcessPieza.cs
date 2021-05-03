@@ -1,8 +1,8 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessPieza
     {       
@@ -22,7 +22,7 @@ namespace APIRest.Controllers.Process
             {
                 Pieza logNewRegistro = new();
                 logNewRegistro.Nombre = Pieza.nombre;
-                logNewRegistro.Descripción = Pieza.descripcion;
+                logNewRegistro.Descripcion = Pieza.descripcion;
                 logNewRegistro.Activo = Pieza.Activo;
                 long respNewUSR = PiezaData.AddPieza(logNewRegistro,ip);
                 if(respNewUSR >0)
@@ -55,7 +55,7 @@ namespace APIRest.Controllers.Process
                 try
                 {
                     PiezaBuscado.Nombre = Pieza.nombre;
-                    PiezaBuscado.Descripción = Pieza.descripcion;
+                    PiezaBuscado.Descripcion = Pieza.descripcion;
                     PiezaBuscado.Activo = Pieza.Activo;
                     var respNewPieza = PiezaData.UpdatePieza(PiezaBuscado,ip);
                     if (respNewPieza > 0)

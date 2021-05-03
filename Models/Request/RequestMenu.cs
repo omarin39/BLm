@@ -1,9 +1,7 @@
-﻿using System;
+﻿using APIRestV2.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace APIRest.Models.Request
+namespace APIRestV2.Models.Request
 {
     public class RequestMenu
     {
@@ -11,6 +9,6 @@ namespace APIRest.Models.Request
         public string NombreMenu { get; set; }
         public bool Activo { get; set; }
 
-        public ICollection<Operacione> Operaciones { get; set; }
+        public ICollection<Operacion> Operaciones { get; set; }
     }
 }

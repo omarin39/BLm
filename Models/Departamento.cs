@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class Departamento
     {
@@ -14,7 +14,7 @@ namespace APIRest.Models
         }
 
         public long IdDepartamento { get; set; }
-        public long IdDepartamentExt { get; set; }
+        public long IdDepartamentExterno { get; set; }
         public string Departamento1 { get; set; }
         public bool? Activo { get; set; }
 

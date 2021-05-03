@@ -1,11 +1,11 @@
-﻿using APIRest.DataModels;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using System;
 using System.Collections.Generic;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessEmpleado
     {
@@ -16,12 +16,12 @@ namespace APIRest.Controllers.Process
             try
             {
                 Empleado logNewRegistro = new();
-                logNewRegistro.NNomina = empleado.NNomina;
+                logNewRegistro.NumeroNomina = empleado.NNomina;
                 logNewRegistro.Nombre = empleado.Nombre;
                 logNewRegistro.ApellidoPaterno = empleado.ApellidoMaterno;
                 logNewRegistro.ApellidoMaterno = empleado.ApellidoMaterno;
-                logNewRegistro.FNacimiento = empleado.FNacimiento;
-                logNewRegistro.FIngreso = empleado.FIngreso;
+                logNewRegistro.FechaNacimiento = empleado.FNacimiento;
+                logNewRegistro.FechaIngreso = empleado.FIngreso;
                 logNewRegistro.Email = empleado.Email;
                 logNewRegistro.NominaJefe = empleado.NominaJefe;
 
@@ -42,7 +42,7 @@ namespace APIRest.Controllers.Process
                 }
 
                 logNewRegistro.IdiomaIdIdioma = empleado.IdiomaIdIdioma;
-                logNewRegistro.PuestosIdPuesto = empleado.PuestosIdPuesto;
+                logNewRegistro.PuestoIdPuesto = empleado.PuestosIdPuesto;
                 logNewRegistro.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                 logNewRegistro.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                 logNewRegistro.IdPerfil = empleado.IdPerfil;
@@ -72,12 +72,12 @@ namespace APIRest.Controllers.Process
             }else{
                 try
                 {
-                    empleadoBuscado.NNomina = empleado.NNomina;
+                    empleadoBuscado.NumeroNomina = empleado.NNomina;
                     empleadoBuscado.Nombre = empleado.Nombre;
                     empleadoBuscado.ApellidoPaterno = empleado.ApellidoPaterno;
                     empleadoBuscado.ApellidoMaterno = empleado.ApellidoMaterno;
-                    empleadoBuscado.FNacimiento = empleado.FNacimiento;
-                    empleadoBuscado.FIngreso = empleado.FIngreso;
+                    empleadoBuscado.FechaNacimiento = empleado.FNacimiento;
+                    empleadoBuscado.FechaIngreso = empleado.FIngreso;
                     empleadoBuscado.Email = empleado.Email;
                     empleadoBuscado.NominaJefe = empleado.NNomina;
                     //empleadoBuscado.DepartamentoIdDepartamentoNivel0 = empleado.Departamento_id_departamento_nivel0;
@@ -85,7 +85,7 @@ namespace APIRest.Controllers.Process
                     empleadoBuscado.DepartamentoIdDepartamentoNivel2 = empleado.DepartamentoIdDepartamentoNivel2;
                     empleadoBuscado.DepartamentoIdDepartamentoNivel3 = empleado.DepartamentoIdDepartamentoNivel3;
                     empleadoBuscado.IdiomaIdIdioma = empleado.IdiomaIdIdioma;
-                    empleadoBuscado.PuestosIdPuesto = empleado.PuestosIdPuesto;
+                    empleadoBuscado.PuestoIdPuesto = empleado.PuestosIdPuesto;
                     empleadoBuscado.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                     empleadoBuscado.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                     empleadoBuscado.IdPerfil = empleado.IdPerfil;

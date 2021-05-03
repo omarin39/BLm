@@ -1,40 +1,40 @@
 ﻿
-using APIRest.Models;
+using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataNave
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         private Models.Request.RequestLog rlog;
 
         public DataNave()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
             rlog = new Models.Request.RequestLog();
         }
 
-        public List<Nafe> FindAllNaves()
+        public List<Nave> FindAllNaves()
         {
             return  _context.Naves.ToList();
         }
-        public Nafe FindNave(string Nave)
+        public Nave FindNave(string Nave)
         {
             return _context.Naves.AsNoTracking().SingleOrDefault(us => us.Nombre == Nave);
         }
-        public List<Nafe> FindNavePlanta(string Nave)
+        public List<Nave> FindNavePlanta(string Nave)
         {
-            return _context.Naves.Where(us => us.PlantasIdPlanta == long.Parse(Nave)).ToList();
+            return _context.Naves.Where(us => us.PlantaIdPlanta == long.Parse(Nave)).ToList();
         }
 
-        public long AddNave(Nafe NewNave, String ip)
+        public long AddNave(Nave NewNave, String ip)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdateNave(Nafe _Nave, String ip)
+        public int UpdateNave(Nave _Nave, String ip)
         {
             try
             {
@@ -69,15 +69,15 @@ namespace APIRest.DataModels
 
         }
 
-        public List<Nafe> FindAllNavesPorPlanta(long idPlanta)
+        public List<Nave> FindAllNavesPorPlanta(long idPlanta)
         {
-            var naves = _context.Naves.Where(us => us.PlantasIdPlanta == idPlanta);
+            var naves = _context.Naves.Where(us => us.PlantaIdPlanta == idPlanta);
             return naves.ToList();   
         }
 
-        public List<LineasProduccion> FindAllNavesPorLineaProduccion(long id, String ip)
+        public List<LineaProduccion> FindAllNavesPorLineaProduccion(long id, String ip)
         {
-            var naves = _context.LineasProduccions.Where(us => us.IdNave == id);
+            var naves = _context.LineaProduccions.Where(us => us.IdNave == id);
             return naves.ToList();
 
         }

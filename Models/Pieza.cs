@@ -3,20 +3,21 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class Pieza
     {
         public Pieza()
         {
-            PreguntasPiezas = new HashSet<PreguntasPieza>();
+            PreguntaPiezas = new HashSet<PreguntaPieza>();
         }
 
         public long IdPieza { get; set; }
+        public string NumeroParte { get; set; }
         public string Nombre { get; set; }
-        public string Descripción { get; set; }
+        public string Descripcion { get; set; }
         public bool? Activo { get; set; }
 
-        public virtual ICollection<PreguntasPieza> PreguntasPiezas { get; set; }
+        public virtual ICollection<PreguntaPieza> PreguntaPiezas { get; set; }
     }
 }

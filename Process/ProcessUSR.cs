@@ -1,22 +1,22 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessUSR
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         public ProcessUSR()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
         }
         private ResponseUsers ResponseWS = new();
         public DataResourceValidaciones _ParamValidaUSR = new();
@@ -31,7 +31,7 @@ namespace APIRest.Controllers.Process
             ResponseWS.Mal = new();
             ResponseWS.Bien = new();
             ValidaDatosRequest ValidaDatosUs = new();
-            List<ResourceValidacionesCampo> ValidaReq = await _ParamValidaUSR.FindAllDatosValida();
+            List<ResourceValidacionCampo> ValidaReq = await _ParamValidaUSR.FindAllDatosValida();
             //IReadOnlyList<ResourceValidacionesCampo> ValidaReq = _ParamValidaUSR.DatosValida();
             ResponseUsersValida DatosProcesados = ValidaDatosUs.ValidaRequestUSER(ReqUser, ValidaReq, configuration);
 
@@ -126,17 +126,17 @@ namespace APIRest.Controllers.Process
                 long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno,ip);
 
                 Empleado empleadoNewRegistro = new();
-                empleadoNewRegistro.NNomina = RegBien.NoNomina.ToString();
+                empleadoNewRegistro.NumeroNomina = RegBien.NoNomina.ToString();
                 empleadoNewRegistro.Nombre = RegBien.Nombre;
                 empleadoNewRegistro.ApellidoPaterno = RegBien.ApellidoPaterno;
                 empleadoNewRegistro.ApellidoMaterno = RegBien.ApellidoMaterno;
-                empleadoNewRegistro.FIngreso = FechaIngreso;
+                empleadoNewRegistro.FechaIngreso = FechaIngreso;
                 empleadoNewRegistro.Email = RegBien.Email;
                 empleadoNewRegistro.DepartamentoIdDepartamentoNivel0 = id_departamento;
-                empleadoNewRegistro.PuestosIdPuesto = id_puesto;
+                empleadoNewRegistro.PuestoIdPuesto = id_puesto;
                 empleadoNewRegistro.NominaJefe = RegBien.NominaJefe.ToString();
                 empleadoNewRegistro.UnidadNegocioIdUnidadNegocio = id_unidadNegocio;
-                empleadoNewRegistro.FNacimiento = fechaNacimiento;
+                empleadoNewRegistro.FechaNacimiento = fechaNacimiento;
                 empleadoNewRegistro.CentroCostoIdCentroCosto= id_CECO;
                 empleadoNewRegistro.IdiomaIdIdioma = 1;
                 empleadoNewRegistro.IdPerfil = 2;
@@ -178,17 +178,17 @@ namespace APIRest.Controllers.Process
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad,ip);
                 long id_CECO = FindCECO(RegBien.CeCo, RegBien.IdCeCo, RegBien.Dueno,ip);
 
-                _Empleado.NNomina = RegBien.NoNomina.ToString();
+                _Empleado.NumeroNomina = RegBien.NoNomina.ToString();
                 _Empleado.Nombre = RegBien.Nombre;
                 _Empleado.ApellidoPaterno = RegBien.ApellidoPaterno;
                 _Empleado.ApellidoMaterno = RegBien.ApellidoMaterno;
-                _Empleado.FIngreso = FechaIngreso;
+                _Empleado.FechaIngreso = FechaIngreso;
                 _Empleado.Email = RegBien.Email;
                 _Empleado.DepartamentoIdDepartamentoNivel0 = id_departamento;
-                _Empleado.PuestosIdPuesto = id_puesto;
+                _Empleado.PuestoIdPuesto = id_puesto;
                 _Empleado.NominaJefe = RegBien.NominaJefe.ToString();
                 _Empleado.UnidadNegocioIdUnidadNegocio = id_unidadNegocio;
-                _Empleado.FNacimiento = fechaNacimiento;
+                _Empleado.FechaNacimiento = fechaNacimiento;
                 _Empleado.CentroCostoIdCentroCosto = id_CECO;
 
 
@@ -196,7 +196,7 @@ namespace APIRest.Controllers.Process
                 if (respNewUSR > 0)
                 {
                     respAltaUsr.Id_user = respNewUSR.ToString();
-                    respAltaUsr.NoNomina = _Empleado.NNomina.ToString();
+                    respAltaUsr.NoNomina = _Empleado.NumeroNomina.ToString();
                     respAltaUsr.Operacion = RegBien.Operacion.ToString();
                     return respAltaUsr;
 
@@ -221,10 +221,10 @@ namespace APIRest.Controllers.Process
             }
             else
             {
-                Planta newPlanta = new();
+                Plantum newPlanta = new();
                 newPlanta.Acronimo = AcronimoPlanta;
-                newPlanta.IdPlantaExt = idPlantaExt;
-                newPlanta.Planta1 = DescPlanta;
+                newPlanta.IdPlantaExterno = idPlantaExt;
+                newPlanta.Planta = DescPlanta;
                 var respNewPlanta = plantasData.AddPlanta(newPlanta,ip);
                 idPlantaret = respNewPlanta;
             }
@@ -253,7 +253,7 @@ namespace APIRest.Controllers.Process
                     // se crea nuevo departamento
                     Departamento newDepartamento = new();
                     newDepartamento.Departamento1 = nombreDepa;
-                    newDepartamento.IdDepartamentExt = idDepa_externo;
+                    newDepartamento.IdDepartamentExterno = idDepa_externo;
                     var respNewDepto = departamentoData.AddDepartamento(newDepartamento, ip);
                     idDepa_externoret = respNewDepto;
                 }
@@ -277,7 +277,7 @@ namespace APIRest.Controllers.Process
                 else
                 {
                     resPuesto.DescPuesto = nombrePuesto;
-                    resPuesto.IdPuestoExt = idPuesto_externo;
+                    resPuesto.IdPuestoExterno = idPuesto_externo;
                     //_context.SaveChanges();
                     //idPuestoret = resPuesto.IdPuesto;
 
@@ -300,7 +300,7 @@ namespace APIRest.Controllers.Process
                     // se crea nuevo puesto
                     Puesto newPuesto = new();
                     newPuesto.DescPuesto = nombrePuesto;
-                    newPuesto.IdPuestoExt = idPuesto_externo;
+                    newPuesto.IdPuestoExterno = idPuesto_externo;
                     var respNewPuesto = puestoData.AddPuesto(newPuesto, ip);
                     idPuestoret = respNewPuesto;
                 }
@@ -343,7 +343,7 @@ namespace APIRest.Controllers.Process
                 CentroCosto NewCECO = new();
                 NewCECO.DescCentroCosto = nombreCECO;
                 NewCECO.DuenoCeco = dueno;
-                NewCECO.IdCentroCostoExt = idCECO_ext;
+                NewCECO.IdCentroCostoExterno = idCECO_ext;
                 var respCECO = cecoData.AddCECO(NewCECO, ip);
                 idCECOret = respCECO;
 

@@ -1,44 +1,44 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataLineaProduccion
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
 
         public DataLineaProduccion()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<LineasProduccion> FindAllLineaProduccions()
+        public List<LineaProduccion> FindAllLineaProduccions()
         {
-            return  _context.LineasProduccions.ToList();
+            return  _context.LineaProduccions.ToList();
         }
-        public LineasProduccion FindLineaProduccion(long idLineaProduccionExt)
+        public LineaProduccion FindLineaProduccion(long idLineaProduccionExt)
         {
-            return _context.LineasProduccions.AsNoTracking().SingleOrDefault(us => us.Id == idLineaProduccionExt);
-        }
-
-        public LineasProduccion FindLineaProduccionNave(long idLineaProduccionExt)
-        {
-            return _context.LineasProduccions.AsNoTracking().SingleOrDefault(us => us.IdNave == idLineaProduccionExt);
+            return _context.LineaProduccions.AsNoTracking().SingleOrDefault(us => us.Id == idLineaProduccionExt);
         }
 
+        public LineaProduccion FindLineaProduccionNave(long idLineaProduccionExt)
+        {
+            return _context.LineaProduccions.AsNoTracking().SingleOrDefault(us => us.IdNave == idLineaProduccionExt);
+        }
 
 
-        public long AddLineaProduccion(LineasProduccion item,string ip)
+
+        public long AddLineaProduccion(LineaProduccion item,string ip)
         {
             try
             {
-                var LineaProduccionRes = _context.LineasProduccions.Add(item);
+                var LineaProduccionRes = _context.LineaProduccions.Add(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 _context.SaveChanges();
                 return Int32.Parse(LineaProduccionRes.Entity.Id.ToString());
@@ -50,11 +50,11 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdateLineaProduccion(LineasProduccion item,string ip)
+        public int UpdateLineaProduccion(LineaProduccion item,string ip)
         {
             try
             {
-                _context.LineasProduccions.Update(item);
+                _context.LineaProduccions.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

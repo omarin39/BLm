@@ -1,8 +1,9 @@
-﻿using APIRest.Common;
-using APIRest.Controllers.Process;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Controllers.Process;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
+using APIRestV2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 using System.Net.Http.Formatting;
 
 
-namespace APIRest.Controllers
+namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -108,12 +109,12 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<Certificacione>> FindAll()
+        public ActionResult<List<Certificacion>> FindAll()
         {
             try
             {
                
-                List<Certificacione> result = procCertificacion.FindAllCertificacion();
+                List<Certificacion> result = procCertificacion.FindAllCertificacion();
                 if (result != null)
                     {
                         return result;

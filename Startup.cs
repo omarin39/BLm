@@ -5,11 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace APIRest
+namespace APIRestV2
 {
     public class Startup
     {
-        readonly string UsingCors = "UseCors";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -20,17 +19,13 @@ namespace APIRest
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API.Rest", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIRestV2", Version = "v1" });
             });
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: UsingCors, builder => {
-                    builder.WithOrigins("*");
-                });
-            });
-            services.AddControllers().AddNewtonsoftJson(options =>options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,19 +34,11 @@ namespace APIRest
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIRestV2 v1"));
             }
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API.REST");
-            });
 
             app.UseRouting();
-
-            app.UseCors(UsingCors);
 
             app.UseAuthorization();
 

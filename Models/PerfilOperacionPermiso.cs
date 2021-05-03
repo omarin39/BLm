@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class PerfilOperacionPermiso
     {
@@ -15,7 +15,7 @@ namespace APIRest.Models
         public bool Eliminar { get; set; }
         public bool? Ver { get; set; }
 
-        public virtual Operacione IdOperacionNavigation { get; set; }
-        public virtual Perfile IdPerfilNavigation { get; set; }
+        public virtual Operacion IdOperacionNavigation { get; set; }
+        public virtual Perfil IdPerfilNavigation { get; set; }
     }
 }

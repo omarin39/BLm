@@ -1,8 +1,8 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessCertificacion
     {       
@@ -20,7 +20,7 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaCertificacion = new();
             try
             {
-                Certificacione logNewRegistro = new();
+                Certificacion logNewRegistro = new();
                 logNewRegistro.FechaEntrenamiento = Certificacion.fechaEntrenamiento;
                 logNewRegistro.FechaCertificacion = Certificacion.fechaCertificacion;
                 logNewRegistro.IdCertificador = Certificacion.idCertificador;
@@ -98,8 +98,8 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Certificacione FindCertificacion(long idCertificacion){
-            Certificacione respAltaCertificacion = CertificacionData.FindCertificacion(idCertificacion);
+        public Certificacion FindCertificacion(long idCertificacion){
+            Certificacion respAltaCertificacion = CertificacionData.FindCertificacion(idCertificacion);
             if (respAltaCertificacion == null)
             {
                 respAltaCertificacion.IdCertificacion = -1;
@@ -109,9 +109,9 @@ namespace APIRest.Controllers.Process
     
 
 
-    public List<Certificacione> FindAllCertificacion()
+    public List<Certificacion> FindAllCertificacion()
     {
-        List<Certificacione> resCertificacionRet = CertificacionData.FindAllCertificacions();
+        List<Certificacion> resCertificacionRet = CertificacionData.FindAllCertificacions();
         return resCertificacionRet;
     }
 

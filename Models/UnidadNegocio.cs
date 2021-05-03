@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class UnidadNegocio
     {
@@ -13,7 +13,7 @@ namespace APIRest.Models
         }
 
         public long IdUnidadNegocio { get; set; }
-        public long IdUnidadNegocioExt { get; set; }
+        public long IdUnidadNegocioExterno { get; set; }
         public string DescUnidadNegocio { get; set; }
 
         public virtual ICollection<Empleado> Empleados { get; set; }

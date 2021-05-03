@@ -1,37 +1,37 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataCertificacion
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
 
         public DataCertificacion()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<Certificacione> FindAllCertificacions()
+        public List<Certificacion> FindAllCertificacions()
         {
-            return  _context.Certificaciones.ToList();
+            return  _context.Certificacions.ToList();
         }
-        public Certificacione FindCertificacion(long idCertificacion)
+        public Certificacion FindCertificacion(long idCertificacion)
         {
-            return _context.Certificaciones.AsNoTracking().SingleOrDefault(us => us.IdCertificacion == idCertificacion);
+            return _context.Certificacions.AsNoTracking().SingleOrDefault(us => us.IdCertificacion == idCertificacion);
         }
 
-        public long AddCertificacion(Certificacione newItem, String ip)
+        public long AddCertificacion(Certificacion newItem, String ip)
         {
             try
             {
-                var CertificacionRes = _context.Certificaciones.Add(newItem);
+                var CertificacionRes = _context.Certificacions.Add(newItem);
                 procLog.AddLog(ip, procLog.GetPropertyValues(newItem, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 _context.SaveChanges();
                 return Int32.Parse(CertificacionRes.Entity.IdCertificacion.ToString());
@@ -43,11 +43,11 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdateCertificacion(Certificacione item, String ip)
+        public int UpdateCertificacion(Certificacion item, String ip)
         {
             try
             {
-                _context.Certificaciones.Update(item);
+                _context.Certificacions.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

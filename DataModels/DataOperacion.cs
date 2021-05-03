@@ -1,36 +1,36 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataOperacion
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataOperacion()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public  List<Operacione> FindAllOperacion()
+        public  List<Operacion> FindAllOperacion()
         {
-            return  _context.Operaciones.ToList();
+            return  _context.Operacions.ToList();
         }
-        public Operacione FindOperacion(long idOperacion)
+        public Operacion FindOperacion(long idOperacion)
         {
-            return _context.Operaciones.AsNoTracking().SingleOrDefault(us => us.Id == idOperacion);
+            return _context.Operacions.AsNoTracking().SingleOrDefault(us => us.Id == idOperacion);
         }
 
-        public long AddOperacion(Operacione item,string ip)
+        public long AddOperacion(Operacion item,string ip)
         {
             try
             {
-                var OperacionRes = _context.Operaciones.Add(item);
+                var OperacionRes = _context.Operacions.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(OperacionRes.Entity.Id.ToString());
@@ -43,11 +43,11 @@ namespace APIRest.DataModels
             }
         }
 
-        public int UpdateOperacion(Operacione item,string ip)
+        public int UpdateOperacion(Operacion item,string ip)
         {
             try
             {
-                _context.Operaciones.Update(item);
+                _context.Operacions.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

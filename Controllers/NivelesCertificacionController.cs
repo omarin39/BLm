@@ -1,27 +1,17 @@
-﻿using APIRest.Common;
-using APIRest.Controllers.Process;
-using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Controllers.Process;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
-using NWebsec.AspNetCore.Core.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 
 
-namespace APIRest.Controllers
+namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -119,11 +109,11 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<NivelesCertificacion>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        public ActionResult<List<NivelCertificacion>> FindAll() //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
             try
             {
-                 List<NivelesCertificacion> result = procNivelesCertificacion.FindAllNivelesCertificacion();//Async();//.FindProcessLog(id);
+                 List<NivelCertificacion> result = procNivelesCertificacion.FindAllNivelesCertificacion();//Async();//.FindProcessLog(id);
                     if (result != null)
                     {
                         return result;

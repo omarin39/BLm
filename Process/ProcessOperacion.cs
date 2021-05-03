@@ -1,15 +1,15 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessOperacion
     {       
@@ -19,8 +19,8 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaOperacion = new();
             try
             {
-                Operacione logNewRegistro = new();
-                logNewRegistro.Operacion = operacion.Operacion;
+                Operacion logNewRegistro = new();
+                logNewRegistro.Operacion1 = operacion.Operacion;
                 logNewRegistro.NombreMenu = operacion.Nombre_Menu;
                 logNewRegistro.NombrePagina = operacion.Nombre_Pagina;
                 logNewRegistro.IdMenu = operacion.Id_Menu;
@@ -32,7 +32,7 @@ namespace APIRest.Controllers.Process
                     ProcessPerfil ProcPerfil = new();
                     ProcessPerfilOperacionPermiso procPerfilOperacionPermiso = new();
 
-                    List<Perfile> lstPerfiles = ProcPerfil.FindAllPerfil();
+                    List<Perfil> lstPerfiles = ProcPerfil.FindAllPerfil();
 
                     foreach (var perfil in lstPerfiles)
                     {
@@ -74,7 +74,7 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    operacionBuscado.Operacion = operacion.Operacion;
+                    operacionBuscado.Operacion1 = operacion.Operacion;
                     operacionBuscado.NombreMenu = operacion.Nombre_Menu;
                     operacionBuscado.NombrePagina = operacion.Nombre_Pagina;
                     operacionBuscado.Activo = operacion.Activo;
@@ -96,18 +96,18 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Operacione FindOperacion(long idOperacion)
+        public Operacion FindOperacion(long idOperacion)
         {
-            Operacione respAltaOperacion = operacionData.FindOperacion(idOperacion);
+            Operacion respAltaOperacion = operacionData.FindOperacion(idOperacion);
             if (respAltaOperacion == null)
             {
                 respAltaOperacion.Id = -1;
             }
             return respAltaOperacion;
         }
-        public List<Operacione> FindAllOperacion()
+        public List<Operacion> FindAllOperacion()
         {
-            List<Operacione> resOperacionRet = operacionData.FindAllOperacion();
+            List<Operacion> resOperacionRet = operacionData.FindAllOperacion();
             return resOperacionRet;
         }
     }

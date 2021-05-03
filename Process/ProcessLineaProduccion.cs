@@ -1,8 +1,8 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessLineaProduccion
     {       
@@ -20,7 +20,7 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaLineaProduccion = new();
             try
             {
-                LineasProduccion logNewRegistro = new();
+                LineaProduccion logNewRegistro = new();
                 logNewRegistro.IdNave = LineaProduccion.IdNave;
                 logNewRegistro.NombreLinea = LineaProduccion.NombreLinea;
                 logNewRegistro.DescripcionLinea = LineaProduccion.DescripcionLinea;
@@ -95,8 +95,8 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public LineasProduccion FindLineaProduccion(long IdLineaProduccionExt){
-            LineasProduccion respAltaLineaProduccion = LineaProduccionData.FindLineaProduccion(IdLineaProduccionExt);
+        public LineaProduccion FindLineaProduccion(long IdLineaProduccionExt){
+            LineaProduccion respAltaLineaProduccion = LineaProduccionData.FindLineaProduccion(IdLineaProduccionExt);
             if (respAltaLineaProduccion == null)
             {
                 respAltaLineaProduccion.Id = -1;
@@ -104,9 +104,9 @@ namespace APIRest.Controllers.Process
             return respAltaLineaProduccion;
         }
 
-        public LineasProduccion FindLineaProduccionNave(long IdLineaProduccionExt)
+        public LineaProduccion FindLineaProduccionNave(long IdLineaProduccionExt)
         {
-            LineasProduccion respAltaLineaProduccion = LineaProduccionData.FindLineaProduccionNave(IdLineaProduccionExt);
+            LineaProduccion respAltaLineaProduccion = LineaProduccionData.FindLineaProduccionNave(IdLineaProduccionExt);
             if (respAltaLineaProduccion == null)
             {
                 respAltaLineaProduccion.Id = -1;
@@ -116,9 +116,9 @@ namespace APIRest.Controllers.Process
 
 
 
-        public List<LineasProduccion> FindAllLineaProduccion()
+        public List<LineaProduccion> FindAllLineaProduccion()
         {
-            List<LineasProduccion> resLineaProduccionRet = LineaProduccionData.FindAllLineaProduccions();
+            List<LineaProduccion> resLineaProduccionRet = LineaProduccionData.FindAllLineaProduccions();
             return resLineaProduccionRet;
         }
 

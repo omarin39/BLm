@@ -1,8 +1,8 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessPreguntaGeneral
     {       
@@ -20,12 +20,12 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaPreguntaGeneral = new();
             try
             {
-                PreguntasPtGenerale logNewRegistro = new();
+                PreguntaPtGeneral logNewRegistro = new();
                 logNewRegistro.Pregunta = PreguntaGeneral.pregunta;
                 logNewRegistro.Respuesta = PreguntaGeneral.respuesta;
                 logNewRegistro.Orden = PreguntaGeneral.orden;
                 logNewRegistro.IdiomaIdIdioma = PreguntaGeneral.idIdioma;
-                logNewRegistro.NivelesCertificacionIdNivelCertificacion = PreguntaGeneral.idNivelCertificcion;
+                logNewRegistro.NivelCertificacionIdNivelCertificacion = PreguntaGeneral.idNivelCertificcion;
                 long respNewUSR = PreguntaGeneralData.AddPregunta(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
@@ -65,7 +65,7 @@ namespace APIRest.Controllers.Process
                     PreguntaGeneralBuscado.Respuesta = PreguntaGeneral.respuesta;
                     PreguntaGeneralBuscado.Orden = PreguntaGeneral.orden;
                     PreguntaGeneralBuscado.IdiomaIdIdioma = PreguntaGeneral.idIdioma;
-                    PreguntaGeneralBuscado.NivelesCertificacionIdNivelCertificacion = PreguntaGeneral.idNivelCertificcion;
+                    PreguntaGeneralBuscado.NivelCertificacionIdNivelCertificacion = PreguntaGeneral.idNivelCertificcion;
 
 
                     var respNewPreguntaGeneral = PreguntaGeneralData.UpdatePregunta(PreguntaGeneralBuscado,ip);
@@ -86,8 +86,8 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public PreguntasPtGenerale FindPreguntaGeneral(String PreguntaGeneral){
-            PreguntasPtGenerale respAltaPreguntaGeneral = PreguntaGeneralData.FindPregunta(PreguntaGeneral);
+        public PreguntaPtGeneral FindPreguntaGeneral(String PreguntaGeneral){
+            PreguntaPtGeneral respAltaPreguntaGeneral = PreguntaGeneralData.FindPregunta(PreguntaGeneral);
             if (respAltaPreguntaGeneral == null)
             {
                 respAltaPreguntaGeneral.IdPreguntaPt = -1;
@@ -97,9 +97,9 @@ namespace APIRest.Controllers.Process
     
 
 
-        public List<PreguntasPtGenerale> FindAllPreguntaGeneral()
+        public List<PreguntaPtGeneral> FindAllPreguntaGeneral()
         {
-            List<PreguntasPtGenerale> resPreguntaGeneralRet = PreguntaGeneralData.FindAllPreguntas();
+            List<PreguntaPtGeneral> resPreguntaGeneralRet = PreguntaGeneralData.FindAllPreguntas();
             return resPreguntaGeneralRet;
         }
 

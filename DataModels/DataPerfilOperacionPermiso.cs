@@ -1,20 +1,20 @@
-﻿using APIRest.Models;
-using APIRest.Models.Response;
+﻿using APIRestV2.Models;
+using APIRestV2.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataPerfilOperacionPermiso
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataPerfilOperacionPermiso()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
@@ -31,9 +31,9 @@ namespace APIRest.DataModels
         public List<ResponsePerfilOperacionPermisoJoined> FindPerfilOperacionPermisoJoined(long idPerfil)
         {
             var query = from pop in _context.Set<PerfilOperacionPermiso>().Where(pop => pop.IdPerfil == idPerfil)
-                        join o in _context.Set<Operacione>()
+                        join o in _context.Set<Operacion>()
                             on pop.IdOperacion equals o.Id
-                        select new ResponsePerfilOperacionPermisoJoined { Id=pop.Id,IdOperacion=pop.IdOperacion, Operacion=o.Operacion, Crear=pop.Crear,Editar=pop.Editar,Eliminar=pop.Eliminar,Ver= (bool)pop.Ver  };
+                        select new ResponsePerfilOperacionPermisoJoined { Id=pop.Id,IdOperacion=pop.IdOperacion, Operacion=o.Operacion1, Crear=pop.Crear,Editar=pop.Editar,Eliminar=pop.Eliminar,Ver= (bool)pop.Ver  };
 
             List<ResponsePerfilOperacionPermisoJoined> res = query.ToList();
 

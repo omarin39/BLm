@@ -1,19 +1,19 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataEmpleados
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataEmpleados()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
@@ -23,7 +23,7 @@ namespace APIRest.DataModels
         }
         public Empleado FindEmpleado(string noNomina)
         {
-            return _context.Empleados.SingleOrDefault(us => us.NNomina == noNomina);
+            return _context.Empleados.SingleOrDefault(us => us.NumeroNomina == noNomina);
         }
 
         public long AddEmpleado(Empleado item,string ip)

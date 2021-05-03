@@ -1,8 +1,8 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessNave
     {       
@@ -20,10 +20,10 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaNave = new();
             try
             {
-                Nafe logNewRegistro = new();
+                Nave logNewRegistro = new();
                 logNewRegistro.Nombre = Nave.nombre;
                 logNewRegistro.Descripcion = Nave.descripcion;
-                logNewRegistro.PlantasIdPlanta = Nave.PlantasIdPlanta;
+                logNewRegistro.PlantaIdPlanta = Nave.PlantasIdPlanta;
                 logNewRegistro.Activo = Nave.Activo;
                 long respNewUSR = NaveData.AddNave(logNewRegistro, ip);
                 if(respNewUSR >0)
@@ -52,7 +52,7 @@ namespace APIRest.Controllers.Process
             if (Nave.Activo == false)
              {
                  DataNave naveData = new();
-                 List<LineasProduccion> resNavesRet = naveData.FindAllNavesPorLineaProduccion(Nave.IdNave,ip);
+                 List<LineaProduccion> resNavesRet = naveData.FindAllNavesPorLineaProduccion(Nave.IdNave,ip);
                  if (resNavesRet.Count > 0)
                  {
                     respAltaNave.Id = Nave.IdNave;
@@ -72,9 +72,9 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    var NaveBuscadox = new Nafe { 
+                    var NaveBuscadox = new Nave { 
                         IdNave= NaveBuscado.IdNave,
-                        PlantasIdPlanta= NaveBuscado.PlantasIdPlanta,
+                        PlantaIdPlanta= NaveBuscado.PlantasIdPlanta,
                     Nombre= Nave.nombre,
                     Descripcion= Nave.descripcion,
                     Activo= Nave.Activo
@@ -100,7 +100,7 @@ namespace APIRest.Controllers.Process
             }
         }
         public ResponseNave FindNave(string Nave){
-            Nafe respAltaNave = NaveData.FindNave(Nave);
+            Nave respAltaNave = NaveData.FindNave(Nave);
             if (respAltaNave == null)
             {
                 respAltaNave.IdNave = -1;
@@ -114,11 +114,11 @@ namespace APIRest.Controllers.Process
                         IdNave = respAltaNave.IdNave,
                         Nombre = respAltaNave.Nombre,
                         Descripcion = respAltaNave.Descripcion,
-                        PlantasIdPlanta = respAltaNave.PlantasIdPlanta,
+                        PlantasIdPlanta = respAltaNave.PlantaIdPlanta,
                         Activo = (bool)respAltaNave.Activo,
-                        PlantasIdPlantaNavigation = respAltaNave.PlantasIdPlantaNavigation,
-                        LineasProduccions = respAltaNave.LineasProduccions.Count,
-                        MáquinasFisicas = respAltaNave.MáquinasFisicas
+                        PlantasIdPlantaNavigation = respAltaNave.PlantaIdPlantaNavigation,
+                        LineasProduccions = respAltaNave.LineaProduccions.Count,
+                        MáquinasFisicas = respAltaNave.MaquinaFisicas
                     };
 
 
@@ -129,7 +129,7 @@ namespace APIRest.Controllers.Process
         }
         public List<ResponseNave> FindNavePlanta(string Nave)
         {
-            List<Nafe> respAltaNave = NaveData.FindNavePlanta(Nave);
+            List<Nave> respAltaNave = NaveData.FindNavePlanta(Nave);
             /*
             return respAltaNave;*/
             var result = respAltaNave.Select((nave, i) =>
@@ -138,11 +138,11 @@ namespace APIRest.Controllers.Process
                        IdNave = nave.IdNave,
                        Nombre = nave.Nombre,
                        Descripcion = nave.Descripcion,
-                       PlantasIdPlanta = nave.PlantasIdPlanta,
+                       PlantasIdPlanta = nave.PlantaIdPlanta,
                        Activo = (bool)nave.Activo,
-                       PlantasIdPlantaNavigation = nave.PlantasIdPlantaNavigation,
-                       LineasProduccions = nave.LineasProduccions.Count,
-                       MáquinasFisicas = nave.MáquinasFisicas
+                       PlantasIdPlantaNavigation = nave.PlantaIdPlantaNavigation,
+                       LineasProduccions = nave.LineaProduccions.Count,
+                       MáquinasFisicas = nave.MaquinaFisicas
                    }).ToList();
 
 
@@ -153,7 +153,7 @@ namespace APIRest.Controllers.Process
 
         public List<ResponseNave> FindAllNave()
     {
-        List<Nafe> resNaveRet = NaveData.FindAllNaves();
+        List<Nave> resNaveRet = NaveData.FindAllNaves();
 
             var result = resNaveRet.Select((nave, i) =>
                       new ResponseNave
@@ -161,11 +161,11 @@ namespace APIRest.Controllers.Process
                           IdNave = nave.IdNave,
                           Nombre = nave.Nombre,
                           Descripcion = nave.Descripcion,
-                          PlantasIdPlanta = nave.PlantasIdPlanta,
+                          PlantasIdPlanta = nave.PlantaIdPlanta,
                           Activo = (bool)nave.Activo,
-                          PlantasIdPlantaNavigation= nave.PlantasIdPlantaNavigation,
-                          LineasProduccions= nave.LineasProduccions.Count,
-                          MáquinasFisicas= nave.MáquinasFisicas
+                          PlantasIdPlantaNavigation= nave.PlantaIdPlantaNavigation,
+                          LineasProduccions= nave.LineaProduccions.Count,
+                          MáquinasFisicas= nave.MaquinaFisicas
                       }).ToList();
 
             return result;

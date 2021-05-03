@@ -1,36 +1,36 @@
-﻿using APIRest.Models;
+﻿using APIRestV2.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.DataModels
+namespace APIRestV2.DataModels
 {
     public class DataPreguntaPtGeneral
     {
-        private readonly Carta_vContext _context;
+        private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
         public DataPreguntaPtGeneral()
         {
-            _context = new Carta_vContext();
+            _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<PreguntasPtGenerale> FindAllPreguntas()
+        public List<PreguntaPtGeneral> FindAllPreguntas()
         {
-            return  _context.PreguntasPtGenerales.ToList();
+            return  _context.PreguntaPtGenerals.ToList();
         }
-        public PreguntasPtGenerale FindPregunta(string Pregunta)
+        public PreguntaPtGeneral FindPregunta(string Pregunta)
         {
-            return _context.PreguntasPtGenerales.AsNoTracking().SingleOrDefault(us => us.Pregunta == Pregunta);
+            return _context.PreguntaPtGenerals.AsNoTracking().SingleOrDefault(us => us.Pregunta == Pregunta);
         }
 
-        public long AddPregunta(PreguntasPtGenerale item,string ip)
+        public long AddPregunta(PreguntaPtGeneral item,string ip)
         {
             try
             {
-                var PreguntaRes = _context.PreguntasPtGenerales.Add(item);
+                var PreguntaRes = _context.PreguntaPtGenerals.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return Int32.Parse(PreguntaRes.Entity.IdPreguntaPt.ToString());
@@ -42,11 +42,11 @@ namespace APIRest.DataModels
                 return 0;
             }
         }
-        public int UpdatePregunta(PreguntasPtGenerale item,string ip)
+        public int UpdatePregunta(PreguntaPtGeneral item,string ip)
         {
             try
             {
-                _context.PreguntasPtGenerales.Update(item);
+                _context.PreguntaPtGenerals.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

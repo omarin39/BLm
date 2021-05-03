@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace APIRest.Models
+namespace APIRestV2.Models
 {
     public partial class Menu
     {
         public Menu()
         {
-            Operaciones = new HashSet<Operacione>();
+            Operacions = new HashSet<Operacion>();
         }
 
         public long Id { get; set; }
         public string NombreMenu { get; set; }
         public bool Activo { get; set; }
 
-        public virtual ICollection<Operacione> Operaciones { get; set; }
+        public virtual ICollection<Operacion> Operacions { get; set; }
     }
 }

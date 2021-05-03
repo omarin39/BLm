@@ -1,15 +1,15 @@
-﻿using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.DataModels;
+using APIRestV2.Helpers;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Controllers.Process
+namespace APIRestV2.Controllers.Process
 {
     public class ProcessPerfil
     {       
@@ -19,8 +19,8 @@ namespace APIRest.Controllers.Process
             ResponseGral respAltaPerfil = new();
             try
             {
-                Perfile logNewRegistro = new();
-                logNewRegistro.Perfil = perfil.Perfil;
+                Perfil logNewRegistro = new();
+                logNewRegistro.Perfil1 = perfil.Perfil;
                 logNewRegistro.Activo = perfil.Activo;
                 long respNewUSR = perfilData.AddPerfil(logNewRegistro,ip);
                 if(respNewUSR >0)
@@ -85,7 +85,7 @@ namespace APIRest.Controllers.Process
             {
                 try
                 {
-                    perfilBuscado.Perfil = perfil.Perfil;
+                    perfilBuscado.Perfil1 = perfil.Perfil;
                     perfilBuscado.Activo = perfil.Activo;
                     var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado,ip);
                     if (respNewPerfil > 0)
@@ -105,17 +105,17 @@ namespace APIRest.Controllers.Process
                 }
             }
         }
-        public Perfile FindPerfil(long idPerfil){
-            Perfile respAltaPerfil = perfilData.FindPerfil(idPerfil);
+        public Perfil FindPerfil(long idPerfil){
+            Perfil respAltaPerfil = perfilData.FindPerfil(idPerfil);
             if (respAltaPerfil == null)
             {
                 respAltaPerfil.Id = -1;
             }
             return respAltaPerfil;
         }
-        public List<Perfile> FindAllPerfil()
+        public List<Perfil> FindAllPerfil()
         {
-            List<Perfile> resPerfilRet = perfilData.FindAllPerfil();
+            List<Perfil> resPerfilRet = perfilData.FindAllPerfil();
             return resPerfilRet;
         }
     }

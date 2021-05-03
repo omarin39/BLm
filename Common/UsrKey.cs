@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Common
+namespace APIRestV2.Common
 {
     public class UsrKey
     {

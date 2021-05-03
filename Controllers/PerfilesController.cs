@@ -1,27 +1,17 @@
-﻿using APIRest.Common;
-using APIRest.Controllers.Process;
-using APIRest.DataModels;
-using APIRest.Helpers;
-using APIRest.Models;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Controllers.Process;
+using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
-using NWebsec.AspNetCore.Core.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Threading.Tasks;
 
 
-namespace APIRest.Controllers
+namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -58,7 +48,7 @@ namespace APIRest.Controllers
                         ProcessOperacion ProOper = new();
                         ProcessPerfilOperacionPermiso insPer = new();
                         List<RequestPerfilOperacionPermisoItem> _Lstpermiso = new();
-                        List<Operacione> LstOper = ProOper.FindAllOperacion();
+                        List<Operacion> LstOper = ProOper.FindAllOperacion();
                         foreach (var item in LstOper)
                         {
                             RequestPerfilOperacionPermisoItem _permiso = new();
@@ -134,12 +124,12 @@ namespace APIRest.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<Perfile>> FindAll() 
+        public ActionResult<List<Perfil>> FindAll() 
         {
             try
             {
                 //List<Perfile> result = ProcPerfil.FindAllPerfil().Where(v=>v.Activo==true).ToList();//Async();//.FindProcessLog(id);
-                List<Perfile> result = ProcPerfil.FindAllPerfil();
+                List<Perfil> result = ProcPerfil.FindAllPerfil();
                 if (result != null)
                     {
                         return result;

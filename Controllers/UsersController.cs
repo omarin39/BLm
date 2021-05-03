@@ -1,8 +1,8 @@
-﻿using APIRest.Common;
-using APIRest.Controllers.Process;
-using APIRest.Helpers;
-using APIRest.Models.Request;
-using APIRest.Models.Response;
+﻿using APIRestV2.Common;
+using APIRestV2.Controllers.Process;
+using APIRestV2.Helpers;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -11,7 +11,7 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
 
-namespace APIRest.Controllers
+namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

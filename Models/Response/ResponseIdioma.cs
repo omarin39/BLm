@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APIRest.Models.Response
+namespace APIRestV2.Models.Response
 {
     public class ResponseIdioma
     {
