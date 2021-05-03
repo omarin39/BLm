@@ -76,17 +76,17 @@ namespace APIRestV2.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<RequestLineaProduccion> Find(long IdLineaProduccionExt)
+        public ActionResult<RequestLineaProduccion> Find(long id)
         {
             try
             {
-                if (IdLineaProduccionExt <= 0)
+                if (id <= 0)
                 {
                     return NotFound("LineaProduccion not found");
                 }
                 else
                 {
-                    var result = procLineaProduccion.FindLineaProduccion(IdLineaProduccionExt);
+                    var result = procLineaProduccion.FindLineaProduccion(id);
                     if (result != null)
                     {
                         return Ok(result);
@@ -107,18 +107,18 @@ namespace APIRestV2.Controllers
          
         }
 
-        [HttpGet("{idNave}")]
-        public ActionResult<RequestLineaProduccion> FindLineaProduccionNave(long IdLineaProduccionExt)
+        [HttpGet("FindNave/{idNave}")]
+        public ActionResult<RequestLineaProduccion> FindLineaProduccionNave(long idNave)
         {
             try
             {
-                if (IdLineaProduccionExt <= 0)
+                if (idNave <= 0)
                 {
                     return NotFound("LineaProduccion not found");
                 }
                 else
                 {
-                    var result = procLineaProduccion.FindLineaProduccionNave(IdLineaProduccionExt);
+                    var result = procLineaProduccion.FindLineaProduccionNave(idNave);
                     if (result != null)
                     {
                         return Ok(result);
