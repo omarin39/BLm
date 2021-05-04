@@ -22,7 +22,7 @@ namespace APIRestV2.Controllers.Process
             {
                 NivelCertificacion logNewRegistro = new();
                 logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
+                logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
                 logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
                 logNewRegistro.Color = NivelesCertificacion.Color;
                 logNewRegistro.Activo = NivelesCertificacion.Activo;
@@ -58,7 +58,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     
                     nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                    nivelesCertificacionBuscado.DescripcionNivelCertificacion = NivelesCertificacion.DescNivelCertificacion;
+                    nivelesCertificacionBuscado.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
                     nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
                     nivelesCertificacionBuscado.Color = NivelesCertificacion.Color;
                     nivelesCertificacionBuscado.Activo = NivelesCertificacion.Activo;

@@ -27,9 +27,9 @@ namespace APIRestV2.DataModels
             return _context.LineaProduccions.AsNoTracking().SingleOrDefault(us => us.Id == idLineaProduccionExt);
         }
 
-        public LineaProduccion FindLineaProduccionNave(long idLineaProduccionExt)
+        public List<LineaProduccion> FindLineaProduccionNave(long idNave)
         {
-            return _context.LineaProduccions.AsNoTracking().SingleOrDefault(us => us.IdNave == idLineaProduccionExt);
+            return _context.LineaProduccions.AsNoTracking().Where(us => us.IdNave == idNave).ToList();
         }
 
 

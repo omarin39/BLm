@@ -10,7 +10,7 @@ namespace APIRestV2.Models.Request
     {
         public long IdNivelCertificacion { get; set; }
         public string NombreNivelCertificacion { get; set; }
-        public string DescNivelCertificacion { get; set; }
+        public string DescripcionNivelCertificacion { get; set; }
         public int DificultadNivelCertificacion { get; set; }
         public string Color { get; set; }
         public bool Activo { get; set; }

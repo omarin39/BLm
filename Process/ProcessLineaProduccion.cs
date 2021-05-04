@@ -104,14 +104,9 @@ namespace APIRestV2.Controllers.Process
             return respAltaLineaProduccion;
         }
 
-        public LineaProduccion FindLineaProduccionNave(long IdLineaProduccionExt)
+        public List<LineaProduccion> FindLineaProduccionNave(long IdNave)
         {
-            LineaProduccion respAltaLineaProduccion = new();
-            respAltaLineaProduccion = LineaProduccionData.FindLineaProduccionNave(IdLineaProduccionExt);
-            //if (respAltaLineaProduccion == null)
-            //{
-            //    respAltaLineaProduccion.IdNave = -1;
-            //}
+            List<LineaProduccion> respAltaLineaProduccion = LineaProduccionData.FindLineaProduccionNave(IdNave);
             return respAltaLineaProduccion;
         }
 

@@ -21,11 +21,11 @@ namespace APIRestV2.Controllers.Process
             try
             {
                 PreguntaPtGeneral logNewRegistro = new();
-                logNewRegistro.Pregunta = Pregunta.pregunta;
-                logNewRegistro.Respuesta = Pregunta.respuesta;
-                logNewRegistro.Orden = Pregunta.orden;
-                logNewRegistro.IdiomaIdIdioma = Pregunta.idiomaIdIdioma;
-                logNewRegistro.NivelCertificacionIdNivelCertificacion = Pregunta.idNiveCertificacion;
+                logNewRegistro.Pregunta = Pregunta.Pregunta;
+                logNewRegistro.Respuesta = Pregunta.Respuesta;
+                logNewRegistro.Orden = Pregunta.Orden;
+                logNewRegistro.IdiomaIdIdioma = Pregunta.IdiomaIdIdioma;
+                logNewRegistro.NivelCertificacionIdNivelCertificacion = Pregunta.NivelCertificacionIdNivelCertificacion;
                 long respNewUSR = PreguntaData.AddPregunta(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
@@ -47,7 +47,7 @@ namespace APIRestV2.Controllers.Process
         public ResponseGral UpdatePregunta(RequestPreguntaPtGeneral Pregunta, String ip)
         {
             ResponseGral respAltaPregunta = new();
-            var PreguntaBuscado = FindPregunta(Pregunta.pregunta);
+            var PreguntaBuscado = FindPregunta(Pregunta.IdPreguntaPt);
             if (PreguntaBuscado == null)
             {
                 return respAltaPregunta;
@@ -58,11 +58,11 @@ namespace APIRestV2.Controllers.Process
                 {
        
 
-                    PreguntaBuscado.Pregunta = Pregunta.pregunta;
-                    PreguntaBuscado.Respuesta = Pregunta.respuesta;
-                    PreguntaBuscado.Orden = Pregunta.orden;
-                    PreguntaBuscado.IdiomaIdIdioma = Pregunta.idiomaIdIdioma;
-                    PreguntaBuscado.NivelCertificacionIdNivelCertificacion = Pregunta.idNiveCertificacion;
+                    PreguntaBuscado.Pregunta = Pregunta.Pregunta;
+                    PreguntaBuscado.Respuesta = Pregunta.Respuesta;
+                    PreguntaBuscado.Orden = Pregunta.Orden;
+                    PreguntaBuscado.IdiomaIdIdioma = Pregunta.IdiomaIdIdioma;
+                    PreguntaBuscado.NivelCertificacionIdNivelCertificacion = Pregunta.NivelCertificacionIdNivelCertificacion;
 
 
                     var respNewPregunta = PreguntaData.UpdatePregunta(PreguntaBuscado,ip);
@@ -83,8 +83,8 @@ namespace APIRestV2.Controllers.Process
                 }
             }
         }
-        public PreguntaPtGeneral FindPregunta(String Pregunta){
-            PreguntaPtGeneral respAltaPregunta = PreguntaData.FindPregunta(Pregunta);
+        public PreguntaPtGeneral FindPregunta(long IdPregunta){
+            PreguntaPtGeneral respAltaPregunta = PreguntaData.FindPregunta(IdPregunta);
             if (respAltaPregunta == null)
             {
                 respAltaPregunta.IdPreguntaPt = -1;

@@ -40,7 +40,7 @@ namespace APIRestV2.Controllers
             try
             {
                
-                if (req.pregunta != null)
+                if (req.IdPreguntaPt == 0)
                 {
                     var result = procPreguntaPtGeneral.AddPregunta(req, remoteIpAddress.ToString());
                     if (result != null)
@@ -75,11 +75,11 @@ namespace APIRestV2.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<RequestPreguntaPtGeneral> Find(string Pregunta)
+        public ActionResult<RequestPreguntaPtGeneral> Find(long Pregunta)
         {
             try
             {
-                if (Pregunta == "")
+                if (Pregunta <= 0 )
                 {
                     return NotFound("Pregunta not found");
                 }

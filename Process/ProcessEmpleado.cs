@@ -16,12 +16,12 @@ namespace APIRestV2.Controllers.Process
             try
             {
                 Empleado logNewRegistro = new();
-                logNewRegistro.NumeroNomina = empleado.NNomina;
+                logNewRegistro.NumeroNomina = empleado.NumeroNomina;
                 logNewRegistro.Nombre = empleado.Nombre;
                 logNewRegistro.ApellidoPaterno = empleado.ApellidoMaterno;
                 logNewRegistro.ApellidoMaterno = empleado.ApellidoMaterno;
-                logNewRegistro.FechaNacimiento = empleado.FNacimiento;
-                logNewRegistro.FechaIngreso = empleado.FIngreso;
+                logNewRegistro.FechaNacimiento = empleado.FechaNacimiento;
+                logNewRegistro.FechaIngreso = empleado.FechaIngreso;
                 logNewRegistro.Email = empleado.Email;
                 logNewRegistro.NominaJefe = empleado.NominaJefe;
 
@@ -42,7 +42,7 @@ namespace APIRestV2.Controllers.Process
                 }
 
                 logNewRegistro.IdiomaIdIdioma = empleado.IdiomaIdIdioma;
-                logNewRegistro.PuestoIdPuesto = empleado.PuestosIdPuesto;
+                logNewRegistro.PuestoIdPuesto = empleado.PuestoIdPuesto;
                 logNewRegistro.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                 logNewRegistro.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                 logNewRegistro.IdPerfil = empleado.IdPerfil;
@@ -72,20 +72,20 @@ namespace APIRestV2.Controllers.Process
             }else{
                 try
                 {
-                    empleadoBuscado.NumeroNomina = empleado.NNomina;
+                    empleadoBuscado.NumeroNomina = empleado.NumeroNomina;
                     empleadoBuscado.Nombre = empleado.Nombre;
                     empleadoBuscado.ApellidoPaterno = empleado.ApellidoPaterno;
                     empleadoBuscado.ApellidoMaterno = empleado.ApellidoMaterno;
-                    empleadoBuscado.FechaNacimiento = empleado.FNacimiento;
-                    empleadoBuscado.FechaIngreso = empleado.FIngreso;
+                    empleadoBuscado.FechaNacimiento = empleado.FechaNacimiento;
+                    empleadoBuscado.FechaIngreso = empleado.FechaIngreso;
                     empleadoBuscado.Email = empleado.Email;
-                    empleadoBuscado.NominaJefe = empleado.NNomina;
+                    empleadoBuscado.NominaJefe = empleado.NumeroNomina;
                     //empleadoBuscado.DepartamentoIdDepartamentoNivel0 = empleado.Departamento_id_departamento_nivel0;
                     empleadoBuscado.DepartamentoIdDepartamentoNivel1 = empleado.DepartamentoIdDepartamentoNivel1;
                     empleadoBuscado.DepartamentoIdDepartamentoNivel2 = empleado.DepartamentoIdDepartamentoNivel2;
                     empleadoBuscado.DepartamentoIdDepartamentoNivel3 = empleado.DepartamentoIdDepartamentoNivel3;
                     empleadoBuscado.IdiomaIdIdioma = empleado.IdiomaIdIdioma;
-                    empleadoBuscado.PuestoIdPuesto = empleado.PuestosIdPuesto;
+                    empleadoBuscado.PuestoIdPuesto = empleado.PuestoIdPuesto;
                     empleadoBuscado.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                     empleadoBuscado.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                     empleadoBuscado.IdPerfil = empleado.IdPerfil;

@@ -22,7 +22,7 @@ namespace APIRestV2.Models.Request
         public Nullable<long> DepartamentoIdDepartamentoNivel2 { get; set; }
         public Nullable<long> DepartamentoIdDepartamentoNivel3 { get; set; }
         public long IdiomaIdIdioma { get; set; }
-        public long PuestosIdPuesto { get; set; }
+        public long PuestoIdPuesto { get; set; }
         public long UnidadNegocioIdUnidadNegocio { get; set; }
         public long CentroCostoIdCentroCosto { get; set; }
         public long? IdPerfil { get; set; }

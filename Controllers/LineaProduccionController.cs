@@ -108,7 +108,7 @@ namespace APIRestV2.Controllers
         }
 
         [HttpGet("FindNave/{idNave}")]
-        public ActionResult<RequestLineaProduccion> FindLineaProduccionNave(long idNave)
+        public ActionResult<List<RequestLineaProduccion>> FindLineaProduccionNave(long idNave)
         {
             try
             {

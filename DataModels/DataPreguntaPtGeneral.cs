@@ -21,9 +21,9 @@ namespace APIRestV2.DataModels
         {
             return  _context.PreguntaPtGenerals.ToList();
         }
-        public PreguntaPtGeneral FindPregunta(string Pregunta)
+        public PreguntaPtGeneral FindPregunta(long IdPregunta)
         {
-            return _context.PreguntaPtGenerals.AsNoTracking().SingleOrDefault(us => us.Pregunta == Pregunta);
+            return _context.PreguntaPtGenerals.AsNoTracking().SingleOrDefault(us => us.IdPreguntaPt == IdPregunta);
         }
 
         public long AddPregunta(PreguntaPtGeneral item,string ip)

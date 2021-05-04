@@ -8,12 +8,13 @@ namespace APIRestV2.Models.Request
 {
     public class RequestPreguntaPtGeneral
     {   
-        public long idPregunta { get; set; }     
-        public string pregunta { get; set; }
-        public string respuesta { get; set; }
-        public int orden { get; set; }
-        public int idiomaIdIdioma { get; set; }
-        public int idNiveCertificacion { get; set; }
+        public long IdPreguntaPt { get; set; }
+        public string Pregunta { get; set; }
+        public string Respuesta { get; set; }
+        public int Orden { get; set; }
+        public long IdiomaIdIdioma { get; set; }
+        public long NivelCertificacionIdNivelCertificacion { get; set; }
+        public bool? Activo { get; set; }
 
     }
 }
