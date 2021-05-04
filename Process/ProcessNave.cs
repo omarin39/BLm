@@ -117,7 +117,7 @@ namespace APIRestV2.Controllers.Process
                         PlantasIdPlanta = respAltaNave.PlantaIdPlanta,
                         Activo = (bool)respAltaNave.Activo,
                         PlantasIdPlantaNavigation = respAltaNave.PlantaIdPlantaNavigation,
-                        LineasProduccions = respAltaNave.LineaProduccions.Count,
+                        LineaProduccions = respAltaNave.LineaProduccions.Count,
                         MáquinasFisicas = respAltaNave.MaquinaFisicas
                     };
 
@@ -127,7 +127,7 @@ namespace APIRestV2.Controllers.Process
 
 
         }
-        public List<ResponseNave> FindNavePlanta(string Nave)
+        public List<ResponseNave> FindNavePlanta(long Nave)
         {
             List<Nave> respAltaNave = NaveData.FindNavePlanta(Nave);
             /*
@@ -141,7 +141,7 @@ namespace APIRestV2.Controllers.Process
                        PlantasIdPlanta = nave.PlantaIdPlanta,
                        Activo = (bool)nave.Activo,
                        PlantasIdPlantaNavigation = nave.PlantaIdPlantaNavigation,
-                       LineasProduccions = nave.LineaProduccions.Count,
+                       LineaProduccions = nave.LineaProduccions.Count,
                        MáquinasFisicas = nave.MaquinaFisicas
                    }).ToList();
 
@@ -164,7 +164,7 @@ namespace APIRestV2.Controllers.Process
                           PlantasIdPlanta = nave.PlantaIdPlanta,
                           Activo = (bool)nave.Activo,
                           PlantasIdPlantaNavigation= nave.PlantaIdPlantaNavigation,
-                          LineasProduccions= nave.LineaProduccions.Count,
+                          LineaProduccions= nave.LineaProduccions.Count,
                           MáquinasFisicas= nave.MaquinaFisicas
                       }).ToList();
 

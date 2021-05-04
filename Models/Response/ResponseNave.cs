@@ -15,7 +15,7 @@ namespace APIRestV2.Models.Response
         public bool? Activo { get; set; }
 
         public virtual Plantum PlantasIdPlantaNavigation { get; set; }
-        public int LineasProduccions { get; set; }
+        public int LineaProduccions { get; set; }
         public virtual ICollection<MaquinaFisica> MáquinasFisicas { get; set; }
     }
 }

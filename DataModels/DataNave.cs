@@ -23,15 +23,15 @@ namespace APIRestV2.DataModels
 
         public List<Nave> FindAllNaves()
         {
-            return  _context.Naves.ToList();
+            return  _context.Naves.Include("LineaProduccions").ToList();
         }
         public Nave FindNave(long Nave)
         {
             return _context.Naves.AsNoTracking().SingleOrDefault(us => us.IdNave == Nave);
         }
-        public List<Nave> FindNavePlanta(string Nave)
+        public List<Nave> FindNavePlanta(long Nave)
         {
-            return _context.Naves.Where(us => us.PlantaIdPlanta == long.Parse(Nave)).ToList();
+            return _context.Naves.Include("LineaProduccions").Where(us => us.PlantaIdPlanta == Nave).ToList();
         }
 
         public long AddNave(Nave NewNave, String ip)

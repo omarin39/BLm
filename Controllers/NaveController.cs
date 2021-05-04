@@ -106,12 +106,12 @@ namespace APIRestV2.Controllers
          
         }
         [HttpGet("FindNavePlanta/{Planta}")]
-        public ActionResult<List<RequestNave>> FindNavePlanta(string Planta)
+        public ActionResult<List<RequestNave>> FindNavePlanta(long Planta)
         {
             try
             {
               
-                if (Planta == "")
+                if (Planta <= 0)
                 {
                     return NotFound("Nave not found");
                 }
