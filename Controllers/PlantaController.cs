@@ -40,7 +40,7 @@ namespace APIRestV2.Controllers
             {
               
 
-                if (req.IdPlantaExt != null)
+                if (req.IdPlantaExterno != null)
                 {
                     var result = procPlanta.AddPlanta(req, remoteIpAddress.ToString());
                     if (result != null)

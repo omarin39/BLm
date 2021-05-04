@@ -23,7 +23,7 @@ namespace APIRestV2.Controllers.Process
                 Nave logNewRegistro = new();
                 logNewRegistro.Nombre = Nave.nombre;
                 logNewRegistro.Descripcion = Nave.descripcion;
-                logNewRegistro.PlantaIdPlanta = Nave.PlantasIdPlanta;
+                logNewRegistro.PlantaIdPlanta = Nave.PlantaIdPlanta;
                 logNewRegistro.Activo = Nave.Activo;
                 long respNewUSR = NaveData.AddNave(logNewRegistro, ip);
                 if(respNewUSR >0)
@@ -63,7 +63,7 @@ namespace APIRestV2.Controllers.Process
              }
 
 
-            var NaveBuscado = FindNave(Nave.nombre);
+            var NaveBuscado = FindNave(Nave.IdNave);
             if (NaveBuscado == null)
             {
                 return respAltaNave;
@@ -99,7 +99,7 @@ namespace APIRestV2.Controllers.Process
                 }
             }
         }
-        public ResponseNave FindNave(string Nave){
+        public ResponseNave FindNave(long Nave){
             Nave respAltaNave = NaveData.FindNave(Nave);
             if (respAltaNave == null)
             {

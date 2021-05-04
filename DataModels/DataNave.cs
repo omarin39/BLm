@@ -25,9 +25,9 @@ namespace APIRestV2.DataModels
         {
             return  _context.Naves.ToList();
         }
-        public Nave FindNave(string Nave)
+        public Nave FindNave(long Nave)
         {
-            return _context.Naves.AsNoTracking().SingleOrDefault(us => us.Nombre == Nave);
+            return _context.Naves.AsNoTracking().SingleOrDefault(us => us.IdNave == Nave);
         }
         public List<Nave> FindNavePlanta(string Nave)
         {

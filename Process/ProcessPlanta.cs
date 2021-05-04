@@ -21,8 +21,8 @@ namespace APIRestV2.Controllers.Process
             try
             {
                 Plantum logNewRegistro = new();
-                logNewRegistro.Planta = Planta.Planta1;
-                logNewRegistro.IdPlantaExterno = Planta.IdPlantaExt;
+                logNewRegistro.Planta = Planta.Planta;
+                logNewRegistro.IdPlantaExterno = Planta.IdPlantaExterno;
                 logNewRegistro.Acronimo = Planta.Acronimo;
                 logNewRegistro.Activo = Planta.Activo;
                 long respNewUSR = PlantaData.AddPlanta(logNewRegistro,ip);
@@ -63,7 +63,7 @@ namespace APIRestV2.Controllers.Process
 
 
 
-            var PlantaBuscado = FindPlanta(planta.IdPlantaExt);
+            var PlantaBuscado = FindPlanta(planta.IdPlantaExterno);
             if (PlantaBuscado == null)
             {
                 return respAltaPlanta;
@@ -75,11 +75,11 @@ namespace APIRestV2.Controllers.Process
 
                     var PlantaBuscadox = new Plantum
                     {
-                        Planta = planta.Planta1,
+                        Planta = planta.Planta,
                         Acronimo = planta.Acronimo,
                         Activo = planta.Activo,
                         IdPlanta = PlantaBuscado.IdPlanta,
-                        IdPlantaExterno = PlantaBuscado.IdPlantaExt,
+                        IdPlantaExterno = PlantaBuscado.IdPlantaExterno,
                     };
 
 
@@ -112,10 +112,10 @@ namespace APIRestV2.Controllers.Process
             var result = new ResponsePlanta
             {
                 IdPlanta = respAltaPlanta.IdPlanta,
-                IdPlantaExt = respAltaPlanta.IdPlantaExterno,
+                IdPlantaExterno = respAltaPlanta.IdPlantaExterno,
                 Acronimo = respAltaPlanta.Acronimo,
                 Activo = (bool)respAltaPlanta.Activo,
-                Planta1= respAltaPlanta.Planta,
+                Planta= respAltaPlanta.Planta,
                 Naves = respAltaPlanta.Naves.Count,
 
             };
@@ -135,9 +135,9 @@ namespace APIRestV2.Controllers.Process
                       new ResponsePlanta
                       {
                           IdPlanta = planta.IdPlanta,
-                          IdPlantaExt = planta.IdPlantaExterno,
+                          IdPlantaExterno = planta.IdPlantaExterno,
                           Acronimo = planta.Acronimo,
-                          Planta1 = planta.Planta,
+                          Planta = planta.Planta,
                           Activo = (bool)planta.Activo,
                           Naves = planta.Naves.Count,
                       }).ToList();

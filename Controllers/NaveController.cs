@@ -75,17 +75,17 @@ namespace APIRestV2.Controllers
 
 
         [HttpGet("{Nave}")]
-        public ActionResult<RequestNave> Find(string Nave)
+        public ActionResult<RequestNave> Find(long IdNave)
         {
             try
             {
-                if (Nave == "")
+                if (IdNave == 0)
                 {
                     return NotFound("Nave not found");
                 }
                 else
                 {
-                    var result = procNave.FindNave(Nave);
+                    var result = procNave.FindNave(IdNave);
                     if (result != null)
                     {
                         return Ok(result);
