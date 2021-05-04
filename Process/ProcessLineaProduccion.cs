@@ -50,20 +50,6 @@ namespace APIRestV2.Controllers.Process
    
             var LineaProduccionBuscado = FindLineaProduccion(LineaProduccion.Id);
 
-
-            if (LineaProduccion.Activo == false) { 
-                if (LineaProduccionBuscado.IdNave  > 0)
-            {
-                respAltaLineaProduccion.Id = LineaProduccion.Id;
-                respAltaLineaProduccion.Codigo = "503";
-                respAltaLineaProduccion.Mensaje = "La LineaProduccion no puede desactivarse, por que tiene 1 nave asociadas.";
-                return respAltaLineaProduccion;
-            }
-            }
-
-
-
-
             if (LineaProduccionBuscado == null)
             {
                 return respAltaLineaProduccion;
