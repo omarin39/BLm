@@ -84,6 +84,7 @@ namespace APIRestV2.Controllers.Process
             ProcessLog respAltaLog = logData.FindLog(IdLog);
             if (respAltaLog == null)
             {
+                respAltaLog = new ProcessLog();
                 respAltaLog.Id = -1;
             }
 

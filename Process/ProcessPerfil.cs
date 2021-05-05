@@ -27,6 +27,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPerfil.Id = respNewUSR;
                     respAltaPerfil.Codigo = "200";
+                    respAltaPerfil.Mensaje = "OK";
                     return respAltaPerfil;
                 }
                 else
@@ -81,6 +82,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaPerfil;
             }
+            else if (perfilBuscado.Id == -1)
+            {
+                respAltaPerfil.Id = perfil.Id;
+                respAltaPerfil.Codigo = "400";
+                respAltaPerfil.Mensaje = "Not found";
+                return respAltaPerfil;
+            }
             else
             {
                 try
@@ -92,16 +100,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaPerfil.Id = perfilBuscado.Id;
                         respAltaPerfil.Codigo = "200";
+                        respAltaPerfil.Mensaje = "OK";
                         return respAltaPerfil;
                     }
                     else
                     {
-                        return null;
+                        respAltaPerfil.Id = perfilBuscado.Id;
+                        respAltaPerfil.Codigo = "400";
+                        respAltaPerfil.Mensaje = "Record not found";
+                        return respAltaPerfil;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaPerfil.Id = perfilBuscado.Id;
+                    respAltaPerfil.Codigo = "400";
+                    respAltaPerfil.Mensaje = ex.InnerException.Message;
+                    return respAltaPerfil;
                 }
             }
         }
@@ -109,6 +124,7 @@ namespace APIRestV2.Controllers.Process
             Perfil respAltaPerfil = perfilData.FindPerfil(idPerfil);
             if (respAltaPerfil == null)
             {
+                respAltaPerfil = new Perfil();
                 respAltaPerfil.Id = -1;
             }
             return respAltaPerfil;

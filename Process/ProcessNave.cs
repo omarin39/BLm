@@ -30,6 +30,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaNave.Id = respNewUSR;
                     respAltaNave.Codigo = "200";
+                    respAltaNave.Mensaje = "OK";
                     return respAltaNave;
                 }
                 else
@@ -68,6 +69,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaNave;
             }
+            else if (NaveBuscado.IdNave == -1)
+            {
+                respAltaNave.Id = Nave.IdNave;
+                respAltaNave.Codigo = "400";
+                respAltaNave.Mensaje = "Not found";
+                return respAltaNave;
+            }
             else
             {
                 try
@@ -86,16 +94,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaNave.Id = NaveBuscado.IdNave;
                         respAltaNave.Codigo = "200";
+                        respAltaNave.Mensaje = "OK";
                         return respAltaNave;
                     }
                     else
                     {
-                        return null;
+                        respAltaNave.Id = NaveBuscado.IdNave;
+                        respAltaNave.Codigo = "400";
+                        respAltaNave.Mensaje = "Record not found";
+                        return respAltaNave;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaNave.Id = NaveBuscado.IdNave;
+                    respAltaNave.Codigo = "400";
+                    respAltaNave.Mensaje = ex.InnerException.Message;
+                    return respAltaNave;
                 }
             }
         }
@@ -103,6 +118,7 @@ namespace APIRestV2.Controllers.Process
             Nave respAltaNave = NaveData.FindNave(Nave);
             if (respAltaNave == null)
             {
+                respAltaNave = new Nave();
                 respAltaNave.IdNave = -1;
             }
 

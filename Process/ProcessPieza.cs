@@ -21,14 +21,16 @@ namespace APIRestV2.Controllers.Process
             try
             {
                 Pieza logNewRegistro = new();
-                logNewRegistro.Nombre = Pieza.nombre;
-                logNewRegistro.Descripcion = Pieza.descripcion;
+                logNewRegistro.Nombre = Pieza.Nombre;
+                logNewRegistro.Descripcion = Pieza.Descripcion;
                 logNewRegistro.Activo = Pieza.Activo;
+                logNewRegistro.NumeroParte = Pieza.NumeroParte;
                 long respNewUSR = PiezaData.AddPieza(logNewRegistro,ip);
                 if(respNewUSR >0)
                 {
                     respAltaPieza.Id = respNewUSR;
                     respAltaPieza.Codigo = "200";
+                    respAltaPieza.Mensaje = "OK";
                     return respAltaPieza;
                 }
                 else
@@ -45,33 +47,48 @@ namespace APIRestV2.Controllers.Process
         public ResponseGral UpdatePieza( RequestPieza Pieza, String ip)
         {
             ResponseGral respAltaPieza = new();
-            var PiezaBuscado = FindPieza(Pieza.nombre);
+            var PiezaBuscado = FindPieza(Pieza.Nombre);
             if (PiezaBuscado == null)
             {
+                return respAltaPieza;
+            }
+            else if (PiezaBuscado.IdPieza == -1)
+            {
+                respAltaPieza.Id = Pieza.IdPieza;
+                respAltaPieza.Codigo = "400";
+                respAltaPieza.Mensaje = "Not found";
                 return respAltaPieza;
             }
             else
             {
                 try
                 {
-                    PiezaBuscado.Nombre = Pieza.nombre;
-                    PiezaBuscado.Descripcion = Pieza.descripcion;
+                    PiezaBuscado.Nombre = Pieza.Nombre;
+                    PiezaBuscado.Descripcion = Pieza.Descripcion;
                     PiezaBuscado.Activo = Pieza.Activo;
+                    PiezaBuscado.NumeroParte = Pieza.NumeroParte;
                     var respNewPieza = PiezaData.UpdatePieza(PiezaBuscado,ip);
                     if (respNewPieza > 0)
                     {
                         respAltaPieza.Id = PiezaBuscado.IdPieza;
                         respAltaPieza.Codigo = "200";
+                        respAltaPieza.Mensaje = "OK";
                         return respAltaPieza;
                     }
                     else
                     {
-                        return null;
+                        respAltaPieza.Id = PiezaBuscado.IdPieza;
+                        respAltaPieza.Codigo = "400";
+                        respAltaPieza.Mensaje = "Record not found";
+                        return respAltaPieza;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaPieza.Id = PiezaBuscado.IdPieza;
+                    respAltaPieza.Codigo = "400";
+                    respAltaPieza.Mensaje =ex.InnerException.Message;
+                    return respAltaPieza;
                 }
             }
         }
@@ -79,6 +96,7 @@ namespace APIRestV2.Controllers.Process
             Pieza respAltaPieza = PiezaData.FindPieza(Pieza);
             if (respAltaPieza == null)
             {
+                respAltaPieza = new Pieza();
                 respAltaPieza.IdPieza = -1;
             }
             return respAltaPieza;

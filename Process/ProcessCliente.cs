@@ -26,6 +26,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaCliente.Id = respNewUSR;
                     respAltaCliente.Codigo = "200";
+                    respAltaCliente.Mensaje = "OK";
                     return respAltaCliente;
                 }
                 else
@@ -46,6 +47,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaCliente;
             }
+            else if (clienteBuscado.IdCliente == -1)
+            {
+                respAltaCliente.Id = Cliente.IdCliente;
+                respAltaCliente.Codigo = "400";
+                respAltaCliente.Mensaje = "Not found";
+                return respAltaCliente;
+            }
             else
             {
                 try
@@ -60,16 +68,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaCliente.Id = clienteBuscado.IdCliente;
                         respAltaCliente.Codigo = "200";
+                        respAltaCliente.Mensaje = "OK";
                         return respAltaCliente;
                     }
                     else
                     {
-                        return null;
+                        respAltaCliente.Id = clienteBuscado.IdCliente;
+                        respAltaCliente.Codigo = "400";
+                        respAltaCliente.Mensaje = "Record not found";
+                        return respAltaCliente;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaCliente.Id = clienteBuscado.IdCliente;
+                    respAltaCliente.Codigo = "400";
+                    respAltaCliente.Mensaje = ex.InnerException.Message;
+                    return respAltaCliente;
                 }
             }
         }
@@ -78,6 +93,7 @@ namespace APIRestV2.Controllers.Process
             Cliente respAltaCliente = ClienteData.FindCliente(idCliente);
             if (respAltaCliente == null)
             {
+                respAltaCliente = new Cliente();
                 respAltaCliente.IdCliente = -1;
             }
             return respAltaCliente;

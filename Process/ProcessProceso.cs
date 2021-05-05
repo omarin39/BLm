@@ -30,6 +30,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaProceso.Id = respNewUSR;
                     respAltaProceso.Codigo = "200";
+                    respAltaProceso.Mensaje = "OK";
                     return respAltaProceso;
                 }
                 else
@@ -51,6 +52,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaProceso;
             }
+            else if (ProcesoBuscado.IdProceso == -1)
+            {
+                respAltaProceso.Id = Proceso.IdProceso;
+                respAltaProceso.Codigo = "400";
+                respAltaProceso.Mensaje = "Not found";
+                return respAltaProceso;
+            }
             else
             {
                 try
@@ -64,16 +72,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaProceso.Id = ProcesoBuscado.IdProceso;
                         respAltaProceso.Codigo = "200";
+                        respAltaProceso.Mensaje = "OK";
                         return respAltaProceso;
                     }
                     else
                     {
-                        return null;
+                        respAltaProceso.Id = ProcesoBuscado.IdProceso;
+                        respAltaProceso.Codigo = "400";
+                        respAltaProceso.Mensaje = "Record not found";
+                        return respAltaProceso;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaProceso.Id = ProcesoBuscado.IdProceso;
+                    respAltaProceso.Codigo = "400";
+                    respAltaProceso.Mensaje = ex.InnerException.Message;
+                    return respAltaProceso;
                 }
             }
         }
@@ -81,6 +96,7 @@ namespace APIRestV2.Controllers.Process
             Proceso respAltaProceso = ProcesoData.FindProceso(Proceso);
             if (respAltaProceso == null)
             {
+                respAltaProceso = new Proceso();
                 respAltaProceso.IdProceso = -1;
             }
             return respAltaProceso;

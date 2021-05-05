@@ -30,6 +30,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaFabricante.Id = respNewUSR;
                     respAltaFabricante.Codigo = "200";
+                    respAltaFabricante.Mensaje = "OK";
                     return respAltaFabricante;
                 }
                 else
@@ -48,7 +49,16 @@ namespace APIRestV2.Controllers.Process
             var FabricanteBuscado = FindFabricante(Fabricante.IdFabricante);
             if(FabricanteBuscado==null){
                  return respAltaFabricante;
-            }else{
+            }
+            else if (FabricanteBuscado.IdFabricante == -1)
+            {
+                respAltaFabricante.Id = Fabricante.IdFabricante;
+                respAltaFabricante.Codigo = "400";
+                respAltaFabricante.Mensaje = "Not found";
+                return respAltaFabricante;
+            }
+            else
+            {
                 try
                 {
                     FabricanteBuscado.Nombre = Fabricante.Nombre;
@@ -61,16 +71,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
                         respAltaFabricante.Codigo = "200";
+                        respAltaFabricante.Mensaje = "OK";
                         return respAltaFabricante;
                     }
                     else
                     {
-                        return null;
+                        respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
+                        respAltaFabricante.Codigo = "400";
+                        respAltaFabricante.Mensaje = "Record not found";
+                        return respAltaFabricante;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
+                    respAltaFabricante.Codigo = "400";
+                    respAltaFabricante.Mensaje = ex.InnerException.Message;
+                    return respAltaFabricante;
                 }
             }
         }
@@ -79,6 +96,7 @@ namespace APIRestV2.Controllers.Process
             Fabricante respAltaFabricante = FabricanteData.FindFabricante(idFabricante);
             if (respAltaFabricante == null)
             {
+                respAltaFabricante = new Fabricante();
                 respAltaFabricante.IdFabricante = -1;
             }
             return respAltaFabricante;

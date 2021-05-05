@@ -50,6 +50,7 @@ namespace APIRestV2.Controllers.Process
 
                     respAltaOperacion.Id = respNewOperacion;
                     respAltaOperacion.Codigo = "200";
+                    respAltaOperacion.Mensaje = "OK";
                     return respAltaOperacion;
                 }
                 else
@@ -70,6 +71,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaOperacion;
             }
+            else if (operacionBuscado.Id == -1)
+            {
+                respAltaOperacion.Id = operacion.Id;
+                respAltaOperacion.Codigo = "400";
+                respAltaOperacion.Mensaje = "Not found";
+                return respAltaOperacion;
+            }
             else
             {
                 try
@@ -83,16 +91,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaOperacion.Id = operacionBuscado.Id;
                         respAltaOperacion.Codigo = "200";
+                        respAltaOperacion.Mensaje = "OK";
                         return respAltaOperacion;
                     }
                     else
                     {
-                        return null;
+                        respAltaOperacion.Id = operacion.Id;
+                        respAltaOperacion.Codigo = "400";
+                        respAltaOperacion.Mensaje = "Record not found";
+                        return respAltaOperacion;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaOperacion.Id = operacion.Id;
+                    respAltaOperacion.Codigo = "400";
+                    respAltaOperacion.Mensaje =ex.InnerException.Message;
+                    return respAltaOperacion;
                 }
             }
         }
@@ -101,6 +116,7 @@ namespace APIRestV2.Controllers.Process
             Operacion respAltaOperacion = operacionData.FindOperacion(idOperacion);
             if (respAltaOperacion == null)
             {
+                respAltaOperacion = new Operacion();
                 respAltaOperacion.Id = -1;
             }
             return respAltaOperacion;

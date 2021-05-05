@@ -1227,7 +1227,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   descripcion (String): Fabricación de suspensiones
   PlantasIdPlanta (Int64): 0
   Activo (Boolean): True
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (23, N'::1', CAST(N'2021-05-03T23:06:18.413' AS DateTime), N'Operation (OPERACIÓN = AddNave)Type: NaveProperties (N = 8)  IdNave (Int64): 0
   Nombre (String): Nave 1
   Descripcion (String): Fabricación de suspensiones
@@ -1240,7 +1240,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   descripcion (String): Fabricación de suspensiones
   PlantasIdPlanta (Int64): 0
   Activo (Boolean): True
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (25, N'::1', CAST(N'2021-05-03T23:08:05.397' AS DateTime), N'Operation (OPERACIÓN = AddNave)Type: NaveProperties (N = 8)  IdNave (Int64): 4
   Nombre (String): Nave 1
   Descripcion (String): Fabricación de suspensiones
@@ -1536,7 +1536,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (55, N'::1', CAST(N'2021-05-03T23:54:35.450' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 
   Nombre (String): ANDRÉS
@@ -1611,7 +1611,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (58, N'::1', CAST(N'2021-05-03T23:55:22.877' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 
   Nombre (String): ANDRÉS
@@ -1686,7 +1686,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (61, N'::1', CAST(N'2021-05-04T09:30:59.903' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 558577
   Nombre (String): ANDRÉS
@@ -1761,7 +1761,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (64, N'::1', CAST(N'2021-05-04T09:31:26.033' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 558577
   Nombre (String): ANDRÉS
@@ -1836,7 +1836,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (67, N'::1', CAST(N'2021-05-04T09:31:59.187' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 558577
   Nombre (String): ANDRÉS
@@ -1911,7 +1911,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (70, N'::1', CAST(N'2021-05-04T09:32:53.177' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 1
   IdPerfil (Int64): 1
   IdOperacion (Int64): 1
@@ -2056,7 +2056,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (80, N'::1', CAST(N'2021-05-04T11:45:01.707' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 558577
   Nombre (String): ANDRÉS
@@ -2131,7 +2131,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   UnidadNegocioIdUnidadNegocio (Int64): 1
   CentroCostoIdCentroCosto (Int64): 1
   IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (83, N'::1', CAST(N'2021-05-04T11:50:27.123' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
   NumeroNomina (String): 558577
   Nombre (String): ANDRÉS
@@ -2180,7 +2180,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   DificultadNivelCertificacion (Int32): 1
   Color (String): #15e1e5
   Activo (Boolean): True
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (87, N'::1', CAST(N'2021-05-04T11:53:12.103' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
   NombreNivelCertificacion (String): Principiante
   DescripcionNivelCertificacion (String): 
@@ -2201,7 +2201,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   DificultadNivelCertificacion (Int32): 1
   Color (String): #15e1e5
   Activo (Boolean): True
-', N'Error al contactar el server', 401)
+', N'Error al realizar la operación', 401)
 INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (90, N'::1', CAST(N'2021-05-04T12:13:41.173' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
   NombreNivelCertificacion (String): Principiante
   DescripcionNivelCertificacion (String): Nivel de principiante. Debe operar bajo supervisiónassadsad

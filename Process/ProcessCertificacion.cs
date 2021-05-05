@@ -39,6 +39,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaCertificacion.Id = respNewUSR;
                     respAltaCertificacion.Codigo = "200";
+                    respAltaCertificacion.Mensaje = "OK";
                     return respAltaCertificacion;
                 }
                 else
@@ -58,6 +59,13 @@ namespace APIRestV2.Controllers.Process
             var CertificacionBuscado = FindCertificacion(Certificacion.idCertificacion);
             if (CertificacionBuscado == null)
             {
+                return respAltaCertificacion;
+            }
+            else if (CertificacionBuscado.IdCertificacion == -1)
+            {
+                respAltaCertificacion.Id = Certificacion.idCertificacion;
+                respAltaCertificacion.Codigo = "400";
+                respAltaCertificacion.Mensaje = "Not found";
                 return respAltaCertificacion;
             }
             else
@@ -84,17 +92,24 @@ namespace APIRestV2.Controllers.Process
                     if (respNewCertificacion > 0)
                     {
                         respAltaCertificacion.Id = CertificacionBuscado.IdCertificacion;
+                        respAltaCertificacion.Mensaje = "OK";
                         respAltaCertificacion.Codigo = "200";
                         return respAltaCertificacion;
                     }
                     else
                     {
-                        return null;
+                        respAltaCertificacion.Id = CertificacionBuscado.IdCertificacion;
+                        respAltaCertificacion.Codigo = "400";
+                        respAltaCertificacion.Mensaje = "Record not found";
+                        return respAltaCertificacion;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaCertificacion.Id = CertificacionBuscado.IdCertificacion;
+                    respAltaCertificacion.Codigo = "400";
+                    respAltaCertificacion.Mensaje =ex.InnerException.Message;
+                    return respAltaCertificacion;
                 }
             }
         }
@@ -102,6 +117,7 @@ namespace APIRestV2.Controllers.Process
             Certificacion respAltaCertificacion = CertificacionData.FindCertificacion(idCertificacion);
             if (respAltaCertificacion == null)
             {
+                respAltaCertificacion = new Certificacion();
                 respAltaCertificacion.IdCertificacion = -1;
             }
             return respAltaCertificacion;

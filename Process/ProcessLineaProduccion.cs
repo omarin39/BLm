@@ -30,6 +30,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaLineaProduccion.Id = respNewUSR;
                     respAltaLineaProduccion.Codigo = "200";
+                    respAltaLineaProduccion.Mensaje = "OK";
                     return respAltaLineaProduccion;
                 }
                 else
@@ -54,6 +55,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaLineaProduccion;
             }
+            else if (LineaProduccionBuscado.Id == -1)
+            {
+                respAltaLineaProduccion.Id = LineaProduccion.Id;
+                respAltaLineaProduccion.Codigo = "400";
+                respAltaLineaProduccion.Mensaje = "Not found";
+                return respAltaLineaProduccion;
+            }
             else
             {
                 try
@@ -68,16 +76,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
                         respAltaLineaProduccion.Codigo = "200";
+                        respAltaLineaProduccion.Mensaje = "OK";
                         return respAltaLineaProduccion;
                     }
                     else
                     {
-                        return null;
+                        respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
+                        respAltaLineaProduccion.Codigo = "400";
+                        respAltaLineaProduccion.Mensaje = "Record not found";
+                        return respAltaLineaProduccion;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
+                    respAltaLineaProduccion.Codigo = "400";
+                    respAltaLineaProduccion.Mensaje = ex.InnerException.Message;
+                    return respAltaLineaProduccion;
                 }
             }
         }
@@ -85,6 +100,7 @@ namespace APIRestV2.Controllers.Process
             LineaProduccion respAltaLineaProduccion = LineaProduccionData.FindLineaProduccion(IdLineaProduccionExt);
             if (respAltaLineaProduccion == null)
             {
+                respAltaLineaProduccion = new LineaProduccion();
                 respAltaLineaProduccion.Id = -1;
             }
             return respAltaLineaProduccion;

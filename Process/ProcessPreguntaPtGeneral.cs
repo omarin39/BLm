@@ -31,6 +31,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPregunta.Id = respNewUSR;
                     respAltaPregunta.Codigo = "200";
+                    respAltaPregunta.Mensaje = "OK";
                     return respAltaPregunta;
                 }
                 else
@@ -52,6 +53,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaPregunta;
             }
+            else if (PreguntaBuscado.IdPreguntaPt == -1)
+            {
+                respAltaPregunta.Id = Pregunta.IdPreguntaPt;
+                respAltaPregunta.Codigo = "400";
+                respAltaPregunta.Mensaje = "Not found";
+                return respAltaPregunta;
+            }
             else
             {
                 try
@@ -70,16 +78,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaPregunta.Id = PreguntaBuscado.IdPreguntaPt;
                         respAltaPregunta.Codigo = "200";
+                        respAltaPregunta.Mensaje = "OK";
                         return respAltaPregunta;
                     }
                     else
                     {
-                        return null;
+                        respAltaPregunta.Id = PreguntaBuscado.IdPreguntaPt;
+                        respAltaPregunta.Codigo = "400";
+                        respAltaPregunta.Mensaje = "Record not found";
+                        return respAltaPregunta;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaPregunta.Id = PreguntaBuscado.IdPreguntaPt;
+                    respAltaPregunta.Codigo = "400";
+                    respAltaPregunta.Mensaje = ex.InnerException.Message;
+                    return respAltaPregunta;
                 }
             }
         }
@@ -87,6 +102,7 @@ namespace APIRestV2.Controllers.Process
             PreguntaPtGeneral respAltaPregunta = PreguntaData.FindPregunta(IdPregunta);
             if (respAltaPregunta == null)
             {
+                respAltaPregunta = new PreguntaPtGeneral();
                 respAltaPregunta.IdPreguntaPt = -1;
             }
             return respAltaPregunta;

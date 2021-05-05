@@ -51,6 +51,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaEmpleado.Id = respNewUSR;
                     respAltaEmpleado.Codigo = "200";
+                    respAltaEmpleado.Mensaje = "OK";
                     return respAltaEmpleado;
                 }
                 else
@@ -69,7 +70,16 @@ namespace APIRestV2.Controllers.Process
             var empleadoBuscado = FindEmpleado(empleado.IdEmpleado);
             if(empleadoBuscado==null){
                  return respAltaEmpleado;
-            }else{
+            }
+            else if (empleadoBuscado.IdEmpleado == -1)
+            {
+                respAltaEmpleado.Id = empleado.IdEmpleado;
+                respAltaEmpleado.Codigo = "400";
+                respAltaEmpleado.Mensaje = "Not found";
+                return respAltaEmpleado;
+            }
+            else
+            {
                 try
                 {
                     empleadoBuscado.NumeroNomina = empleado.NumeroNomina;
@@ -94,22 +104,30 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaEmpleado.Id = empleadoBuscado.IdEmpleado;
                         respAltaEmpleado.Codigo = "200";
+                        respAltaEmpleado.Mensaje = "OK";
                         return respAltaEmpleado;
                     }
                     else
                     {
-                        return null;
+                        respAltaEmpleado.Id = empleadoBuscado.IdEmpleado;
+                        respAltaEmpleado.Codigo = "400";
+                        respAltaEmpleado.Mensaje = "Record not found";
+                        return respAltaEmpleado;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaEmpleado.Id = empleadoBuscado.IdEmpleado;
+                    respAltaEmpleado.Codigo = "400";
+                    respAltaEmpleado.Mensaje =ex.InnerException.Message;
+                    return respAltaEmpleado;
                 }
             }
         }
         public Empleado FindEmpleado(long idEmpleado){
             Empleado RespAltaEmpleado = empleadoData.FindEmpleado(idEmpleado);
             if(RespAltaEmpleado==null){
+                RespAltaEmpleado = new Empleado();
                 RespAltaEmpleado.IdEmpleado = -1;
             }
             return RespAltaEmpleado;

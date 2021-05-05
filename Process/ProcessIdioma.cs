@@ -26,6 +26,7 @@ namespace APIRestV2.Process
                 {
                     respAltaIdioma.Id = respNewIdioma;
                     respAltaIdioma.Codigo = "200";
+                    respAltaIdioma.Mensaje = "OK";
                     return respAltaIdioma;
                 }
                 else
@@ -46,6 +47,13 @@ namespace APIRestV2.Process
             {
                 return respAltaIdioma;
             }
+            else if (IdiomaBuscado.IdIdioma == -1)
+            {
+                respAltaIdioma.Id = _idioma.IdIdioma;
+                respAltaIdioma.Codigo = "400";
+                respAltaIdioma.Mensaje = "Not found";
+                return respAltaIdioma;
+            }
             else
             {
                 try
@@ -58,17 +66,24 @@ namespace APIRestV2.Process
                     {
                         respAltaIdioma.Id = IdiomaBuscado.IdIdioma;
                         respAltaIdioma.Codigo = "200";
+                        respAltaIdioma.Mensaje = "OK";
                         return respAltaIdioma;
                     }
                     else
                     {
-                        return null;
+                        respAltaIdioma.Id = IdiomaBuscado.IdIdioma;
+                        respAltaIdioma.Codigo = "400";
+                        respAltaIdioma.Mensaje = "Record not found";
+                        return respAltaIdioma;
                     }
                 }
                 catch (Exception ex)
                 {
 
-                    return null;
+                    respAltaIdioma.Id = IdiomaBuscado.IdIdioma;
+                    respAltaIdioma.Codigo = "400";
+                    respAltaIdioma.Mensaje =ex.InnerException.Message;
+                    return respAltaIdioma;
                 }
             }
         }
@@ -77,6 +92,7 @@ namespace APIRestV2.Process
             Idioma RespFindIdioma = IdiomaData.FindIdioma(idIdioma);
             if (RespFindIdioma == null)
             {
+                RespFindIdioma = new Idioma();
                 RespFindIdioma.IdIdioma = -1;
             }
             return RespFindIdioma;

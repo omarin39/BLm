@@ -55,7 +55,7 @@ namespace APIRestV2.Controllers
                     }
                     else
                     {
-                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al contactar el server", 401);
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
                         return NotFound("Role not found");
                     }
 
@@ -74,7 +74,7 @@ namespace APIRestV2.Controllers
             }
             catch (Exception e)
             {
-                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.Message, 400);
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
                 failWS.Codigo = "801";
                 failWS.Mensaje = "Error: " + e.Message;
                 failWS.Operacion = "Null";

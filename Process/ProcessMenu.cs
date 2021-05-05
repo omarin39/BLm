@@ -26,6 +26,7 @@ namespace APIRestV2.Process
                 {
                     respAltaMenu.Id = respNewUSR;
                     respAltaMenu.Codigo = "200";
+                    respAltaMenu.Mensaje = "OK";
                     return respAltaMenu;
                 }
                 else
@@ -46,6 +47,13 @@ namespace APIRestV2.Process
             {
                 return respUpdateMenu;
             }
+            else if (MenuBuscado.Id == -1)
+            {
+                respUpdateMenu.Id = _menu.Id;
+                respUpdateMenu.Codigo = "400";
+                respUpdateMenu.Mensaje = "Not found";
+                return respUpdateMenu;
+            }
             else
             {
                 try
@@ -58,16 +66,23 @@ namespace APIRestV2.Process
                     {
                         respUpdateMenu.Id = MenuBuscado.Id;
                         respUpdateMenu.Codigo = "200";
+                        respUpdateMenu.Mensaje = "OK";
                         return respUpdateMenu;
                     }
                     else
                     {
-                        return null;
+                        respUpdateMenu.Id = MenuBuscado.Id;
+                        respUpdateMenu.Codigo = "400";
+                        respUpdateMenu.Mensaje = "Record not found";
+                        return respUpdateMenu;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respUpdateMenu.Id = MenuBuscado.Id;
+                    respUpdateMenu.Codigo = "400";
+                    respUpdateMenu.Mensaje = ex.InnerException.Message;
+                    return respUpdateMenu;
                 }
             }
         }
@@ -76,6 +91,7 @@ namespace APIRestV2.Process
             Menu resMenu = MenuData.FindMenu(idMenu);
             if (resMenu == null)
             {
+                resMenu = new Menu();
                 resMenu.Id = -1;
             }
             return resMenu;

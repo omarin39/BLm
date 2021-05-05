@@ -36,7 +36,7 @@ namespace APIRestV2.DataModels
             }
             catch (Exception ex)
             {
-                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.InnerException.Message, 400);
                 return 0;
             }
         }
@@ -51,7 +51,7 @@ namespace APIRestV2.DataModels
             }
             catch (Exception ex)
             {
-                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.Message, 400);
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.InnerException.Message, 400);
                 return 0;
             }
         }

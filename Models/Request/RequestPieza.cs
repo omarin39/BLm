@@ -8,10 +8,11 @@ namespace APIRestV2.Models.Request
 {
     public class RequestPieza
     {   
-        public long IdPieza { get; set; }     
-        public string nombre { get; set; }
-        public string descripcion { get; set; }
-        public bool Activo { get; set; }
-        
+        public long IdPieza { get; set; }
+        public string NumeroParte { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+        public bool? Activo { get; set; }
+
     }
 }

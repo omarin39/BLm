@@ -30,6 +30,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPlanta.Id = respNewUSR;
                     respAltaPlanta.Codigo = "200";
+                    respAltaPlanta.Mensaje = "OK";
                     return respAltaPlanta;
                 }
                 else
@@ -68,6 +69,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaPlanta;
             }
+            else if (PlantaBuscado.IdPlanta == -1)
+            {
+                respAltaPlanta.Id = planta.IdPlanta;
+                respAltaPlanta.Codigo = "400";
+                respAltaPlanta.Mensaje = "Not found";
+                return respAltaPlanta;
+            }
             else
             {
                 try
@@ -89,16 +97,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaPlanta.Id = PlantaBuscado.IdPlanta;
                         respAltaPlanta.Codigo = "200";
+                        respAltaPlanta.Mensaje = "OK";
                         return respAltaPlanta;
                     }
                     else
                     {
-                        return null;
+                        respAltaPlanta.Id = PlantaBuscado.IdPlanta;
+                        respAltaPlanta.Codigo = "400";
+                        respAltaPlanta.Mensaje = "Record not found";
+                        return respAltaPlanta;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaPlanta.Id = PlantaBuscado.IdPlanta;
+                    respAltaPlanta.Codigo = "400";
+                    respAltaPlanta.Mensaje = ex.InnerException.Message;
+                    return respAltaPlanta;
                 }
             }
         }
@@ -106,6 +121,7 @@ namespace APIRestV2.Controllers.Process
             Plantum respAltaPlanta = PlantaData.FindPlanta(IdPlantaExt);
             if (respAltaPlanta == null)
             {
+                respAltaPlanta = new Plantum();
                 respAltaPlanta.IdPlanta = -1;
             }
 

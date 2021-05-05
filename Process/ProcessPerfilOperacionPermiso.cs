@@ -31,6 +31,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPerfilOperacionPermiso.Id = respNewUSR;
                     respAltaPerfilOperacionPermiso.Codigo = "200";
+                    respAltaPerfilOperacionPermiso.Mensaje = "OK";
                     return respAltaPerfilOperacionPermiso;
                 }
                 else
@@ -55,6 +56,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaPerfilOperacionPermiso;
             }
+            else if (PerfilOperacionPermisoBuscado.Id == -1)
+            {
+                respAltaPerfilOperacionPermiso.Id = perfilOperacionPermiso.Id;
+                respAltaPerfilOperacionPermiso.Codigo = "400";
+                respAltaPerfilOperacionPermiso.Mensaje = "Not found";
+                return respAltaPerfilOperacionPermiso;
+            }
             else
             {
                 try
@@ -72,16 +80,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaPerfilOperacionPermiso.Id = PerfilOperacionPermisoBuscado.Id;
                         respAltaPerfilOperacionPermiso.Codigo = "200";
+                        respAltaPerfilOperacionPermiso.Mensaje = "OK";
                         return respAltaPerfilOperacionPermiso;
                     }
                     else
                     {
-                        return null;
+                        respAltaPerfilOperacionPermiso.Id = PerfilOperacionPermisoBuscado.Id;
+                        respAltaPerfilOperacionPermiso.Codigo = "400";
+                        respAltaPerfilOperacionPermiso.Mensaje = "Record not found";
+                        return respAltaPerfilOperacionPermiso;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaPerfilOperacionPermiso.Id = PerfilOperacionPermisoBuscado.Id;
+                    respAltaPerfilOperacionPermiso.Codigo = "400";
+                    respAltaPerfilOperacionPermiso.Mensaje =ex.InnerException.Message;
+                    return respAltaPerfilOperacionPermiso;
                 }
             }            
         }
@@ -119,6 +134,7 @@ namespace APIRestV2.Controllers.Process
             PerfilOperacionPermiso respAltaPerfilOperacionPermiso = PerfilOperacionPermisoData.FindPerfilOperacionPermiso(idPerfilOperacionPermiso);
             if (respAltaPerfilOperacionPermiso == null)
             {
+                respAltaPerfilOperacionPermiso = new PerfilOperacionPermiso();
                 respAltaPerfilOperacionPermiso.Id = -1;
             }
             return respAltaPerfilOperacionPermiso;

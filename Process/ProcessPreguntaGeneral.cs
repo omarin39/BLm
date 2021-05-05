@@ -31,6 +31,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPreguntaGeneral.Id = respNewUSR;
                     respAltaPreguntaGeneral.Codigo = "200";
+                    respAltaPreguntaGeneral.Mensaje = "OK";
                     return respAltaPreguntaGeneral;
                 }
                 else
@@ -56,6 +57,13 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaPreguntaGeneral;
             }
+            else if (PreguntaGeneralBuscado.IdPreguntaPt == -1)
+            {
+                respAltaPreguntaGeneral.Id = PreguntaGeneral.IdPreguntaPt;
+                respAltaPreguntaGeneral.Codigo = "400";
+                respAltaPreguntaGeneral.Mensaje = "Not found";
+                return respAltaPreguntaGeneral;
+            }
             else
             {
                 try
@@ -73,16 +81,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaPreguntaGeneral.Id = PreguntaGeneralBuscado.IdPreguntaPt;
                         respAltaPreguntaGeneral.Codigo = "200";
+                        respAltaPreguntaGeneral.Mensaje = "OK";
                         return respAltaPreguntaGeneral;
                     }
                     else
                     {
-                        return null;
+                        respAltaPreguntaGeneral.Id = PreguntaGeneralBuscado.IdPreguntaPt;
+                        respAltaPreguntaGeneral.Codigo = "400";
+                        respAltaPreguntaGeneral.Mensaje = "Record not found";
+                        return respAltaPreguntaGeneral;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaPreguntaGeneral.Id = PreguntaGeneralBuscado.IdPreguntaPt;
+                    respAltaPreguntaGeneral.Codigo = "400";
+                    respAltaPreguntaGeneral.Mensaje =ex.InnerException.Message;
+                    return respAltaPreguntaGeneral;
                 }
             }
         }
@@ -90,6 +105,7 @@ namespace APIRestV2.Controllers.Process
             PreguntaPtGeneral respAltaPreguntaGeneral = PreguntaGeneralData.FindPregunta(PreguntaGeneral);
             if (respAltaPreguntaGeneral == null)
             {
+                respAltaPreguntaGeneral = new PreguntaPtGeneral();
                 respAltaPreguntaGeneral.IdPreguntaPt = -1;
             }
             return respAltaPreguntaGeneral;

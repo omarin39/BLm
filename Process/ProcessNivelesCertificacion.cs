@@ -35,6 +35,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaNivelesCertificacion.Id = respNewUSR;
                     respAltaNivelesCertificacion.Codigo = "200";
+                    respAltaNivelesCertificacion.Mensaje = "OK";
                     return respAltaNivelesCertificacion;
                 }
                 else
@@ -53,7 +54,16 @@ namespace APIRestV2.Controllers.Process
             var nivelesCertificacionBuscado = FindNivelesCertificacion(NivelesCertificacion.IdNivelCertificacion);
             if(nivelesCertificacionBuscado==null){
                  return respAltaNivelesCertificacion;
-            }else{
+            }
+            else if (nivelesCertificacionBuscado.IdNivelCertificacion == -1)
+            {
+                respAltaNivelesCertificacion.Id = NivelesCertificacion.IdNivelCertificacion;
+                respAltaNivelesCertificacion.Codigo = "400";
+                respAltaNivelesCertificacion.Mensaje = "Not found";
+                return respAltaNivelesCertificacion;
+            }
+            else
+            {
                 try
                 {
                     
@@ -70,16 +80,23 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
                         respAltaNivelesCertificacion.Codigo = "200";
+                        respAltaNivelesCertificacion.Mensaje = "OK";
                         return respAltaNivelesCertificacion;
                     }
                     else
                     {
-                        return null;
+                        respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
+                        respAltaNivelesCertificacion.Codigo = "400";
+                        respAltaNivelesCertificacion.Mensaje = "Record not found";
+                        return respAltaNivelesCertificacion;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
+                    respAltaNivelesCertificacion.Codigo = "400";
+                    respAltaNivelesCertificacion.Mensaje = ex.InnerException.Message;
+                    return respAltaNivelesCertificacion;
                 }
             }
         }
@@ -88,6 +105,7 @@ namespace APIRestV2.Controllers.Process
             NivelCertificacion respAltaNivelesCertificacion = NivelesCertificacionData.FindNivelesCertificacion(idNivelesCertificacion);
             if (respAltaNivelesCertificacion == null)
             {
+                respAltaNivelesCertificacion = new NivelCertificacion();
                 respAltaNivelesCertificacion.IdNivelCertificacion = -1;
             }
             return respAltaNivelesCertificacion;

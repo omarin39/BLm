@@ -34,6 +34,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaProcessLog.Id = respNewUSR;
                     respAltaProcessLog.Codigo = "200";
+                    respAltaProcessLog.Mensaje = "OK";
                     return respAltaProcessLog;
                 }
                 else
@@ -69,6 +70,7 @@ namespace APIRestV2.Controllers.Process
                     {
                         respAltaProcessLog.Id = processLogBuscado.Id;
                         respAltaProcessLog.Codigo = "200";
+                        respAltaProcessLog.Mensaje = "OK";
                         return respAltaProcessLog;
                     }
                     else
@@ -86,6 +88,7 @@ namespace APIRestV2.Controllers.Process
         public ProcessLog FindProcessLog(long idProcessLog){
             ProcessLog respAltaProcessLog = processLogData.FindProcessLog(idProcessLog);
             if(respAltaProcessLog==null){
+                respAltaProcessLog = new ProcessLog();
                 respAltaProcessLog.Id = -1;
             }
             return respAltaProcessLog;
