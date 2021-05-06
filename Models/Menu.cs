@@ -14,6 +14,7 @@ namespace APIRestV2.Models
 
         public long Id { get; set; }
         public string NombreMenu { get; set; }
+        public string Icon { get; set; }
         public bool Activo { get; set; }
 
         public virtual ICollection<Operacion> Operacions { get; set; }
