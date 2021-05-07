@@ -107,14 +107,46 @@ namespace APIRestV2.Controllers
          
         }
 
+        [HttpGet("FindIdPieza/{idPieza}")]
+        public ActionResult<RequestPieza> FindPorIdPieza(long idPieza)
+        {
+            try
+            {
+                if (idPieza <=0)
+                {
+                    return NotFound("Pieza not found");
+                }
+                else
+                {
+                    var result = procPieza.FindPiezaPorIdPieza(idPieza);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("Pieza not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pieza not found");
+
+            }
+
+        }
+
 
         [HttpGet()]
-        public ActionResult<List<Pieza>> FindAll()
+        public ActionResult<List<VwPiezasMultimedia>> FindAll()
         {
             try
             {
                
-                List<Pieza> result = procPieza.FindAllPieza();
+                List<VwPiezasMultimedia> result = procPieza.FindAllPieza();
                 if (result != null)
                     {
                         return result;

@@ -101,12 +101,23 @@ namespace APIRestV2.Controllers.Process
             }
             return respAltaPieza;
         }
-    
+
+        public VwPiezasMultimedia FindPiezaPorIdPieza(long idPieza)
+        {
+            VwPiezasMultimedia respAltaPieza = PiezaData.FindPiezaPorId(idPieza);
+            if (respAltaPieza == null)
+            {
+                respAltaPieza = new VwPiezasMultimedia();
+                respAltaPieza.IdPieza = -1;
+            }
+            return respAltaPieza;
+        }
 
 
-    public List<Pieza> FindAllPieza()
+
+        public List<VwPiezasMultimedia> FindAllPieza()
     {
-        List<Pieza> resPiezaRet = PiezaData.FindAllPiezas();
+        List<VwPiezasMultimedia> resPiezaRet = PiezaData.FindAllPiezas();
         return resPiezaRet;
     }
 

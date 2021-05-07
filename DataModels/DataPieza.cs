@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,23 @@ namespace APIRestV2.DataModels
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<Pieza> FindAllPiezas()
+        public List<VwPiezasMultimedia> FindAllPiezas()
         {
-            return  _context.Piezas.ToList();
+           
+            return _context.VwPiezasMultimedias.ToList();
+          
         }
         public Pieza FindPieza(string Pieza)
         {
-            return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.Nombre == Pieza);
+           
+           return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.Nombre == Pieza);
+        }
+
+
+        public VwPiezasMultimedia FindPiezaPorId(long idPieza)
+        {
+            return _context.VwPiezasMultimedias.AsNoTracking().SingleOrDefault(p => p.IdPieza == idPieza);
+            //   return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.Nombre == Pieza);
         }
 
         public long AddPieza(Pieza item,string ip)
