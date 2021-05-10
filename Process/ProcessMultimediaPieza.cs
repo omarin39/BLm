@@ -30,8 +30,9 @@ namespace APIRestV2.Controllers.Process
                 logNewRegistro.Version = MultimediaPieza.Version;
                 logNewRegistro.Recertificacion = MultimediaPieza.Recertificacion;
                 logNewRegistro.TipoMedia = MultimediaPieza.TipoMedia;
+                logNewRegistro.Activo= MultimediaPieza.Activo;
 
-               
+
 
                 try
                 {
@@ -109,10 +110,10 @@ namespace APIRestV2.Controllers.Process
             string path = "";
             switch (tipoMedia)
             {
-                case "IMG": path = "multimedia/imagenes/" + nombre.Trim().ToLower(); break;
-                case "VIDEO": path = "multimedia/videos/" + nombre.Trim().ToLower(); break;
-                case "DOC": path = "multimedia/documentos/" + nombre.Trim().ToLower(); break;
-                default: path = "multimedia/error/" + nombre.Trim().ToLower(); break;
+                case "IMG": path = "/imagenes/" + nombre.Trim().ToLower(); break;
+                case "VIDEO": path = "/videos/" + nombre.Trim().ToLower(); break;
+                case "DOC": path = "/documentos/" + nombre.Trim().ToLower(); break;
+                default: path = "/error/" + nombre.Trim().ToLower(); break;
             }
             return path;
         }
@@ -121,22 +122,6 @@ namespace APIRestV2.Controllers.Process
         {
             ResponseGral respAltaMultimediaPieza = new();
 
-            //Valida si una plata tiene naves asociadas
-           /* if (MultimediaPieza.Activo == false)
-            {
-                DataNave naveData = new();
-                List<Nave> resNavesRet = naveData.FindAllNavesPorMultimediaPieza(MultimediaPieza.IdMultimediaPieza);
-                if (resNavesRet.Count > 0)
-                {
-                    respAltaMultimediaPieza.Id = MultimediaPieza.IdMultimediaPieza;
-                    respAltaMultimediaPieza.Codigo = "503";
-                    respAltaMultimediaPieza.Mensaje = "La MultimediaPieza no puede desactivarse, por que tiene " + resNavesRet.Count.ToString() + " naves asociadas.";
-                    return respAltaMultimediaPieza;
-                }
-            }*/
-
-
-            //reimplementar vlidacion del -1
             var multimediaPiezaBuscado = FindMultimediaPieza(multimediaPieza.IdPieza,  multimediaPieza.Id);
             if (multimediaPiezaBuscado == null)
             {
@@ -163,9 +148,10 @@ namespace APIRestV2.Controllers.Process
                         Version = multimediaPieza.Version,
                         Recertificacion = multimediaPieza.Recertificacion,
                         Ruta = multimediaPieza.Ruta,
-                        TipoMedia = multimediaPieza.TipoMedia
+                        TipoMedia = multimediaPieza.TipoMedia,
+                        Activo = multimediaPieza.Activo
 
-                        };
+                };
 
 
 
@@ -201,44 +187,19 @@ namespace APIRestV2.Controllers.Process
             {
                 respAltaMultimediaPieza = new MultiMediaPieza();
                 respAltaMultimediaPieza.Id = -1;
-              //  return null;
             }
-
-           /* var result = new ResponseMultimediaPieza
-            {
-                IdMultimediaPieza = respAltaMultimediaPieza.IdMultimediaPieza,
-                IdMultimediaPiezaExterno = respAltaMultimediaPieza.IdMultimediaPiezaExterno,
-                Acronimo = respAltaMultimediaPieza.Acronimo,
-                Activo = (bool)respAltaMultimediaPieza.Activo,
-                MultimediaPieza= respAltaMultimediaPieza.MultimediaPieza,
-                Naves = respAltaMultimediaPieza.Naves.Count,
-
-            };
-
-
-            return result;*/
             return respAltaMultimediaPieza;
         }
-    
 
+        public List<MultiMediaPieza> FindMultimediaPiezaTipMedia(long idPieza, string TipoMedia)
+        {
+           return multimediaPiezaData.FindMultimediaPiezaTipMedia(TipoMedia, idPieza);
+        }
 
         public List<MultiMediaPieza> FindAllMultimediaPieza()
         {
             List<MultiMediaPieza> resMultimediaPiezaRet = multimediaPiezaData.FindAllMultimediaPieza();
              return resMultimediaPiezaRet;
-           /* var result = resMultimediaPiezaRet.Select((MultimediaPieza, i) =>
-                      new ResponseMultimediaPieza
-                      {
-                          IdMultimediaPieza = MultimediaPieza.IdMultimediaPieza,
-                          IdMultimediaPiezaExterno = MultimediaPieza.IdMultimediaPiezaExterno,
-                          Acronimo = MultimediaPieza.Acronimo,
-                          MultimediaPieza = MultimediaPieza.MultimediaPieza,
-                          Activo = (bool)MultimediaPieza.Activo,
-                          Naves = MultimediaPieza.Naves.Count,
-                      }).ToList();
-
-
-            return result;*/
         }
 
 

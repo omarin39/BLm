@@ -19,7 +19,9 @@ namespace APIRestV2.Models.Request
         public bool? Recertificacion { get; set; }
         public string Ruta { get; set; }
         public string TipoMedia { get; set; }
+        public bool Activo { get; set; }
         public List<IFormFile> documento { set; get; }
+
 
     }
 

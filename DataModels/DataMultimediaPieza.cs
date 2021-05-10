@@ -26,6 +26,19 @@ namespace APIRestV2.DataModels
             return _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Id == idMultimedia && us.IdPieza== idPieza);
         }
 
+        public List<MultiMediaPieza> FindMultimediaPiezaTipMedia(string TipoMedia, long idPieza)
+        {
+            if (string.IsNullOrEmpty(TipoMedia))
+            {
+                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza).ToList();
+            }
+            else
+            {
+                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.TipoMedia == TipoMedia && us.IdPieza == idPieza).ToList();
+            }
+            
+        }
+
         public long AddMultimediaPieza(MultiMediaPieza item,string ip)
         {
             try

@@ -72,18 +72,18 @@ namespace APIRestV2.Controllers
         }
 
 
-        [HttpGet("Find/{idPieza}/{idMultimedia}")]
-        public ActionResult<RequestMultimediaPieza> Find(long idPieza, long idMultimedia)
+        [HttpGet("Find/{idPieza}/{TipoMedia}")]
+        public ActionResult<RequestMultimediaPieza> Find(long idPieza, string TipoMedia)
         {
             try
             {
-                if (idPieza == null || (idMultimedia == null))
+                if (idPieza ==0)
                 {
                     return NotFound("MultimediaPieza not found");
                 }
                 else
                 {
-                    var result = procMultimediaPieza.FindMultimediaPieza(idPieza, idMultimedia);
+                    var result = procMultimediaPieza.FindMultimediaPiezaTipMedia(idPieza, TipoMedia);
                     if (result != null)
                     {
                         return Ok(result);

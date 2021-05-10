@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [CARTAV]    Script Date: 06/05/2021 01:34:24 a. m. ******/
+/****** Object:  Database [CARTAV]    Script Date: 10/05/2021 04:32:15 p. m. ******/
 CREATE DATABASE [CARTAV]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,7 +80,67 @@ ALTER DATABASE [CARTAV] SET QUERY_STORE = OFF
 GO
 USE [CARTAV]
 GO
-/****** Object:  Table [dbo].[CentroCosto]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Pieza]    Script Date: 10/05/2021 04:32:16 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Pieza](
+	[IdPieza] [bigint] IDENTITY(1,1) NOT NULL,
+	[NumeroParte] [nvarchar](max) NOT NULL,
+	[Nombre] [varchar](max) NOT NULL,
+	[Descripcion] [varchar](max) NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_Pieza_D20ECB11F4B5FCCF] PRIMARY KEY CLUSTERED 
+(
+	[IdPieza] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MultiMediaPieza]    Script Date: 10/05/2021 04:32:16 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MultiMediaPieza](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdPieza] [bigint] NOT NULL,
+	[IdTipoDocumento] [bigint] NULL,
+	[Nombre] [nvarchar](max) NOT NULL,
+	[Descripcion] [nvarchar](max) NULL,
+	[Version] [nvarchar](50) NULL,
+	[Recertificacion] [bit] NULL,
+	[Ruta] [nvarchar](max) NULL,
+	[TipoMedia] [nvarchar](50) NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_MultiMediaPieza] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[VW_PIEZAS_MULTIMEDIAS]    Script Date: 10/05/2021 04:32:16 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- Retorna las piezas y sus totales de multimedia
+CREATE VIEW [dbo].[VW_PIEZAS_MULTIMEDIAS] AS
+	SELECT  p.IdPieza,
+			p.NumeroParte,
+			p.Nombre,
+			p.Descripcion,
+			p.Activo, 
+		case m.TipoMedia when 'DOC' then count(m.TipoMedia) else 0
+			end countDoc,
+		case m.TipoMedia  when 'VIDEO' then count(m.TipoMedia) else 0
+			end countVideo,
+		case m.TipoMedia  when 'IMG' then count(m.TipoMedia) else 0
+			end countImg
+	FROM Pieza p left join MultiMediaPieza m on(p.IdPieza=m.IdPieza)
+	group by   p.IdPieza,p.NumeroParte,p.Nombre,p.Descripcion,p.Activo,m.TipoMedia;
+GO
+/****** Object:  Table [dbo].[CentroCosto]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -97,7 +157,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Certificacion]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Certificacion]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -123,7 +183,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Cliente]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Cliente]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -141,7 +201,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Departamento]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Departamento]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -157,7 +217,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel1]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel1]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -174,7 +234,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel2]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel2]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -192,7 +252,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel3]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel3]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -210,7 +270,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DocumentoPiezaProceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[DocumentoPiezaProceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -227,7 +287,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Empleado]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Empleado]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -258,7 +318,7 @@ CREATE TABLE [dbo].[Empleado](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Fabricante]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Fabricante]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -276,7 +336,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Idioma]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Idioma]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -292,7 +352,7 @@ CREATE TABLE [dbo].[Idioma](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[LineaProduccion]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[LineaProduccion]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -309,7 +369,7 @@ CREATE TABLE [dbo].[LineaProduccion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Maquina]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Maquina]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -330,7 +390,7 @@ CREATE TABLE [dbo].[Maquina](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MaquinaFisica]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[MaquinaFisica]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -348,7 +408,7 @@ CREATE TABLE [dbo].[MaquinaFisica](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MaquinaProceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[MaquinaProceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -359,7 +419,7 @@ CREATE TABLE [dbo].[MaquinaProceso](
 	[Activo] [bit] NOT NULL
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Menu]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Menu]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -375,28 +435,7 @@ CREATE TABLE [dbo].[Menu](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MultiMediaPieza]    Script Date: 06/05/2021 01:34:25 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[MultiMediaPieza](
-	[Id] [bigint] IDENTITY(1,1) NOT NULL,
-	[IdPieza] [bigint] NOT NULL,
-	[IdTipoDocumento] [bigint] NULL,
-	[Nombre] [nvarchar](max) NOT NULL,
-	[Descripcion] [nvarchar](max) NULL,
-	[Version] [nvarchar](50) NULL,
-	[Recertificacion] [bit] NULL,
-	[Ruta] [nvarchar](max) NULL,
-	[TipoMedia] [nvarchar](50) NOT NULL,
- CONSTRAINT [PK_MultiMediaPieza] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Nave]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Nave]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -413,7 +452,7 @@ CREATE TABLE [dbo].[Nave](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[NivelCertificacion]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[NivelCertificacion]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -431,7 +470,7 @@ CREATE TABLE [dbo].[NivelCertificacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Operacion]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Operacion]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -449,7 +488,7 @@ CREATE TABLE [dbo].[Operacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Perfil]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Perfil]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -464,7 +503,7 @@ CREATE TABLE [dbo].[Perfil](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PerfilOperacionPermiso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PerfilOperacionPermiso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -483,24 +522,7 @@ CREATE TABLE [dbo].[PerfilOperacionPermiso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Pieza]    Script Date: 06/05/2021 01:34:25 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Pieza](
-	[IdPieza] [bigint] IDENTITY(1,1) NOT NULL,
-	[NumeroParte] [nvarchar](max) NOT NULL,
-	[Nombre] [varchar](max) NOT NULL,
-	[Descripcion] [varchar](max) NULL,
-	[Activo] [bit] NOT NULL,
- CONSTRAINT [PK_Pieza_D20ECB11F4B5FCCF] PRIMARY KEY CLUSTERED 
-(
-	[IdPieza] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[PiezaCliente]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PiezaCliente]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -511,7 +533,7 @@ CREATE TABLE [dbo].[PiezaCliente](
 	[Activo] [bit] NOT NULL
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Planta]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Planta]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -528,7 +550,7 @@ CREATE TABLE [dbo].[Planta](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaMaquina]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaMaquina]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -548,7 +570,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaMaquinaGeneral]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaMaquinaGeneral]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -567,7 +589,7 @@ CREATE TABLE [dbo].[PreguntaMaquinaGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPieza]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaPieza]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -587,7 +609,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPiezaGeneral]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaPiezaGeneral]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -605,7 +627,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaProceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaProceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -624,7 +646,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaProcesoGeneral]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaProcesoGeneral]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -642,7 +664,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPtGeneral]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaPtGeneral]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -661,7 +683,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Proceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Proceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -678,7 +700,7 @@ CREATE TABLE [dbo].[Proceso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProcesoPiezaMaquina]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[ProcesoPiezaMaquina]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -687,7 +709,7 @@ CREATE TABLE [dbo].[ProcesoPiezaMaquina](
 	[PiezaIdPieza] [bigint] NOT NULL
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProcessLog]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[ProcessLog]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -705,7 +727,7 @@ CREATE TABLE [dbo].[ProcessLog](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Puesto]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[Puesto]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -721,7 +743,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResourceValidacionCampo]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[ResourceValidacionCampo]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -743,7 +765,7 @@ CREATE TABLE [dbo].[ResourceValidacionCampo](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaMaquina]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[RespuestaMaquina]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -760,7 +782,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaPieza]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[RespuestaPieza]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -777,7 +799,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaProceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[RespuestaProceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -794,7 +816,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoMaquina]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[ResultadoMaquina]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -808,7 +830,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoPieza]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[ResultadoPieza]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -822,7 +844,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoProceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[ResultadoProceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -836,7 +858,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoAcceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[TipoAcceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -850,7 +872,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoDocumento]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[TipoDocumento]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -865,7 +887,7 @@ CREATE TABLE [dbo].[TipoDocumento](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UnidadNegocio]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[UnidadNegocio]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -880,7 +902,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[VideoPiezaProceso]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Table [dbo].[VideoPiezaProceso]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -896,46 +918,11 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-SET IDENTITY_INSERT [dbo].[CentroCosto] ON 
-
-INSERT [dbo].[CentroCosto] ([IdCentroCosto], [IdCentroCostoExterno], [DescCentroCosto], [DuenoCeco], [Activo]) VALUES (1, 2314, N'SUELDOS1', 253, 1)
-SET IDENTITY_INSERT [dbo].[CentroCosto] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Cliente] ON 
-
-INSERT [dbo].[Cliente] ([IdCliente], [Nombre], [Contacto], [Email], [Telefono], [Activo]) VALUES (1, N'BMW', N'Alfredo Gómez', N'omar@gmail.com', N'+7226584575', 1)
-SET IDENTITY_INSERT [dbo].[Cliente] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Departamento] ON 
-
-INSERT [dbo].[Departamento] ([IdDepartamento], [IdDepartamentExterno], [Departamento], [Activo]) VALUES (1, 12, N'DEPARTAMENTO0321123', 1)
-SET IDENTITY_INSERT [dbo].[Departamento] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Empleado] ON 
-
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (1, N'558573', N'OMARIN', N'ALVAREZ', N'ALCANT', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'asdsadsad@asdsad.com', N'558573', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (2, N'558574', N'JOSE', N'ALVAREZ', N'ALCANT', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'correo@asdsad.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (3, N'558575', N'SERGIO', N'ALVAREZ', N'ALCANT', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'asdsadsad@asdsad.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (4, N'558576', N'ANTONIO', N'ALVAREZ', N'ALCANT', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'asdsadsad@asdsad.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (5, N'558577', N'ANDRÉS', N'ALVAREZasdsad', N'ALCANTasdsad', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'asdsadsad@asdsad.com', N'558577', 1, NULL, NULL, NULL, 1, 1, 1, 1, 3, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (6, N'558578', N'IVÁN', N'ALVAREZ', N'ALCANT', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'asdsadsad@asdsad.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1)
-SET IDENTITY_INSERT [dbo].[Empleado] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Fabricante] ON 
-
-INSERT [dbo].[Fabricante] ([IdFabricante], [Nombre], [Contacto], [Email], [Telefono], [Activo]) VALUES (1, N'Siemens', N'Alfredo Gómez', N'omar@gmail.com', N'+7226482406', 1)
-SET IDENTITY_INSERT [dbo].[Fabricante] OFF
-GO
 SET IDENTITY_INSERT [dbo].[Idioma] ON 
 
 INSERT [dbo].[Idioma] ([IdIdioma], [CodigoIdioma], [Idioma], [Activo]) VALUES (1, N'es-MX', N'Español (México)', 1)
 INSERT [dbo].[Idioma] ([IdIdioma], [CodigoIdioma], [Idioma], [Activo]) VALUES (2, N'en-US', N'English', 1)
 SET IDENTITY_INSERT [dbo].[Idioma] OFF
-GO
-SET IDENTITY_INSERT [dbo].[LineaProduccion] ON 
-
-INSERT [dbo].[LineaProduccion] ([Id], [IdNave], [NombreLinea], [DescripcionLinea], [Activo]) VALUES (1, 1, N'te cambio la prueba', N'oasdsad', 1)
-SET IDENTITY_INSERT [dbo].[LineaProduccion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Menu] ON 
 
@@ -945,25 +932,6 @@ INSERT [dbo].[Menu] ([Id], [NombreMenu], [Icon], [Activo]) VALUES (3, N'CartaVer
 INSERT [dbo].[Menu] ([Id], [NombreMenu], [Icon], [Activo]) VALUES (4, N'NecesidadesCertificacion', N'fas fa-tasks', 1)
 INSERT [dbo].[Menu] ([Id], [NombreMenu], [Icon], [Activo]) VALUES (5, N'Reportes', N'fas fa-chart-line', 1)
 SET IDENTITY_INSERT [dbo].[Menu] OFF
-GO
-SET IDENTITY_INSERT [dbo].[MultiMediaPieza] ON 
-
-INSERT [dbo].[MultiMediaPieza] ([Id], [IdPieza], [IdTipoDocumento], [Nombre], [Descripcion], [Version], [Recertificacion], [Ruta], [TipoMedia]) VALUES (5, 1, 2, N'asd', N'addsads', N'1.0', 1, N'multimedia/documentos/cv omar alvarez alcantara.docx', N'DOC')
-SET IDENTITY_INSERT [dbo].[MultiMediaPieza] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Nave] ON 
-
-INSERT [dbo].[Nave] ([IdNave], [Nombre], [Descripcion], [PlantaIdPlanta], [Activo]) VALUES (1, N'Nave 1', N'Fabricación de suspensiones 3', 1, 1)
-INSERT [dbo].[Nave] ([IdNave], [Nombre], [Descripcion], [PlantaIdPlanta], [Activo]) VALUES (4, N'Nave 1', N'Fabricación de suspensiones', 2, 1)
-INSERT [dbo].[Nave] ([IdNave], [Nombre], [Descripcion], [PlantaIdPlanta], [Activo]) VALUES (5, N'Nave 2', N'Fabricación de suspensiones', 2, 1)
-SET IDENTITY_INSERT [dbo].[Nave] OFF
-GO
-SET IDENTITY_INSERT [dbo].[NivelCertificacion] ON 
-
-INSERT [dbo].[NivelCertificacion] ([IdNivelCertificacion], [NombreNivelCertificacion], [DescripcionNivelCertificacion], [DificultadNivelCertificacion], [Color], [Activo]) VALUES (1, N'Principiante', N'Nivel de principiante. Debe operar bajo supervisiónadas', 1, N'#15e1e5', 1)
-INSERT [dbo].[NivelCertificacion] ([IdNivelCertificacion], [NombreNivelCertificacion], [DescripcionNivelCertificacion], [DificultadNivelCertificacion], [Color], [Activo]) VALUES (2, N'Básico', N'Nivel básico', 2, N'#ebdc0a', 1)
-INSERT [dbo].[NivelCertificacion] ([IdNivelCertificacion], [NombreNivelCertificacion], [DescripcionNivelCertificacion], [DificultadNivelCertificacion], [Color], [Activo]) VALUES (3, N'Intermedio', N'Nivel Intermedio', 3, N'#27bea0', 1)
-SET IDENTITY_INSERT [dbo].[NivelCertificacion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Operacion] ON 
 
@@ -990,153 +958,119 @@ GO
 SET IDENTITY_INSERT [dbo].[Perfil] ON 
 
 INSERT [dbo].[Perfil] ([Id], [Perfil], [Activo]) VALUES (1, N'Administrador', 1)
-INSERT [dbo].[Perfil] ([Id], [Perfil], [Activo]) VALUES (2, N'Usuario', 1)
-INSERT [dbo].[Perfil] ([Id], [Perfil], [Activo]) VALUES (3, N'Validador', 1)
 SET IDENTITY_INSERT [dbo].[Perfil] OFF
 GO
 SET IDENTITY_INSERT [dbo].[PerfilOperacionPermiso] ON 
 
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (1, 1, 1, 1, 1, 1, 1)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (2, 1, 2, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (3, 1, 3, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (4, 1, 4, 0, 1, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (1, 1, 1, 1, 0, 0, 1)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (2, 1, 2, 1, 0, 0, 1)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (3, 1, 3, 0, 0, 0, 1)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (4, 1, 4, 0, 0, 0, 1)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (5, 1, 5, 0, 0, 0, 0)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (6, 1, 6, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (7, 2, 7, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (8, 2, 8, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (9, 2, 9, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (10, 2, 10, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (11, 2, 11, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (12, 2, 12, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (13, 2, 13, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (14, 2, 14, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (15, 2, 15, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (16, 2, 16, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (17, 2, 17, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (7, 1, 7, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (8, 1, 8, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (9, 1, 9, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (10, 1, 10, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (11, 1, 11, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (12, 1, 12, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (13, 1, 13, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (14, 1, 14, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (15, 1, 15, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (16, 1, 16, 0, 0, 0, 0)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (17, 1, 17, 0, 0, 0, 0)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (18, 1, 18, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (19, 2, 1, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (20, 2, 2, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (21, 2, 3, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (22, 2, 4, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (23, 2, 5, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (24, 2, 6, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (25, 2, 7, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (26, 2, 8, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (27, 2, 9, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (28, 2, 10, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (29, 2, 11, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (30, 2, 12, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (31, 2, 13, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (32, 2, 14, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (33, 2, 15, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (34, 2, 16, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (35, 2, 17, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (36, 2, 18, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (37, 3, 1, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (38, 3, 2, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (39, 3, 3, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (40, 3, 4, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (41, 3, 5, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (42, 3, 6, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (43, 3, 7, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (44, 3, 8, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (45, 3, 9, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (46, 3, 10, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (47, 3, 11, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (48, 3, 12, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (49, 3, 13, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (50, 3, 14, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (51, 3, 15, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (52, 3, 16, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (53, 3, 17, 0, 0, 0, 0)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (54, 3, 18, 0, 0, 0, 0)
 SET IDENTITY_INSERT [dbo].[PerfilOperacionPermiso] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Pieza] ON 
 
-INSERT [dbo].[Pieza] ([IdPieza], [NumeroParte], [Nombre], [Descripcion], [Activo]) VALUES (1, N'100-asd', N'asdasdasd', N'asdsadsad', 1)
+INSERT [dbo].[Pieza] ([IdPieza], [NumeroParte], [Nombre], [Descripcion], [Activo]) VALUES (1, N'80A821169/170', N'Cubierta frontal interna izq/der', N'Cubierta frontal interna izq/der', 1)
 SET IDENTITY_INSERT [dbo].[Pieza] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Planta] ON 
-
-INSERT [dbo].[Planta] ([IdPlanta], [IdPlantaExterno], [Acronimo], [Planta], [Activo]) VALUES (1, 111, N'AUCHI22', N'Planta de Chihuahua', 1)
-INSERT [dbo].[Planta] ([IdPlanta], [IdPlantaExterno], [Acronimo], [Planta], [Activo]) VALUES (2, 113, N'BOLERMA', N'Planta de Lerma', 1)
-SET IDENTITY_INSERT [dbo].[Planta] OFF
-GO
-SET IDENTITY_INSERT [dbo].[PreguntaPtGeneral] ON 
-
-INSERT [dbo].[PreguntaPtGeneral] ([IdPreguntaPt], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [Activo]) VALUES (1, N'Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.assadsadsdsad', NULL, 0, 1, 2, 1)
-INSERT [dbo].[PreguntaPtGeneral] ([IdPreguntaPt], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [Activo]) VALUES (2, N'Process Knoledge: Explain process operations and know the previous and next process', NULL, 0, 2, 2, 1)
-SET IDENTITY_INSERT [dbo].[PreguntaPtGeneral] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Proceso] ON 
 
-INSERT [dbo].[Proceso] ([IdProceso], [Codigo], [Nombre], [Descripcion], [Activo]) VALUES (1, N'OP 1000-10', N'Maquinado', N'Maquinado', 1)
-INSERT [dbo].[Proceso] ([IdProceso], [Codigo], [Nombre], [Descripcion], [Activo]) VALUES (2, N'OP 1000-11', N'BMW', N'Planta de Chihuahua 2', 1)
-INSERT [dbo].[Proceso] ([IdProceso], [Codigo], [Nombre], [Descripcion], [Activo]) VALUES (3, N'OP 1000-12', N'Embalaje', N'Maquinado', 1)
+INSERT [dbo].[Proceso] ([IdProceso], [Codigo], [Nombre], [Descripcion], [Activo]) VALUES (1, N'OP 1000-10', N'Manufactura', N'Fabricación de suspensiones', 1)
 SET IDENTITY_INSERT [dbo].[Proceso] OFF
 GO
 SET IDENTITY_INSERT [dbo].[ProcessLog] ON 
 
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (1, N'::1', CAST(N'2021-04-29T17:48:07.757' AS DateTime), N'Operation (OPERACIÓN = AddProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 2
-  Codigo (String): OP 1000-11
-  Nombre (String): BMW
-  Descripcion (String): Planta de Chihuahua 2
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (1, N'::1', CAST(N'2021-05-08T01:39:11.747' AS DateTime), N'Operation (OPERACIÓN = AddPerfil)Type: PerfilProperties (N = 4)  Id (Int64): 1
+  Perfil1 (String): Administrador
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (20, N'::1', CAST(N'2021-05-10T11:09:02.047' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
+  IdPieza (Int64): 1
+  IdTipoDocumento (Nullable`1): 2
+  Nombre (String): asd
+  Descripcion (String): addsads
+  Version (String): 1.0
+  Recertificacion (Nullable`1): True
+  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
+  TipoMedia (String): DOC
+  IdPiezaNavigation (Pieza): 
+  IdTipoDocumentoNavigation (TipoDocumento): 
+', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaPieza_MultiMediaPiezaIdPieza". The conflict occurred in database "CARTAV", table "dbo.Pieza", column ''IdPieza''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (21, N'::1', CAST(N'2021-05-10T11:09:52.740' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
+  IdPieza (Int64): 1
+  IdTipoDocumento (Nullable`1): 2
+  Nombre (String): asd
+  Descripcion (String): addsads
+  Version (String): 1.0
+  Recertificacion (Nullable`1): True
+  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
+  TipoMedia (String): DOC
+  IdPiezaNavigation (Pieza): 
+  IdTipoDocumentoNavigation (TipoDocumento): 
+', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaPieza_MultiMediaPiezaIdPieza". The conflict occurred in database "CARTAV", table "dbo.Pieza", column ''IdPieza''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (22, N'::1', CAST(N'2021-05-10T11:14:12.360' AS DateTime), N'Operation (OPERACIÓN = AddProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 1
+  Codigo (String): OP 1000-10
+  Nombre (String): Manufactura
+  Descripcion (String): Fabricación de suspensiones
   Activo (Nullable`1): True
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (2, N'::1', CAST(N'2021-05-03T12:42:35.313' AS DateTime), N'Operation (OPERACIÓN = AddProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 3
-  Codigo (String): OP 1000-12
-  Nombre (String): EMbalaje
-  Descripcion (String): Maquinado
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (3, N'::1', CAST(N'2021-05-03T12:42:41.037' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 3
-  Codigo (String): OP 1000-12
-  Nombre (String): Embalaje
-  Descripcion (String): Maquinado
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (4, N'::1', CAST(N'2021-05-03T22:21:34.957' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 1
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (23, N'::1', CAST(N'2021-05-10T11:15:04.053' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 1
   IdPerfil (Int64): 1
   IdOperacion (Int64): 1
   Crear (Boolean): True
-  Editar (Boolean): True
-  Eliminar (Boolean): True
+  Editar (Boolean): False
+  Eliminar (Boolean): False
   Ver (Nullable`1): True
   IdOperacionNavigation (Operacion): 
   IdPerfilNavigation (Perfil): 
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (5, N'::1', CAST(N'2021-05-03T22:21:35.197' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 2
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (24, N'::1', CAST(N'2021-05-10T11:15:04.093' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 2
   IdPerfil (Int64): 1
   IdOperacion (Int64): 2
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (6, N'::1', CAST(N'2021-05-03T22:21:35.207' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 3
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 3
   Crear (Boolean): True
   Editar (Boolean): False
   Eliminar (Boolean): False
-  Ver (Nullable`1): False
+  Ver (Nullable`1): True
   IdOperacionNavigation (Operacion): 
   IdPerfilNavigation (Perfil): 
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (7, N'::1', CAST(N'2021-05-03T22:21:35.213' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 4
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (25, N'::1', CAST(N'2021-05-10T11:15:04.110' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 3
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 3
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): True
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (26, N'::1', CAST(N'2021-05-10T11:15:04.113' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 4
   IdPerfil (Int64): 1
   IdOperacion (Int64): 4
   Crear (Boolean): False
   Editar (Boolean): False
   Eliminar (Boolean): False
-  Ver (Nullable`1): False
+  Ver (Nullable`1): True
   IdOperacionNavigation (Operacion): 
   IdPerfilNavigation (Perfil): 
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (8, N'::1', CAST(N'2021-05-03T22:21:35.223' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 5
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (27, N'::1', CAST(N'2021-05-10T11:15:04.127' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 5
   IdPerfil (Int64): 1
   IdOperacion (Int64): 5
   Crear (Boolean): False
@@ -1146,7 +1080,7 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   IdOperacionNavigation (Operacion): 
   IdPerfilNavigation (Perfil): 
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (9, N'::1', CAST(N'2021-05-03T22:21:35.237' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 6
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (28, N'::1', CAST(N'2021-05-10T11:15:04.130' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 6
   IdPerfil (Int64): 1
   IdOperacion (Int64): 6
   Crear (Boolean): False
@@ -1156,7 +1090,117 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   IdOperacionNavigation (Operacion): 
   IdPerfilNavigation (Perfil): 
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (10, N'::1', CAST(N'2021-05-03T22:21:35.243' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 18
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (29, N'::1', CAST(N'2021-05-10T11:15:04.137' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 7
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 7
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (30, N'::1', CAST(N'2021-05-10T11:15:04.147' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 8
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 8
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (31, N'::1', CAST(N'2021-05-10T11:15:04.160' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 9
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 9
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (32, N'::1', CAST(N'2021-05-10T11:15:04.167' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 10
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 10
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (33, N'::1', CAST(N'2021-05-10T11:15:04.173' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 11
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 11
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (34, N'::1', CAST(N'2021-05-10T11:15:04.180' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 12
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 12
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (35, N'::1', CAST(N'2021-05-10T11:15:04.187' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 13
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 13
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (36, N'::1', CAST(N'2021-05-10T11:15:04.197' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 14
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 14
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (37, N'::1', CAST(N'2021-05-10T11:15:04.200' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 15
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 15
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (38, N'::1', CAST(N'2021-05-10T11:15:04.210' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 16
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 16
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (39, N'::1', CAST(N'2021-05-10T11:15:04.213' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 17
+  IdPerfil (Int64): 1
+  IdOperacion (Int64): 17
+  Crear (Boolean): False
+  Editar (Boolean): False
+  Eliminar (Boolean): False
+  Ver (Nullable`1): False
+  IdOperacionNavigation (Operacion): 
+  IdPerfilNavigation (Perfil): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (40, N'::1', CAST(N'2021-05-10T11:15:04.223' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 18
   IdPerfil (Int64): 1
   IdOperacion (Int64): 18
   Crear (Boolean): False
@@ -1166,1296 +1210,13 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   IdOperacionNavigation (Operacion): 
   IdPerfilNavigation (Perfil): 
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (11, N'::1', CAST(N'2021-05-03T22:29:00.530' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPlantaProperties (N = 5)  IdPlanta (Int64): 2
-  IdPlantaExt (Int64): 0
-  Acronimo (String): BOLERMA
-  Planta1 (String): 
-  Activo (Nullable`1): False
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (12, N'::1', CAST(N'2021-05-03T22:29:37.147' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPlantaProperties (N = 5)  IdPlanta (Int64): 2
-  IdPlantaExt (Int64): 0
-  Acronimo (String): BOLERMA
-  Planta1 (String): 
-  Activo (Nullable`1): False
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (13, N'::1', CAST(N'2021-05-03T22:33:48.200' AS DateTime), N'Operation (OPERACIÓN = UpdatePlanta)Type: PlantumProperties (N = 6)  IdPlanta (Int64): 2
-  IdPlantaExterno (Nullable`1): 113
-  Acronimo (String): BOLERMA
-  Planta (String): 
-  Activo (Nullable`1): False
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (14, N'::1', CAST(N'2021-05-03T22:36:58.187' AS DateTime), N'Operation (OPERACIÓN = UpdatePlanta)Type: PlantumProperties (N = 6)  IdPlanta (Int64): 2
-  IdPlantaExterno (Nullable`1): 113
-  Acronimo (String): BOLERMA
-  Planta (String): Planta de Lerma
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (41, N'::1', CAST(N'2021-05-10T14:47:40.753' AS DateTime), N'Operation (OPERACIÓN = AddPieza)Type: PiezaProperties (N = 7)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der
+  Descripcion (String): Cubierta frontal interna izq/der
   Activo (Nullable`1): True
 ', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (15, N'::1', CAST(N'2021-05-03T22:39:05.467' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 1
-  Codigo (String): OP 1000-10
-  Nombre (String): Maquinado
-  Descripcion (String): Maquinado
-  Activo (Nullable`1): False
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (16, N'::1', CAST(N'2021-05-03T22:39:10.180' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 1
-  Codigo (String): OP 1000-10
-  Nombre (String): Maquinado
-  Descripcion (String): Maquinado
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (17, N'::1', CAST(N'2021-05-03T22:39:21.127' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 1
-  Codigo (String): OP 1000-10
-  Nombre (String): Maquinado
-  Descripcion (String): Maquinado
-  Activo (Nullable`1): False
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (18, N'::1', CAST(N'2021-05-03T22:39:29.257' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 6)  IdProceso (Int64): 1
-  Codigo (String): OP 1000-10
-  Nombre (String): Maquinado
-  Descripcion (String): Maquinado
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (19, N'::1', CAST(N'2021-05-03T22:47:58.883' AS DateTime), N'Operation (OPERACIÓN = UpdatePlanta)Type: PlantumProperties (N = 6)  IdPlanta (Int64): 1
-  IdPlantaExterno (Nullable`1): 111
-  Acronimo (String): AUCHI22
-  Planta (String): Planta de Chihuahua 2
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (20, N'::1', CAST(N'2021-05-03T22:49:20.793' AS DateTime), N'Operation (OPERACIÓN = UpdatePlanta)Type: PlantumProperties (N = 6)  IdPlanta (Int64): 1
-  IdPlantaExterno (Nullable`1): 111
-  Acronimo (String): AUCHI22
-  Planta (String): Planta de Chihuahua
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (21, N'::1', CAST(N'2021-05-03T23:04:18.143' AS DateTime), N'Operation (OPERACIÓN = AddNave)Type: NaveProperties (N = 8)  IdNave (Int64): 0
-  Nombre (String): Nave 1
-  Descripcion (String): Fabricación de suspensiones
-  PlantaIdPlanta (Int64): 0
-  Activo (Nullable`1): True
-  PlantaIdPlantaNavigation (Plantum): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (22, N'::1', CAST(N'2021-05-03T23:04:18.147' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 0
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones
-  PlantasIdPlanta (Int64): 0
-  Activo (Boolean): True
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (23, N'::1', CAST(N'2021-05-03T23:06:18.413' AS DateTime), N'Operation (OPERACIÓN = AddNave)Type: NaveProperties (N = 8)  IdNave (Int64): 0
-  Nombre (String): Nave 1
-  Descripcion (String): Fabricación de suspensiones
-  PlantaIdPlanta (Int64): 0
-  Activo (Nullable`1): True
-  PlantaIdPlantaNavigation (Plantum): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (24, N'::1', CAST(N'2021-05-03T23:06:18.417' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 0
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones
-  PlantasIdPlanta (Int64): 0
-  Activo (Boolean): True
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (25, N'::1', CAST(N'2021-05-03T23:08:05.397' AS DateTime), N'Operation (OPERACIÓN = AddNave)Type: NaveProperties (N = 8)  IdNave (Int64): 4
-  Nombre (String): Nave 1
-  Descripcion (String): Fabricación de suspensiones
-  PlantaIdPlanta (Int64): 2
-  Activo (Nullable`1): True
-  PlantaIdPlantaNavigation (Plantum): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (26, N'::1', CAST(N'2021-05-03T23:19:10.203' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (27, N'::1', CAST(N'2021-05-03T23:19:25.587' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (28, N'::1', CAST(N'2021-05-03T23:19:27.890' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (29, N'::1', CAST(N'2021-05-03T23:19:32.420' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (30, N'::1', CAST(N'2021-05-03T23:19:33.187' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (31, N'::1', CAST(N'2021-05-03T23:19:33.407' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (32, N'::1', CAST(N'2021-05-03T23:19:37.543' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 25
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (33, N'::1', CAST(N'2021-05-03T23:20:23.263' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (34, N'::1', CAST(N'2021-05-03T23:21:25.597' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (35, N'::1', CAST(N'2021-05-03T23:22:34.673' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNaveProperties (N = 5)  IdNave (Int64): 1
-  nombre (String): Nave 1
-  descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Boolean): True
-', N'Sequence contains more than one element', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (36, N'::1', CAST(N'2021-05-03T23:29:16.797' AS DateTime), N'Operation (OPERACIÓN = UpdateNave)Type: NaveProperties (N = 8)  IdNave (Int64): 1
-  Nombre (String): Nave 1
-  Descripcion (String): Fabricación de suspensiones 3
-  PlantaIdPlanta (Int64): 1
-  Activo (Nullable`1): True
-  PlantaIdPlantaNavigation (Plantum): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (37, N'::1', CAST(N'2021-05-03T23:31:26.197' AS DateTime), N'Operation (OPERACIÓN = AddNave)Type: NaveProperties (N = 8)  IdNave (Int64): 5
-  Nombre (String): Nave 2
-  Descripcion (String): Fabricación de suspensiones
-  PlantaIdPlanta (Int64): 2
-  Activo (Nullable`1): True
-  PlantaIdPlantaNavigation (Plantum): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (38, N'::1', CAST(N'2021-05-03T23:39:07.070' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 1
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 1
-  Crear (Boolean): True
-  Editar (Boolean): True
-  Eliminar (Boolean): True
-  Ver (Nullable`1): True
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (39, N'::1', CAST(N'2021-05-03T23:39:07.097' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 2
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 2
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (40, N'::1', CAST(N'2021-05-03T23:39:07.103' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 3
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 3
-  Crear (Boolean): True
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (41, N'::1', CAST(N'2021-05-03T23:39:07.107' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 4
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 4
-  Crear (Boolean): True
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (42, N'::1', CAST(N'2021-05-03T23:39:07.110' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 5
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 5
-  Crear (Boolean): True
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (43, N'::1', CAST(N'2021-05-03T23:39:07.113' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 6
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 6
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (44, N'::1', CAST(N'2021-05-03T23:39:07.117' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 18
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 18
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (45, N'::1', CAST(N'2021-05-03T23:40:02.270' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 1
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 1
-  Crear (Boolean): True
-  Editar (Boolean): True
-  Eliminar (Boolean): True
-  Ver (Nullable`1): True
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (46, N'::1', CAST(N'2021-05-03T23:40:02.283' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 2
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 2
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (47, N'::1', CAST(N'2021-05-03T23:40:02.297' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 3
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 3
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (48, N'::1', CAST(N'2021-05-03T23:40:02.307' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 4
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 4
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (49, N'::1', CAST(N'2021-05-03T23:40:02.317' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 5
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 5
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (50, N'::1', CAST(N'2021-05-03T23:40:02.327' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 6
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 6
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (51, N'::1', CAST(N'2021-05-03T23:40:02.337' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 18
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 18
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (52, N'::1', CAST(N'2021-05-03T23:54:25.513' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FechaIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (53, N'::1', CAST(N'2021-05-03T23:54:25.717' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FechaIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (54, N'::1', CAST(N'2021-05-03T23:54:25.727' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (55, N'::1', CAST(N'2021-05-03T23:54:35.450' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FechaIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (56, N'::1', CAST(N'2021-05-03T23:54:35.497' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FechaIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (57, N'::1', CAST(N'2021-05-03T23:54:35.500' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (58, N'::1', CAST(N'2021-05-03T23:55:22.877' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FechaIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (59, N'::1', CAST(N'2021-05-03T23:55:22.943' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FechaIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (60, N'::1', CAST(N'2021-05-03T23:55:22.947' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NNomina (String): 
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FNacimiento (DateTime): 01/01/0001 12:00:00 a. m.
-  FIngreso (DateTime): 01/01/0001 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (61, N'::1', CAST(N'2021-05-04T09:30:59.903' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (62, N'::1', CAST(N'2021-05-04T09:31:00.883' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (63, N'::1', CAST(N'2021-05-04T09:31:00.913' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (64, N'::1', CAST(N'2021-05-04T09:31:26.033' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (65, N'::1', CAST(N'2021-05-04T09:31:26.177' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (66, N'::1', CAST(N'2021-05-04T09:31:33.210' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZ
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (67, N'::1', CAST(N'2021-05-04T09:31:59.187' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZsaddsasdasd
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (68, N'::1', CAST(N'2021-05-04T09:31:59.327' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZsaddsasdasd
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (69, N'::1', CAST(N'2021-05-04T09:31:59.373' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZsaddsasdasd
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (70, N'::1', CAST(N'2021-05-04T09:32:53.177' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 1
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 1
-  Crear (Boolean): True
-  Editar (Boolean): True
-  Eliminar (Boolean): True
-  Ver (Nullable`1): True
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (71, N'::1', CAST(N'2021-05-04T09:32:53.207' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 2
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 2
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (72, N'::1', CAST(N'2021-05-04T09:32:53.217' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 3
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 3
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (73, N'::1', CAST(N'2021-05-04T09:32:53.230' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 4
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 4
-  Crear (Boolean): False
-  Editar (Boolean): True
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (74, N'::1', CAST(N'2021-05-04T09:32:53.243' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 5
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 5
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (75, N'::1', CAST(N'2021-05-04T09:32:53.253' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 6
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 6
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (76, N'::1', CAST(N'2021-05-04T09:32:53.267' AS DateTime), N'Operation (OPERACIÓN = UpdatePerfilOperacionPermiso)Type: PerfilOperacionPermisoProperties (N = 9)  Id (Int64): 18
-  IdPerfil (Int64): 1
-  IdOperacion (Int64): 18
-  Crear (Boolean): False
-  Editar (Boolean): False
-  Eliminar (Boolean): False
-  Ver (Nullable`1): False
-  IdOperacionNavigation (Operacion): 
-  IdPerfilNavigation (Perfil): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (77, N'::1', CAST(N'2021-05-04T11:43:17.380' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsasad
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (78, N'::1', CAST(N'2021-05-04T11:43:17.477' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsasad
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (79, N'::1', CAST(N'2021-05-04T11:43:21.057' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsasad
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (80, N'::1', CAST(N'2021-05-04T11:45:01.707' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsasad
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (81, N'::1', CAST(N'2021-05-04T11:46:21.737' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsasad
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (82, N'::1', CAST(N'2021-05-04T11:46:23.493' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestEmpleadoProperties (N = 18)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsasad
-  ApellidoMaterno (String): ALCANT
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 17441
-  DepartamentoIdDepartamentoNivel0 (Nullable`1): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestosIdPuesto (Int64): 0
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (83, N'::1', CAST(N'2021-05-04T11:50:27.123' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 27)  IdEmpleado (Int64): 5
-  NumeroNomina (String): 558577
-  Nombre (String): ANDRÉS
-  ApellidoPaterno (String): ALVAREZasdsad
-  ApellidoMaterno (String): ALCANTasdsad
-  FechaNacimiento (DateTime): 12/01/1983 12:00:00 a. m.
-  FechaIngreso (DateTime): 02/01/2020 12:00:00 a. m.
-  Email (String): asdsadsad@asdsad.com
-  NominaJefe (String): 558577
-  DepartamentoIdDepartamentoNivel0 (Int64): 1
-  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
-  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
-  IdiomaIdIdioma (Int64): 1
-  PuestoIdPuesto (Int64): 1
-  UnidadNegocioIdUnidadNegocio (Int64): 1
-  CentroCostoIdCentroCosto (Int64): 1
-  IdPerfil (Nullable`1): 3
-  Activo (Nullable`1): True
-  CentroCostoIdCentroCostoNavigation (CentroCosto): 
-  DepartamentoIdDepartamentoNivel0Navigation (Departamento): 
-  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
-  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
-  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
-  IdiomaIdIdiomaNavigation (Idioma): 
-  PuestoIdPuestoNavigation (Puesto): 
-  UnidadNegocioIdUnidadNegocioNavigation (UnidadNegocio): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (84, N'::1', CAST(N'2021-05-04T11:51:58.353' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescripcionNivelCertificacion (String): 
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (85, N'::1', CAST(N'2021-05-04T11:53:05.380' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescripcionNivelCertificacion (String): 
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Nullable`1): True
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (86, N'::1', CAST(N'2021-05-04T11:53:05.403' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNivelesCertificacionProperties (N = 6)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescNivelCertificacion (String): 
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Boolean): True
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (87, N'::1', CAST(N'2021-05-04T11:53:12.103' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescripcionNivelCertificacion (String): 
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (88, N'::1', CAST(N'2021-05-04T11:53:12.147' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescripcionNivelCertificacion (String): 
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Nullable`1): True
-', N'An error occurred while updating the entries. See the inner exception for details.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (89, N'::1', CAST(N'2021-05-04T11:53:17.507' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestNivelesCertificacionProperties (N = 6)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescNivelCertificacion (String): 
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Boolean): True
-', N'Error al contactar el server', 401)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (90, N'::1', CAST(N'2021-05-04T12:13:41.173' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescripcionNivelCertificacion (String): Nivel de principiante. Debe operar bajo supervisiónassadsad
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (91, N'::1', CAST(N'2021-05-04T12:14:06.190' AS DateTime), N'Operation (OPERACIÓN = UpdateNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 1
-  NombreNivelCertificacion (String): Principiante
-  DescripcionNivelCertificacion (String): Nivel de principiante. Debe operar bajo supervisiónadas
-  DificultadNivelCertificacion (Int32): 1
-  Color (String): #15e1e5
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (92, N'::1', CAST(N'2021-05-04T12:14:42.900' AS DateTime), N'Operation (OPERACIÓN = AddNivelesCertificacion)Type: NivelCertificacionProperties (N = 13)  IdNivelCertificacion (Int64): 3
-  NombreNivelCertificacion (String): Intermedio
-  DescripcionNivelCertificacion (String): Nivel Intermedio
-  DificultadNivelCertificacion (Int32): 3
-  Color (String): #27bea0
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (93, N'::1', CAST(N'2021-05-04T12:15:12.770' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 6)  idPregunta (Int64): 0
-  pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  respuesta (String): 
-  orden (Int32): 0
-  idiomaIdIdioma (Int32): 2
-  idNiveCertificacion (Int32): 0
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (94, N'::1', CAST(N'2021-05-04T12:19:52.200' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 6)  idPregunta (Int64): 0
-  pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  respuesta (String): 
-  orden (Int32): 0
-  idiomaIdIdioma (Int32): 2
-  idNiveCertificacion (Int32): 0
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (95, N'::1', CAST(N'2021-05-04T12:20:36.550' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 6)  idPregunta (Int64): 0
-  pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  respuesta (String): 
-  orden (Int32): 0
-  idiomaIdIdioma (Int32): 2
-  idNiveCertificacion (Int32): 0
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (96, N'::1', CAST(N'2021-05-04T12:31:32.083' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 7)  IdPreguntaPt (Int64): 1
-  Pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 2
-  NivelCertificacionIdNivelCertificacion (Int64): 0
-  Activo (Nullable`1): True
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (97, N'::1', CAST(N'2021-05-04T12:32:14.763' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 7)  IdPreguntaPt (Int64): 1
-  Pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 2
-  NivelCertificacionIdNivelCertificacion (Int64): 0
-  Activo (Nullable`1): True
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (98, N'::1', CAST(N'2021-05-04T12:33:17.940' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 7)  IdPreguntaPt (Int64): 1
-  Pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 2
-  NivelCertificacionIdNivelCertificacion (Int64): 0
-  Activo (Nullable`1): True
-', N'Object reference not set to an instance of an object.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (99, N'::1', CAST(N'2021-05-04T12:34:13.600' AS DateTime), N'Operation (OPERACIÓN = Put)Type: RequestPreguntaPtGeneralProperties (N = 7)  IdPreguntaPt (Int64): 1
-  Pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.aaaaaa
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 2
-  NivelCertificacionIdNivelCertificacion (Int64): 0
-  Activo (Nullable`1): True
-', N'Object reference not set to an instance of an object.', 400)
-GO
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (100, N'::1', CAST(N'2021-05-04T12:57:28.047' AS DateTime), N'Operation (OPERACIÓN = UpdatePregunta)Type: PreguntaPtGeneralProperties (N = 9)  IdPreguntaPt (Int64): 1
-  Pregunta (String): Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior.assadsadsdsad
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 1
-  NivelCertificacionIdNivelCertificacion (Int64): 2
-  Activo (Nullable`1): True
-  IdiomaIdIdiomaNavigation (Idioma): 
-  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (101, N'::1', CAST(N'2021-05-04T12:58:25.430' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestPreguntaPtGeneralProperties (N = 7)  IdPreguntaPt (Int64): 0
-  Pregunta (String): Process Knoledge: Explain process operations and know the previous and next process
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 2
-  NivelCertificacionIdNivelCertificacion (Int64): 2
-  Activo (Nullable`1): True
-', N'Parametros erroneos', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (102, N'::1', CAST(N'2021-05-04T12:59:17.247' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaPtGeneralProperties (N = 9)  IdPreguntaPt (Int64): 2
-  Pregunta (String): Process Knoledge: Explain process operations and know the previous and next process
-  Respuesta (String): 
-  Orden (Int32): 0
-  IdiomaIdIdioma (Int64): 2
-  NivelCertificacionIdNivelCertificacion (Int64): 2
-  Activo (Nullable`1): True
-  IdiomaIdIdiomaNavigation (Idioma): 
-  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (103, N'::1', CAST(N'2021-05-04T18:06:01.620' AS DateTime), N'Operation (OPERACIÓN = UpdateLineaProduccion)Type: LineaProduccionProperties (N = 6)  Id (Int64): 1
-  IdNave (Int64): 1
-  NombreLinea (String): pruebaasdsadsadsad
-  DescripcionLinea (String): oasdsad
-  Activo (Nullable`1): True
-  IdNaveNavigation (Nave): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (104, N'::1', CAST(N'2021-05-04T18:06:12.727' AS DateTime), N'Operation (OPERACIÓN = UpdateLineaProduccion)Type: LineaProduccionProperties (N = 6)  Id (Int64): 1
-  IdNave (Int64): 1
-  NombreLinea (String): te cambio la prueba
-  DescripcionLinea (String): oasdsad
-  Activo (Nullable`1): True
-  IdNaveNavigation (Nave): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (105, N'::1', CAST(N'2021-05-04T18:11:45.453' AS DateTime), N'Operation (OPERACIÓN = UpdateLineaProduccion)Type: LineaProduccionProperties (N = 6)  Id (Int64): 1
-  IdNave (Int64): 1
-  NombreLinea (String): te cambio la prueba
-  DescripcionLinea (String): oasdsad
-  Activo (Nullable`1): False
-  IdNaveNavigation (Nave): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (106, N'::1', CAST(N'2021-05-04T18:11:59.607' AS DateTime), N'Operation (OPERACIÓN = UpdateLineaProduccion)Type: LineaProduccionProperties (N = 6)  Id (Int64): 1
-  IdNave (Int64): 1
-  NombreLinea (String): te cambio la prueba
-  DescripcionLinea (String): oasdsad
-  Activo (Nullable`1): True
-  IdNaveNavigation (Nave): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (107, N'::1', CAST(N'2021-05-04T18:23:36.453' AS DateTime), N'Operation (OPERACIÓN = UpdateLineaProduccion)Type: LineaProduccionProperties (N = 6)  Id (Int64): 1
-  IdNave (Int64): 1
-  NombreLinea (String): te cambio la prueba
-  DescripcionLinea (String): oasdsad
-  Activo (Nullable`1): False
-  IdNaveNavigation (Nave): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (108, N'::1', CAST(N'2021-05-04T18:23:41.083' AS DateTime), N'Operation (OPERACIÓN = UpdateLineaProduccion)Type: LineaProduccionProperties (N = 6)  Id (Int64): 1
-  IdNave (Int64): 1
-  NombreLinea (String): te cambio la prueba
-  DescripcionLinea (String): oasdsad
-  Activo (Nullable`1): True
-  IdNaveNavigation (Nave): 
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (109, N'::1', CAST(N'2021-05-05T18:44:41.673' AS DateTime), N'Operation (OPERACIÓN = AddPieza)Type: PiezaProperties (N = 7)  IdPieza (Int64): 1
-  NumeroParte (String): 100-asd
-  Nombre (String): asdasdasd
-  Descripcion (String): asdsadsad
-  Activo (Nullable`1): True
-', N'OK', 200)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (110, N'::1', CAST(N'2021-05-05T18:46:23.780' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Int64): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaPieza_MultiMediaPiezaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (111, N'::1', CAST(N'2021-05-05T18:46:41.683' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Int64): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaPieza_MultiMediaPiezaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (112, N'::1', CAST(N'2021-05-05T18:50:24.470' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Int64): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaPieza_MultiMediaPiezaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (113, N'::1', CAST(N'2021-05-05T18:58:53.553' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Int64): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaPieza_MultiMediaPiezaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (114, N'::1', CAST(N'2021-05-05T19:04:13.870' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Nullable`1): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (115, N'::1', CAST(N'2021-05-05T19:05:18.767' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Nullable`1): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (116, N'::1', CAST(N'2021-05-05T19:05:35.793' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 0
-  IdPieza (Int64): 1
-  IdTipoDocumento (Nullable`1): 0
-  Nombre (String): asd
-  Descripcion (String): addsads
-  Version (String): 1.0
-  Recertificacion (Nullable`1): True
-  Ruta (String): multimedia/documentos/cv omar alvarez alcantara.docx
-  TipoMedia (String): DOC
-  IdPiezaNavigation (Pieza): 
-  IdTipoDocumentoNavigation (TipoDocumento): 
-', N'The INSERT statement conflicted with the FOREIGN KEY constraint "FK_MultiMediaIdTipoDocumento_TipoDocumentoId". The conflict occurred in database "CARTAV", table "dbo.TipoDocumento", column ''Id''.
-The statement has been terminated.', 400)
-INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (117, N'::1', CAST(N'2021-05-05T19:09:52.467' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 5
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (42, N'::1', CAST(N'2021-05-10T15:19:32.017' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 11)  Id (Int64): 3
   IdPieza (Int64): 1
   IdTipoDocumento (Nullable`1): 2
   Nombre (String): asd
@@ -2468,11 +1229,6 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   IdTipoDocumentoNavigation (TipoDocumento): 
 ', N'OK', 200)
 SET IDENTITY_INSERT [dbo].[ProcessLog] OFF
-GO
-SET IDENTITY_INSERT [dbo].[Puesto] ON 
-
-INSERT [dbo].[Puesto] ([IdPuesto], [IdPuestoExterno], [DescPuesto], [Activo]) VALUES (1, 9, N'PUESTO66666', 1)
-SET IDENTITY_INSERT [dbo].[Puesto] OFF
 GO
 SET IDENTITY_INSERT [dbo].[ResourceValidacionCampo] ON 
 
@@ -2513,42 +1269,37 @@ INSERT [dbo].[TipoDocumento] ([Id], [Descripcion], [TipoDocumento]) VALUES (1, N
 INSERT [dbo].[TipoDocumento] ([Id], [Descripcion], [TipoDocumento]) VALUES (2, N'Documento Dummy', N'HOE')
 SET IDENTITY_INSERT [dbo].[TipoDocumento] OFF
 GO
-SET IDENTITY_INSERT [dbo].[UnidadNegocio] ON 
-
-INSERT [dbo].[UnidadNegocio] ([IdUnidadNegocio], [IdUnidadNegocioExterno], [DescUnidadNegocio]) VALUES (1, 0, N'AUMA SERVICIOS, S.A. DE C.V.')
-SET IDENTITY_INSERT [dbo].[UnidadNegocio] OFF
-GO
-/****** Object:  Index [UQ__CentroCo__DBD8185B3CD7C0B1]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Index [UQ__CentroCo__DBD8185B05AF8232]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 ALTER TABLE [dbo].[CentroCosto] ADD UNIQUE NONCLUSTERED 
 (
 	[IdCentroCostoExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38DC151E196]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38DC9E9DB4E]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 ALTER TABLE [dbo].[Departamento] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38DC4930ECA]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D7255FE32]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel1] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D0793F0AA]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38DE0593B5B]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel2] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D085F7085]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D1C4AF28C]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel3] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Puesto__52F767D71372BC17]    Script Date: 06/05/2021 01:34:25 a. m. ******/
+/****** Object:  Index [UQ__Puesto__52F767D7DF5E6DDE]    Script Date: 10/05/2021 04:32:16 p. m. ******/
 ALTER TABLE [dbo].[Puesto] ADD UNIQUE NONCLUSTERED 
 (
 	[IdPuestoExterno] ASC
