@@ -15,5 +15,6 @@ namespace APIRestV2.Models
         public int? CountDoc { get; set; }
         public int? CountVideo { get; set; }
         public int? CountImg { get; set; }
+        public int? CountClientes { get; set; }
     }
 }

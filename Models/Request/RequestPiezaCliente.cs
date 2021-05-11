@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace APIRestV2.Models
+namespace APIRestV2.Models.Request
 {
-    public partial class PiezaCliente
+    public class RequestPiezaCliente
     {
-        public long Id { get; set; }
         public long ClienteIdCliente { get; set; }
         public long PiezaIdPieza { get; set; }
         public bool? Activo { get; set; }
 
-        public virtual Pieza PiezaIdPiezaNavigation { get; set; }
     }
 }

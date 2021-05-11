@@ -64,29 +64,30 @@ namespace APIRestV2.Models
         public virtual DbSet<TipoDocumento> TipoDocumentos { get; set; }
         public virtual DbSet<UnidadNegocio> UnidadNegocios { get; set; }
         public virtual DbSet<VideoPiezaProceso> VideoPiezaProcesos { get; set; }
+        public virtual DbSet<VwPiezaCliente> VwPiezaClientes { get; set; }
         public virtual DbSet<VwPiezasMultimedia> VwPiezasMultimedias { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //optionsBuilder.UseSqlServer("Server=172.21.2.75;Database=CARTAV;Trusted_Connection=False;User ID=usr_adbcv;Password=4$HngsRm%xe#");
-                optionsBuilder.UseSqlServer("Server=.\\SQLOMARIN;Database=CARTAV;Trusted_Connection=True;User ID=sa;Password=O1p5r1r2b3");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=.;Database=CARTAV;Trusted_Connection=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Modern_Spanish_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<CentroCosto>(entity =>
             {
                 entity.HasKey(e => e.IdCentroCosto)
-                    .HasName("PK__CentroCo__EE3651E890D55885");
+                    .HasName("PK__CentroCo__EE3651E8ECCF1187");
 
                 entity.ToTable("CentroCosto");
 
-                entity.HasIndex(e => e.IdCentroCostoExterno, "UQ__CentroCo__DBD8185B05AF8232")
+                entity.HasIndex(e => e.IdCentroCostoExterno, "UQ__CentroCo__DBD8185B61171B6F")
                     .IsUnique();
 
                 entity.Property(e => e.Activo)
@@ -101,7 +102,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<Certificacion>(entity =>
             {
                 entity.HasKey(e => e.IdCertificacion)
-                    .HasName("PK__Certific__29FBE98D224848D2");
+                    .HasName("PK__Certific__29FBE98DE327B3B6");
 
                 entity.ToTable("Certificacion");
 
@@ -129,7 +130,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<Cliente>(entity =>
             {
                 entity.HasKey(e => e.IdCliente)
-                    .HasName("PK__Cliente__D5946642781952F4");
+                    .HasName("PK__Cliente__D59466420434D9A2");
 
                 entity.ToTable("Cliente");
 
@@ -151,11 +152,11 @@ namespace APIRestV2.Models
             modelBuilder.Entity<Departamento>(entity =>
             {
                 entity.HasKey(e => e.IdDepartamento)
-                    .HasName("PK__Departam__787A433DFA41A231");
+                    .HasName("PK__Departam__787A433D31CB4BC9");
 
                 entity.ToTable("Departamento");
 
-                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38DC9E9DB4E")
+                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38D18B3083B")
                     .IsUnique();
 
                 entity.Property(e => e.Activo)
@@ -171,11 +172,11 @@ namespace APIRestV2.Models
             modelBuilder.Entity<DepartamentoNivel1>(entity =>
             {
                 entity.HasKey(e => e.IdDepartamentoNivel1)
-                    .HasName("PK__Departam__412E0BC344BE08CD");
+                    .HasName("PK__Departam__412E0BC36E20EE3A");
 
                 entity.ToTable("DepartamentoNivel1");
 
-                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38D7255FE32")
+                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38D4483F111")
                     .IsUnique();
 
                 entity.Property(e => e.Activo)
@@ -196,11 +197,11 @@ namespace APIRestV2.Models
             modelBuilder.Entity<DepartamentoNivel2>(entity =>
             {
                 entity.HasKey(e => e.IdDepartamentoNivel2)
-                    .HasName("PK__Departam__412E0BC02DF78C2E");
+                    .HasName("PK__Departam__412E0BC0D013202F");
 
                 entity.ToTable("DepartamentoNivel2");
 
-                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38DE0593B5B")
+                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38D6D0633BF")
                     .IsUnique();
 
                 entity.Property(e => e.Activo)
@@ -221,11 +222,11 @@ namespace APIRestV2.Models
             modelBuilder.Entity<DepartamentoNivel3>(entity =>
             {
                 entity.HasKey(e => e.IdDepartamentoNivel3)
-                    .HasName("PK__Departam__412E0BC1C7A5AF4F");
+                    .HasName("PK__Departam__412E0BC1C683BFCA");
 
                 entity.ToTable("DepartamentoNivel3");
 
-                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38D1C4AF28C")
+                entity.HasIndex(e => e.IdDepartamentExterno, "UQ__Departam__C342F38D719DF981")
                     .IsUnique();
 
                 entity.Property(e => e.Activo)
@@ -246,7 +247,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<DocumentoPiezaProceso>(entity =>
             {
                 entity.HasKey(e => e.IdDocumentoPiezaProceso)
-                    .HasName("PK__Document__1008D6471C5E4D81");
+                    .HasName("PK__Document__1008D647C4382B9D");
 
                 entity.ToTable("DocumentoPiezaProceso");
 
@@ -351,7 +352,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<Fabricante>(entity =>
             {
                 entity.HasKey(e => e.IdFabricante)
-                    .HasName("PK__Fabrican__1F4C254A101D77D1");
+                    .HasName("PK__Fabrican__1F4C254A973DFA8C");
 
                 entity.ToTable("Fabricante");
 
@@ -646,18 +647,14 @@ namespace APIRestV2.Models
 
             modelBuilder.Entity<PiezaCliente>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("PiezaCliente");
 
                 entity.Property(e => e.Activo)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.ClienteIdCliente).ValueGeneratedOnAdd();
-
                 entity.HasOne(d => d.PiezaIdPiezaNavigation)
-                    .WithMany()
+                    .WithMany(p => p.PiezaClientes)
                     .HasForeignKey(d => d.PiezaIdPieza)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PiezaClientePieza_PiezaIdPieza");
@@ -682,7 +679,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<PreguntaMaquina>(entity =>
             {
                 entity.HasKey(e => e.IdPreguntaMaquina)
-                    .HasName("PK__Pregunta__B63CDED27E6B459F");
+                    .HasName("PK__Pregunta__B63CDED256E25A3B");
 
                 entity.ToTable("PreguntaMaquina");
 
@@ -756,7 +753,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<PreguntaPieza>(entity =>
             {
                 entity.HasKey(e => e.IdPreguntaPieza)
-                    .HasName("PK__Pregunta__4F032631C6684D97");
+                    .HasName("PK__Pregunta__4F032631F8F6686C");
 
                 entity.ToTable("PreguntaPieza");
 
@@ -794,7 +791,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<PreguntaPiezaGeneral>(entity =>
             {
                 entity.HasKey(e => e.IdPreguntaPieza)
-                    .HasName("PK__Pregunta__4F0326310B5A4025");
+                    .HasName("PK__Pregunta__4F032631927C9A9C");
 
                 entity.ToTable("PreguntaPiezaGeneral");
 
@@ -822,7 +819,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<PreguntaProceso>(entity =>
             {
                 entity.HasKey(e => e.IdPreguntaProceso)
-                    .HasName("PK__Pregunta__2637C0FBAFDFC66E");
+                    .HasName("PK__Pregunta__2637C0FB20C4C604");
 
                 entity.ToTable("PreguntaProceso");
 
@@ -856,7 +853,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<PreguntaProcesoGeneral>(entity =>
             {
                 entity.HasKey(e => e.IdPreguntaProceso)
-                    .HasName("PK__Pregunta__2637C0FB933FF7A4");
+                    .HasName("PK__Pregunta__2637C0FB11E38048");
 
                 entity.ToTable("PreguntaProcesoGeneral");
 
@@ -884,7 +881,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<PreguntaPtGeneral>(entity =>
             {
                 entity.HasKey(e => e.IdPreguntaPt)
-                    .HasName("PK__Pregunta__5DAB046F9E91EA8D");
+                    .HasName("PK__Pregunta__5DAB046FBEC9A837");
 
                 entity.ToTable("PreguntaPtGeneral");
 
@@ -963,11 +960,11 @@ namespace APIRestV2.Models
             modelBuilder.Entity<Puesto>(entity =>
             {
                 entity.HasKey(e => e.IdPuesto)
-                    .HasName("PK__Puesto__ADAC6B9C9F8859EA");
+                    .HasName("PK__Puesto__ADAC6B9C70D2945F");
 
                 entity.ToTable("Puesto");
 
-                entity.HasIndex(e => e.IdPuestoExterno, "UQ__Puesto__52F767D7DF5E6DDE")
+                entity.HasIndex(e => e.IdPuestoExterno, "UQ__Puesto__52F767D700E8853B")
                     .IsUnique();
 
                 entity.Property(e => e.Activo)
@@ -1005,7 +1002,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<RespuestaMaquina>(entity =>
             {
                 entity.HasKey(e => e.IdRespuestaMaquina)
-                    .HasName("PK__Respuest__FED336800EAF3149");
+                    .HasName("PK__Respuest__FED33680654F2160");
 
                 entity.ToTable("RespuestaMaquina");
 
@@ -1027,7 +1024,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<RespuestaPieza>(entity =>
             {
                 entity.HasKey(e => e.IdResultadoPieza)
-                    .HasName("PK__Respuest__50209975FCF570EB");
+                    .HasName("PK__Respuest__502099755D519B06");
 
                 entity.ToTable("RespuestaPieza");
 
@@ -1049,7 +1046,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<RespuestaProceso>(entity =>
             {
                 entity.HasKey(e => e.IdRespuestaProceso)
-                    .HasName("PK__Respuest__AC46E28236596C29");
+                    .HasName("PK__Respuest__AC46E282385B27D1");
 
                 entity.ToTable("RespuestaProceso");
 
@@ -1073,7 +1070,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<ResultadoMaquina>(entity =>
             {
                 entity.HasKey(e => e.IdResultadoMaquina)
-                    .HasName("PK__Resultad__162906BB78A309A5");
+                    .HasName("PK__Resultad__162906BBFEDB8685");
 
                 entity.ToTable("ResultadoMaquina");
             });
@@ -1081,7 +1078,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<ResultadoPieza>(entity =>
             {
                 entity.HasKey(e => e.IdResultadoPieza)
-                    .HasName("PK__Resultad__50209975283CA246");
+                    .HasName("PK__Resultad__50209975852793F3");
 
                 entity.ToTable("ResultadoPieza");
             });
@@ -1089,7 +1086,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<ResultadoProceso>(entity =>
             {
                 entity.HasKey(e => e.IdResultadoProceso)
-                    .HasName("PK__Resultad__CCF7C4EDCB845A64");
+                    .HasName("PK__Resultad__CCF7C4ED58854422");
 
                 entity.ToTable("ResultadoProceso");
             });
@@ -1097,7 +1094,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<TipoAcceso>(entity =>
             {
                 entity.HasKey(e => e.IdTipoAcceso)
-                    .HasName("PK__TipoAcce__F55E50EC4DF43F73");
+                    .HasName("PK__TipoAcce__F55E50ECCD5C8DD2");
 
                 entity.ToTable("TipoAcceso");
 
@@ -1121,7 +1118,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<UnidadNegocio>(entity =>
             {
                 entity.HasKey(e => e.IdUnidadNegocio)
-                    .HasName("PK__UnidadNe__E33E259571944295");
+                    .HasName("PK__UnidadNe__E33E2595D647E177");
 
                 entity.ToTable("UnidadNegocio");
 
@@ -1133,7 +1130,7 @@ namespace APIRestV2.Models
             modelBuilder.Entity<VideoPiezaProceso>(entity =>
             {
                 entity.HasKey(e => e.IdVideoPiezaProceso)
-                    .HasName("PK__VideoPie__89EBF91127880A14");
+                    .HasName("PK__VideoPie__89EBF91143DC8AB7");
 
                 entity.ToTable("VideoPiezaProceso");
 
@@ -1148,11 +1145,28 @@ namespace APIRestV2.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<VwPiezaCliente>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("VW_PIEZA_CLIENTE");
+
+                entity.Property(e => e.Contacto).IsUnicode(false);
+
+                entity.Property(e => e.Email).IsUnicode(false);
+
+                entity.Property(e => e.Nombre).IsUnicode(false);
+
+                entity.Property(e => e.Telefono).IsUnicode(false);
+            });
+
             modelBuilder.Entity<VwPiezasMultimedia>(entity =>
             {
                 entity.HasNoKey();
 
                 entity.ToView("VW_PIEZAS_MULTIMEDIAS");
+
+                entity.Property(e => e.CountClientes).HasColumnName("countClientes");
 
                 entity.Property(e => e.CountDoc).HasColumnName("countDoc");
 

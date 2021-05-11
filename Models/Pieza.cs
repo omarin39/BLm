@@ -10,6 +10,7 @@ namespace APIRestV2.Models
         public Pieza()
         {
             MultiMediaPiezas = new HashSet<MultiMediaPieza>();
+            PiezaClientes = new HashSet<PiezaCliente>();
             PreguntaPiezas = new HashSet<PreguntaPieza>();
         }
 
@@ -20,6 +21,7 @@ namespace APIRestV2.Models
         public bool? Activo { get; set; }
 
         public virtual ICollection<MultiMediaPieza> MultiMediaPiezas { get; set; }
+        public virtual ICollection<PiezaCliente> PiezaClientes { get; set; }
         public virtual ICollection<PreguntaPieza> PreguntaPiezas { get; set; }
     }
 }
