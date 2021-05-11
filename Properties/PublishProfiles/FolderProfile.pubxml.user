@@ -5,6 +5,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\Proyectos\BLMOVIL\ReleaseCV\API</_PublishTargetUrl>
-    <History>True|2021-05-10T02:26:53.5320799Z;True|2021-05-09T21:26:34.3746736-05:00;False|2021-05-09T21:25:55.9678837-05:00;True|2021-05-09T21:19:46.0408742-05:00;True|2021-05-09T21:12:57.4924839-05:00;</History>
+    <History>True|2021-05-11T04:12:07.9374148Z;True|2021-05-10T16:42:05.3657041-05:00;True|2021-05-09T21:26:53.5320799-05:00;True|2021-05-09T21:26:34.3746736-05:00;False|2021-05-09T21:25:55.9678837-05:00;True|2021-05-09T21:19:46.0408742-05:00;True|2021-05-09T21:12:57.4924839-05:00;</History>
   </PropertyGroup>
 </Project>

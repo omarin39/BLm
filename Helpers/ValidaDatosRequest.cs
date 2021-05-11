@@ -55,84 +55,93 @@ namespace APIRestV2.Helpers
                             }
                             var ValorPropiedad = prop.GetValue(reqUSR);
 
-                            switch (ValidaActual.Requerido)
+                            if (ValorPropiedad == null)
                             {
-                                case true:
-                                    switch (ValidaActual.TipoDato)
-                                    {
-                                        case "int":
-                                            if(ValidaRequerido(ValorPropiedad))
-                                            {
-                                                if(!ValidaTamaño(ValorPropiedad,ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            }
-                                            else
-                                            {
-                                                CrearErrorRequerido(ValidaActual, reqUSR, prop);
-                                            }
-                                            break;
-                                        case "string":
-                                            if (ValidaRequerido(ValorPropiedad))
-                                            {
-                                                if(!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            }
-                                            else
-                                            {
-                                                CrearErrorRequerido(ValidaActual, reqUSR, prop);
-                                                
-                                            }
-                                            break;
-                                        case "date":
-                                            if (ValidaRequerido(ValorPropiedad))
-                                            {
+                                CrearErrorRequerido(ValidaActual, reqUSR, prop);
+                            }
+                            else
+                            {
+                                switch (ValidaActual.Requerido)
+                                {
+                                    case true:
+                                        switch (ValidaActual.TipoDato)
+                                        {
+                                            case "int":
+                                                if (ValidaRequerido(ValorPropiedad))
+                                                {
+                                                    if (!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                }
+                                                else
+                                                {
+                                                    CrearErrorRequerido(ValidaActual, reqUSR, prop);
+                                                }
+                                                break;
+                                            case "string":
+                                                if (ValidaRequerido(ValorPropiedad))
+                                                {
+                                                    if (!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                }
+                                                else
+                                                {
+                                                    CrearErrorRequerido(ValidaActual, reqUSR, prop);
+
+                                                }
+                                                break;
+                                            case "date":
+                                                if (ValidaRequerido(ValorPropiedad))
+                                                {
+                                                    DateTime FechaValida;
+                                                    var formatoFecha = "yyyy/mm/dd";
+                                                    if (!DateTime.TryParseExact(ValorPropiedad.ToString(), formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaValida)) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                }
+                                                else
+                                                {
+                                                    CrearErrorRequerido(ValidaActual, reqUSR, prop);
+
+                                                }
+                                                break;
+                                            case "email":
+                                                if (ValidaRequerido(ValorPropiedad))
+                                                {
+                                                    if (!Validaemail(ValorPropiedad.ToString())) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                }
+                                                else
+                                                {
+                                                    CrearErrorRequerido(ValidaActual, reqUSR, prop);
+
+                                                }
+
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+                                        break;
+                                    default:
+                                        switch (ValidaActual.TipoDato)
+                                        {
+                                            case "int":
+                                                if (!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                break;
+                                            case "string":
+                                                if (!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                break;
+                                            case "date":
                                                 DateTime FechaValida;
                                                 var formatoFecha = "yyyy/mm/dd";
-                                                if(!DateTime.TryParseExact(ValorPropiedad.ToString(), formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaValida)) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            }
-                                            else
-                                            {
-                                                CrearErrorRequerido(ValidaActual, reqUSR, prop);
-                                                
-                                            }
-                                            break;
-                                        case "email":
-                                            if (ValidaRequerido(ValorPropiedad))
-                                            {
-                                                if(!Validaemail(ValorPropiedad.ToString())) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            }
-                                            else
-                                            {
-                                                CrearErrorRequerido(ValidaActual, reqUSR, prop);
-                                                
-                                            }
-                                            
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    
-                                    break;
-                                default:
-                                    switch (ValidaActual.TipoDato)
-                                    {
-                                        case "int":
-                                            if(!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            break;
-                                        case "string":
-                                            if(!ValidaTamaño(ValorPropiedad, ValidaActual)) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            break;
-                                        case "date":
-                                            DateTime FechaValida;
-                                            var formatoFecha = "yyyy/mm/dd";
-                                            if (!DateTime.TryParseExact(ValorPropiedad.ToString(), formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaValida)) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            break;
-                                        case "email":
-                                            if (!Validaemail(ValorPropiedad.ToString())) CrearErrorFormato(ValidaActual, reqUSR, prop);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    break;
+                                                if (!DateTime.TryParseExact(ValorPropiedad.ToString(), formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaValida)) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                break;
+                                            case "email":
+                                                if (!Validaemail(ValorPropiedad.ToString())) CrearErrorFormato(ValidaActual, reqUSR, prop);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        break;
+                                }
                             }
+
+                            
 
 
                         }

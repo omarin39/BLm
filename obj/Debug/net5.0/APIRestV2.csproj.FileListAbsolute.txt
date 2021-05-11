@@ -64,4 +64,3 @@ C:\Proyectos\BLMOVIL\APIRestV2\obj\Debug\net5.0\APIRestV2.dll
 C:\Proyectos\BLMOVIL\APIRestV2\obj\Debug\net5.0\ref\APIRestV2.dll
 C:\Proyectos\BLMOVIL\APIRestV2\obj\Debug\net5.0\APIRestV2.pdb
 C:\Proyectos\BLMOVIL\APIRestV2\obj\Debug\net5.0\APIRestV2.genruntimeconfig.cache
-C:\Proyectos\BLMOVIL\APIRestV2\obj\Debug\net5.0\APIRestV2.csprojAssemblyReference.cache
