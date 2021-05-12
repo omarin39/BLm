@@ -20,7 +20,9 @@ namespace APIRestV2.Models.Request
         public string Ruta { get; set; }
         public string TipoMedia { get; set; }
         public bool Activo { get; set; }
-        public List<IFormFile> documento { set; get; }
+       // public List<IFormFile> documento { set; get; }
+        public String Documento { set; get; }
+        public string Extension { get; set; }
 
 
     }

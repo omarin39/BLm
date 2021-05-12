@@ -32,9 +32,9 @@ namespace APIRestV2.Controllers
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
 
-        [Consumes("multipart/form-data")]
+       // [Consumes("multipart/form-data")]
         [HttpPost]
-        public ActionResult Post([FromForm] RequestMultimediaPieza req)
+        public ActionResult Post([FromBody] RequestMultimediaPieza req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
@@ -70,6 +70,45 @@ namespace APIRestV2.Controllers
             }
          
         }
+
+        /*
+        [HttpPost]
+        public ActionResult Post([FromBody] RequestMultimediaPieza req)
+        {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+            try
+            {
+
+
+                if (req.Descripcion != null)
+                {
+                    var result = procMultimediaPieza.AddMultimediaPieza(req, remoteIpAddress.ToString());
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
+                        return NotFound("MultimediaPieza not found");
+                    }
+
+                }
+                else
+                {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
+                    return NotFound("MultimediaPieza not found");
+                }
+
+            }
+            catch (Exception e)
+            {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
+                return NotFound("MultimediaPieza not found");
+
+            }
+
+        }*/
 
 
         [HttpGet("Find/{idPieza}/{TipoMedia}")]

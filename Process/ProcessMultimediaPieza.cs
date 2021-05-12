@@ -17,7 +17,88 @@ namespace APIRestV2.Controllers.Process
     public class ProcessMultimediaPieza
     {       
         public DataMultimediaPieza multimediaPiezaData = new();
-        public  ResponseGral AddMultimediaPieza(RequestMultimediaPieza MultimediaPieza, string ip)
+
+
+
+
+     
+        public ResponseGral AddMultimediaPieza(RequestMultimediaPieza MultimediaPieza, string ip)
+        {
+            ResponseGral respAltaMultimediaPieza = new();
+            try
+            {
+                MultiMediaPieza logNewRegistro = new();
+                logNewRegistro.IdPieza = MultimediaPieza.IdPieza;
+                logNewRegistro.IdTipoDocumento = MultimediaPieza.IdTipoDocumento;
+                logNewRegistro.Nombre = MultimediaPieza.Nombre;
+                logNewRegistro.Descripcion = MultimediaPieza.Descripcion;
+                logNewRegistro.Version = MultimediaPieza.Version;
+                logNewRegistro.Recertificacion = MultimediaPieza.Recertificacion;
+                logNewRegistro.TipoMedia = MultimediaPieza.TipoMedia;
+                logNewRegistro.Activo = MultimediaPieza.Activo;
+               // logNewRegistro.Extension = MultimediaPieza.Extension;
+
+
+                try
+                {
+                   /* foreach (IFormFile file in MultimediaPieza.Documento)
+                    {
+                        if (file.Length > 0)
+                        {
+                            string filePath = save2(MultimediaPieza.TipoMedia, file.FileName.Trim().ToLower());
+                            using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, file.FileName.Trim().ToLower());
+                                file.CopyTo(fileStream);
+                            }
+                        }
+                    }*/
+                   //Genera path del nuevo archivo    falta la extension
+                    string filePath = save2(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower()+ MultimediaPieza.Extension);
+                    logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower() + MultimediaPieza.Extension);
+                    File.WriteAllBytes(filePath, Convert.FromBase64String(MultimediaPieza.Documento));
+                    // String strDocumento = MultimediaPieza.Documento;
+     
+
+                }
+                catch (Exception ex)
+                {
+                    respAltaMultimediaPieza.Id = 0;
+                    respAltaMultimediaPieza.Codigo = "400";
+                    respAltaMultimediaPieza.Mensaje = "Error al guardar el documento";
+                    return respAltaMultimediaPieza;
+                }
+
+
+
+                long respNewUSR = multimediaPiezaData.AddMultimediaPieza(logNewRegistro, ip);
+                if (respNewUSR > 0)
+                {
+                    respAltaMultimediaPieza.Id = respNewUSR;
+                    respAltaMultimediaPieza.Codigo = "200";
+                    respAltaMultimediaPieza.Mensaje = "OK";
+                    return respAltaMultimediaPieza;
+                }
+                else
+                {
+                    respAltaMultimediaPieza.Id = respNewUSR;
+                    respAltaMultimediaPieza.Codigo = "400";
+                    respAltaMultimediaPieza.Mensaje = "Error al guardar datos";
+                    return respAltaMultimediaPieza;
+                }
+            }
+            catch (Exception ex)
+            {
+                respAltaMultimediaPieza.Id = -1;
+                respAltaMultimediaPieza.Codigo = "400";
+                respAltaMultimediaPieza.Mensaje = ex.InnerException.Message;
+                return respAltaMultimediaPieza;
+            }
+        }
+
+
+
+      /*  public  ResponseGral AddMultimediaPieza(RequestMultimediaPieza MultimediaPieza, string ip)
         {
             ResponseGral respAltaMultimediaPieza = new();
             try
@@ -49,7 +130,10 @@ namespace APIRestV2.Controllers.Process
                         }
                     }
 
-                   
+                  
+
+
+
 
                 }
                 catch (Exception ex)
@@ -90,7 +174,7 @@ namespace APIRestV2.Controllers.Process
                 respAltaMultimediaPieza.Mensaje = ex.InnerException.Message;
                 return respAltaMultimediaPieza;
             }
-        }
+        }*/
 
         private string save2(string tipoMedia, string nombre)
         {
