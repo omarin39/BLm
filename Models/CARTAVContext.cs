@@ -64,6 +64,7 @@ namespace APIRestV2.Models
         public virtual DbSet<TipoDocumento> TipoDocumentos { get; set; }
         public virtual DbSet<UnidadNegocio> UnidadNegocios { get; set; }
         public virtual DbSet<VideoPiezaProceso> VideoPiezaProcesos { get; set; }
+        public virtual DbSet<VwMaquinaPregunta> VwMaquinaPreguntas { get; set; }
         public virtual DbSet<VwPiezaCliente> VwPiezaClientes { get; set; }
         public virtual DbSet<VwPiezasMultimedia> VwPiezasMultimedias { get; set; }
 
@@ -1141,6 +1142,25 @@ namespace APIRestV2.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Url)
+                    .IsRequired()
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VwMaquinaPregunta>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("VW_MAQUINA_PREGUNTAS");
+
+                entity.Property(e => e.CountPreguntas).HasColumnName("countPreguntas");
+
+                entity.Property(e => e.Descripcion).IsUnicode(false);
+
+                entity.Property(e => e.Modelo)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Nombre)
                     .IsRequired()
                     .IsUnicode(false);
             });
