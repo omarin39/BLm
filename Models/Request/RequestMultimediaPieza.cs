@@ -24,6 +24,8 @@ namespace APIRestV2.Models.Request
         public String Documento { set; get; }
         public string Extension { get; set; }
 
+        public string Tamanio { get; set; }
+
 
     }
 

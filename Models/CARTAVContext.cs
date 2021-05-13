@@ -507,7 +507,11 @@ namespace APIRestV2.Models
             {
                 entity.ToTable("MultiMediaPieza");
 
+                entity.Property(e => e.Extension).HasMaxLength(50);
+
                 entity.Property(e => e.Nombre).IsRequired();
+
+                entity.Property(e => e.Tamanio).HasMaxLength(50);
 
                 entity.Property(e => e.TipoMedia)
                     .IsRequired()

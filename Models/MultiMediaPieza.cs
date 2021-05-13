@@ -16,6 +16,8 @@ namespace APIRestV2.Models
         public bool? Recertificacion { get; set; }
         public string Ruta { get; set; }
         public string TipoMedia { get; set; }
+        public string Extension { get; set; }
+        public string Tamanio { get; set; }
         public bool Activo { get; set; }
 
         public virtual Pieza IdPiezaNavigation { get; set; }

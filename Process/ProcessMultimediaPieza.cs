@@ -36,29 +36,18 @@ namespace APIRestV2.Controllers.Process
                 logNewRegistro.Recertificacion = MultimediaPieza.Recertificacion;
                 logNewRegistro.TipoMedia = MultimediaPieza.TipoMedia;
                 logNewRegistro.Activo = MultimediaPieza.Activo;
-               // logNewRegistro.Extension = MultimediaPieza.Extension;
+                logNewRegistro.Extension = MultimediaPieza.Extension;
+                logNewRegistro.Tamanio = MultimediaPieza.Tamanio;
 
 
                 try
                 {
-                   /* foreach (IFormFile file in MultimediaPieza.Documento)
-                    {
-                        if (file.Length > 0)
-                        {
-                            string filePath = save2(MultimediaPieza.TipoMedia, file.FileName.Trim().ToLower());
-                            using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-                            {
-                                logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, file.FileName.Trim().ToLower());
-                                file.CopyTo(fileStream);
-                            }
-                        }
-                    }*/
+                  
                    //Genera path del nuevo archivo    falta la extension
-                    string filePath = save2(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower()+ MultimediaPieza.Extension);
-                    logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower() + MultimediaPieza.Extension);
+                    string filePath = save2(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower()+ MultimediaPieza.Extension.Trim());
+                    logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower()  + MultimediaPieza.Extension);
                     File.WriteAllBytes(filePath, Convert.FromBase64String(MultimediaPieza.Documento));
-                    // String strDocumento = MultimediaPieza.Documento;
-     
+                    
 
                 }
                 catch (Exception ex)
@@ -233,6 +222,8 @@ namespace APIRestV2.Controllers.Process
                         Recertificacion = multimediaPieza.Recertificacion,
                         Ruta = multimediaPieza.Ruta,
                         TipoMedia = multimediaPieza.TipoMedia,
+                        Extension = multimediaPieza.Extension,
+                        Tamanio = multimediaPieza.Tamanio,
                         Activo = multimediaPieza.Activo
 
                 };
