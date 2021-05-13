@@ -32,7 +32,7 @@ namespace APIRestV2.Controllers
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
 
-       // [Consumes("multipart/form-data")]
+    
         [HttpPost]
         public ActionResult Post([FromBody] RequestMultimediaPieza req)
         {

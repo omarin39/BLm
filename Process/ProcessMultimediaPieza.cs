@@ -208,6 +208,35 @@ namespace APIRestV2.Controllers.Process
             }
             else
             {
+
+                try
+                {
+                    if(multimediaPiezaBuscado.Tamanio!= multimediaPieza.Tamanio)
+                    {
+                        //Prepara path del archivo  
+                        string filePath = save2(multimediaPieza.TipoMedia, multimediaPieza.Nombre.Trim().ToLower() + multimediaPieza.Extension.Trim());
+                        multimediaPieza.Ruta = armaPath(multimediaPieza.TipoMedia, multimediaPieza.Nombre.Trim().ToLower() + multimediaPieza.Extension);
+                        File.WriteAllBytes(filePath, Convert.FromBase64String(multimediaPieza.Documento));
+                    }
+                    else
+                    {
+                        multimediaPieza.Ruta = multimediaPiezaBuscado.Ruta;
+                    }
+                   
+
+
+                }
+                catch (Exception ex)
+                {
+                    respAltaMultimediaPieza.Id = 0;
+                    respAltaMultimediaPieza.Codigo = "400";
+                    respAltaMultimediaPieza.Mensaje = "Error al actualizar el documento";
+                    return respAltaMultimediaPieza;
+                }
+
+
+
+
                 try
                 {
 
