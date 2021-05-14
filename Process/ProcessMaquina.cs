@@ -53,8 +53,8 @@ namespace APIRestV2.Controllers.Process
         {
             ResponseGral response = new();
 
-            var itemBuscado = findMaquinaPorId(req.IdMaquina);
-
+            //var itemBuscado = findMaquinaPorId(req.IdMaquina);
+            var itemBuscado = FindOnlyMaquinaPorId(req.IdMaquina);
             if (itemBuscado == null)
             {
                 return response;
@@ -70,17 +70,19 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    var maq = new Maquina();
-                    maq.IdMaquina = itemBuscado.IdMaquina;
-                    maq.Nombre = req.Nombre;
-                    maq.Descripcion = req.Descripcion;
-                    maq.Modelo = req.Modelo;
-                    maq.MaquinaPt = req.MaquinaPt;
-                    maq.CantidadAccesoMultiple = req.CantidadAccesoMultiple;
-                    maq.FabricanteIdFabricante = req.FabricanteIdFabricante;
-                    maq.TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso;
+                    var maq = new Maquina
+                    {
+                        IdMaquina = itemBuscado.IdMaquina,
+                        Nombre = req.Nombre,
+                        Descripcion = req.Descripcion,
+                        Modelo = req.Modelo,
+                        MaquinaPt = req.MaquinaPt,
+                        CantidadAccesoMultiple = req.CantidadAccesoMultiple,
+                        FabricanteIdFabricante = req.FabricanteIdFabricante,
+                        TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso
+                    };
 
-               
+
 
 
                     var respNewItem = entityData.UpdateMaquina(maq, ip);
@@ -109,14 +111,23 @@ namespace APIRestV2.Controllers.Process
             }
         }
 
-
-        
         public VwMaquinaPregunta findMaquinaPorId(long id)
         {
             VwMaquinaPregunta respBuscado = entityData.findPiezaPorIdPieza(id);
             if (respBuscado == null)
             {
                 respBuscado = new VwMaquinaPregunta();
+                respBuscado.IdMaquina = -1;
+            }
+            return respBuscado;
+        }
+
+        public Maquina FindOnlyMaquinaPorId(long id)
+        {
+            Maquina respBuscado = entityData.FindMaquina(id);
+            if (respBuscado == null)
+            {
+                respBuscado = new Maquina();
                 respBuscado.IdMaquina = -1;
             }
           return respBuscado;

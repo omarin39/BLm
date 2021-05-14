@@ -30,6 +30,11 @@ namespace APIRestV2.DataModels
             return _context.VwMaquinaPreguntas.AsNoTracking().SingleOrDefault(p => p.IdMaquina == id);
         }
 
+        public Maquina FindMaquina(long id)
+        {
+            return _context.Maquinas.AsNoTracking().SingleOrDefault(p => p.IdMaquina == id);
+        }
+
         public long AddMaquina(Maquina item,string ip)
         {
             try
