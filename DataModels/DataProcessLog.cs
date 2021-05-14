@@ -54,5 +54,23 @@ namespace APIRestV2.DataModels
             }
 
         }
+
+        internal List<ProcessLog> FindByfechaFin(DateTime fechaFin)
+        {
+            //trae todo menor a fecha fin
+            return _context.ProcessLogs.Where(us => us.Fecha < fechaFin).ToList();
+        }
+
+        internal List<ProcessLog> FindByFechaIni(DateTime fechaIni)
+        {
+            //trae todo mayor a fecha ini
+            return _context.ProcessLogs.Where(us => us.Fecha > fechaIni).ToList();
+        }
+
+        internal List<ProcessLog> FindByFechas(DateTime fechaIni, DateTime fechaFin)
+        {
+            //trae basado en los parametros de fechaini y fechafin
+            return (List<ProcessLog>)_context.ProcessLogs.Where(us => us.Fecha >= fechaIni && us.Fecha <= fechaFin).ToList();
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace APIRestV2.Controllers.Process
        
         public DataProcessLog processLogData = new();
        
-// public async Task<List<ProcessLog>> FindAllProcessLogAsync(){
+
         public ResponseGral AddProcessLog(RequestProcessLog processLog)
         {
             ResponseGral respAltaProcessLog = new();
@@ -99,8 +99,25 @@ namespace APIRestV2.Controllers.Process
             return resProcessLogRet;
         }
 
-       
+        internal List<ProcessLog> FindByfechaFin(DateTime fechaFin)
+        {
+            //trae todo menor a fecha fin
+            List<ProcessLog> resProcessLogRet = processLogData.FindByfechaFin(fechaFin);
+            return resProcessLogRet;
+        }
 
+        internal List<ProcessLog> FindByFechaIni(DateTime fechaIni)
+        {
+            //trae todo mayor a fecha ini
+            List<ProcessLog> resProcessLogRet = processLogData.FindByFechaIni(fechaIni);
+            return resProcessLogRet;
+        }
 
+        internal List<ProcessLog> FindByFechas(DateTime fechaIni, DateTime fechaFin)
+        {
+            //trae basado en los parametros de fechaini y fechafin
+            List<ProcessLog> resProcessLogRet = processLogData.FindByFechas(fechaIni,fechaFin);
+            return resProcessLogRet;
+        }
     }
 }
