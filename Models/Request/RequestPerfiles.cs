@@ -9,7 +9,7 @@ namespace APIRestV2.Models.Request
     public class RequestPerfiles
     {   
         public long Id { get; set; }     
-        public string Perfil { get; set; }
+        public string Perfil1{ get; set; }
         public bool Activo { get; set; }
         
     }

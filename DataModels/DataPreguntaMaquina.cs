@@ -27,7 +27,7 @@ namespace APIRestV2.DataModels
        
 
 
-       public PreguntaMaquina findPiezaPorIdPieza(long id)
+       public PreguntaMaquina findPreguntaMaquinaIdMaquina(long id)
         {
             return _context.PreguntaMaquinas.AsNoTracking().SingleOrDefault(p => p.IdPreguntaMaquina == id);
         }

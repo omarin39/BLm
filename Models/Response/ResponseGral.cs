@@ -10,5 +10,6 @@ namespace APIRestV2.Models.Response
         public long Id { get; set; }
         public string Codigo { get; set; }
         public string Mensaje { get; set; }
+
     }
 }

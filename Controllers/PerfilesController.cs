@@ -40,7 +40,7 @@ namespace APIRestV2.Controllers
             {
                 
 
-                if (req.Perfil != null)
+                if (req.Perfil1 != null)
                 {
                     var result = ProcPerfil.AddPerfil(req, remoteIpAddress.ToString());
                     if (result != null)

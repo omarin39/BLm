@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,36 @@ namespace APIRestV2.DataModels
         {
             return _context.Clientes.AsNoTracking().SingleOrDefault(us => us.IdCliente == idCliente);
         }
-
-        public long AddCliente(Cliente item,string ip)
+        /*
+         * Tipo de busqueda 1= Email, 2= Teléfono
+         */
+        public Cliente FindClienteEmailTelefono(int Tipobusqueda, RequestCliente BusquedaVar)
+        {
+            Cliente busqueda=new();
+            switch (Tipobusqueda)
+            {
+                case 1:
+                    busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Email == BusquedaVar.Email && us.IdCliente != BusquedaVar.IdCliente);
+                    break;
+                case 2:
+                    busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim() == BusquedaVar.Telefono.Trim() && us.IdCliente != BusquedaVar.IdCliente);
+                    break;
+                default:
+                    break;
+            }
+            return busqueda;
+        }
+       
+        public long AddCliente(Cliente item, string ip)
         {
             try
             {
+
                 var ClienteRes = _context.Clientes.Add(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 _context.SaveChanges();
                 return Int32.Parse(ClienteRes.Entity.IdCliente.ToString());
+
             }
             catch (Exception ex)
             {
@@ -43,7 +65,7 @@ namespace APIRestV2.DataModels
             }
         }
 
-        public int UpdateCliente(Cliente item,string ip)
+        public int UpdateCliente(Cliente item, string ip)
         {
             try
             {

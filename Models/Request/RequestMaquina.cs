@@ -15,7 +15,7 @@ namespace APIRestV2.Models.Request
         public bool MaquinaPt { get; set; }
         public int CantidadAccesoMultiple { get; set; }
         public long FabricanteIdFabricante { get; set; }
-        public long? TipoAccesoIdTipoAcceso { get; set; }
+        public long TipoAccesoIdTipoAcceso { get; set; }
         public bool? Activo { get; set; }
 
     }

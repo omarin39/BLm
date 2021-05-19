@@ -51,9 +51,9 @@ namespace APIRestV2.Controllers.Process
 
      
 
-        public PreguntaMaquina findTipoAcceosPorId(long id)
+        public PreguntaMaquina findPreguntaMaquinaPorId(long id)
         {
-            PreguntaMaquina respAltaPieza = entityData.findPiezaPorIdPieza(id);
+            PreguntaMaquina respAltaPieza = entityData.findPreguntaMaquinaIdMaquina(id);
             if (respAltaPieza == null)
             {
                 respAltaPieza = new PreguntaMaquina();
@@ -74,7 +74,7 @@ namespace APIRestV2.Controllers.Process
         {
             ResponseGral response = new();
 
-            var itemBuscado = findTipoAcceosPorId(req.IdPreguntaMaquina);
+            var itemBuscado = findPreguntaMaquinaPorId(req.IdPreguntaMaquina);
 
             if (itemBuscado == null)
             {

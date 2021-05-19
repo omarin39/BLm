@@ -10,7 +10,6 @@ namespace APIRestV2.Models
         public Departamento()
         {
             DepartamentoNivel1s = new HashSet<DepartamentoNivel1>();
-            Empleados = new HashSet<Empleado>();
         }
 
         public long IdDepartamento { get; set; }
@@ -19,6 +18,5 @@ namespace APIRestV2.Models
         public bool? Activo { get; set; }
 
         public virtual ICollection<DepartamentoNivel1> DepartamentoNivel1s { get; set; }
-        public virtual ICollection<Empleado> Empleados { get; set; }
     }
 }

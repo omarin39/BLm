@@ -10,6 +10,7 @@ namespace APIRestV2.Models
         public Maquina()
         {
             MaquinaFisicas = new HashSet<MaquinaFisica>();
+            MaquinaProcesos = new HashSet<MaquinaProceso>();
             PreguntaMaquinas = new HashSet<PreguntaMaquina>();
         }
 
@@ -20,12 +21,13 @@ namespace APIRestV2.Models
         public bool MaquinaPt { get; set; }
         public int CantidadAccesoMultiple { get; set; }
         public long FabricanteIdFabricante { get; set; }
-        public long? TipoAccesoIdTipoAcceso { get; set; }
+        public long TipoAccesoIdTipoAcceso { get; set; }
         public bool? Activo { get; set; }
 
         public virtual Fabricante FabricanteIdFabricanteNavigation { get; set; }
         public virtual TipoAcceso TipoAccesoIdTipoAccesoNavigation { get; set; }
         public virtual ICollection<MaquinaFisica> MaquinaFisicas { get; set; }
+        public virtual ICollection<MaquinaProceso> MaquinaProcesos { get; set; }
         public virtual ICollection<PreguntaMaquina> PreguntaMaquinas { get; set; }
     }
 }

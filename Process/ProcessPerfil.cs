@@ -20,7 +20,7 @@ namespace APIRestV2.Controllers.Process
             try
             {
                 Perfil logNewRegistro = new();
-                logNewRegistro.Perfil1 = perfil.Perfil;
+                logNewRegistro.Perfil1 = perfil.Perfil1;
                 logNewRegistro.Activo = perfil.Activo;
                 long respNewUSR = perfilData.AddPerfil(logNewRegistro,ip);
                 if(respNewUSR >0)
@@ -93,7 +93,7 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    perfilBuscado.Perfil1 = perfil.Perfil;
+                    perfilBuscado.Perfil1 = perfil.Perfil1;
                     perfilBuscado.Activo = perfil.Activo;
                     var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado,ip);
                     if (respNewPerfil > 0)

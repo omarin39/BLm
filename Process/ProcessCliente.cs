@@ -15,24 +15,48 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaCliente = new();
             try
             {
-                Cliente logNewRegistro = new();
-                logNewRegistro.Nombre = Cliente.Nombre;
-                logNewRegistro.Contacto = Cliente.Contacto;
-                logNewRegistro.Email = Cliente.Email;
-                logNewRegistro.Telefono = Cliente.Telefono;
-                logNewRegistro.Activo = Cliente.Activo;
-                long respNewUSR = ClienteData.AddCliente(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (ClienteData.FindClienteEmailTelefono(1, Cliente)==null)
                 {
-                    respAltaCliente.Id = respNewUSR;
-                    respAltaCliente.Codigo = "200";
-                    respAltaCliente.Mensaje = "OK";
-                    return respAltaCliente;
+                    if (ClienteData.FindClienteEmailTelefono(2, Cliente) == null)
+                    {
+                        Cliente logNewRegistro = new();
+                        logNewRegistro.Nombre = Cliente.Nombre;
+                        logNewRegistro.Contacto = Cliente.Contacto;
+                        logNewRegistro.Email = Cliente.Email;
+                        logNewRegistro.Telefono = Cliente.Telefono;
+                        logNewRegistro.Activo = Cliente.Activo;
+                        long respNewUSR = ClienteData.AddCliente(logNewRegistro, ip);
+                        if (respNewUSR > 0)
+                        {
+                            respAltaCliente.Id = respNewUSR;
+                            respAltaCliente.Codigo = "200";
+                            respAltaCliente.Mensaje = "OK";
+                            return respAltaCliente;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                    }
+                    else
+                    {
+                        respAltaCliente.Id = -2;
+                        respAltaCliente.Codigo = "-2";
+                        respAltaCliente.Mensaje = "Teléfono Duplicado";
+                        return respAltaCliente;
+                    }
+                    
                 }
                 else
                 {
-                    return null;
+                    respAltaCliente.Id = -1;
+                    respAltaCliente.Codigo = "-1";
+                    respAltaCliente.Mensaje = "Correo Duplicado";
+                    return respAltaCliente;
+
                 }
+                
             }
             catch (Exception ex)
             {
@@ -58,26 +82,52 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    clienteBuscado.Nombre = Cliente.Nombre;
-                    clienteBuscado.Contacto = Cliente.Contacto;
-                    clienteBuscado.Email = Cliente.Email;
-                    clienteBuscado.Telefono = Cliente.Telefono;
-                    clienteBuscado.Activo = Cliente.Activo;
-                    var respNewCliente = ClienteData.UpdateCliente(clienteBuscado, ip);
-                    if (respNewCliente > 0)
+                    if (ClienteData.FindClienteEmailTelefono(1, Cliente) == null)
                     {
-                        respAltaCliente.Id = clienteBuscado.IdCliente;
-                        respAltaCliente.Codigo = "200";
-                        respAltaCliente.Mensaje = "OK";
-                        return respAltaCliente;
+                        if (ClienteData.FindClienteEmailTelefono(2, Cliente) == null)
+                        {
+                            clienteBuscado.Nombre = Cliente.Nombre;
+                            clienteBuscado.Contacto = Cliente.Contacto;
+                            clienteBuscado.Email = Cliente.Email;
+                            clienteBuscado.Telefono = Cliente.Telefono;
+                            clienteBuscado.Activo = Cliente.Activo;
+                            var respNewCliente = ClienteData.UpdateCliente(clienteBuscado, ip);
+                            if (respNewCliente > 0)
+                            {
+                                respAltaCliente.Id = clienteBuscado.IdCliente;
+                                respAltaCliente.Codigo = "200";
+                                respAltaCliente.Mensaje = "OK";
+                                return respAltaCliente;
+                            }
+                            else
+                            {
+                                respAltaCliente.Id = clienteBuscado.IdCliente;
+                                respAltaCliente.Codigo = "400";
+                                respAltaCliente.Mensaje = "Record not found";
+                                return respAltaCliente;
+                            }
+
+                        }
+                        else
+                        {
+                            respAltaCliente.Id = -2;
+                            respAltaCliente.Codigo = "-2";
+                            respAltaCliente.Mensaje = "Teléfono Duplicado";
+                            return respAltaCliente;
+                        }
+
                     }
                     else
                     {
-                        respAltaCliente.Id = clienteBuscado.IdCliente;
-                        respAltaCliente.Codigo = "400";
-                        respAltaCliente.Mensaje = "Record not found";
+                        respAltaCliente.Id = -1;
+                        respAltaCliente.Codigo = "-1";
+                        respAltaCliente.Mensaje = "Correo Duplicado";
                         return respAltaCliente;
+
                     }
+
+
+                    
                 }
                 catch (Exception ex)
                 {

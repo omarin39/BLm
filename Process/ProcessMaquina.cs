@@ -79,7 +79,8 @@ namespace APIRestV2.Controllers.Process
                         MaquinaPt = req.MaquinaPt,
                         CantidadAccesoMultiple = req.CantidadAccesoMultiple,
                         FabricanteIdFabricante = req.FabricanteIdFabricante,
-                        TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso
+                        TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso,
+                        Activo = req.Activo
                     };
 
 

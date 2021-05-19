@@ -43,7 +43,7 @@ namespace APIRestV2.Controllers
             {
                 if (ReqCliente.Nombre != null)
                 {
-                    var result = procCliente.AddCliente(ReqCliente, remoteIpAddress.ToString());
+                    ResponseGral result = procCliente.AddCliente(ReqCliente, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
