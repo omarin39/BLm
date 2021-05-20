@@ -137,7 +137,7 @@ namespace APIRestV2.Controllers
         }
 
         [HttpGet("FindProcesoMaquina/{Maquina}")]
-        public ActionResult<List<ResponseMaquinaProceso>> findMaquinaProceso(long Maquina)
+        public ActionResult<List<ResponseMaquinaProceso>> FindMaquinaProceso(long Maquina)
         {
             try
             {
