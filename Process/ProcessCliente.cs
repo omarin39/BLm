@@ -24,6 +24,7 @@ namespace APIRestV2.Controllers.Process
                         logNewRegistro.Contacto = Cliente.Contacto;
                         logNewRegistro.Email = Cliente.Email;
                         logNewRegistro.Telefono = Cliente.Telefono;
+                        logNewRegistro.Reentrenar = Cliente.Reentrenar;
                         logNewRegistro.Activo = Cliente.Activo;
                         long respNewUSR = ClienteData.AddCliente(logNewRegistro, ip);
                         if (respNewUSR > 0)
@@ -90,6 +91,7 @@ namespace APIRestV2.Controllers.Process
                             clienteBuscado.Contacto = Cliente.Contacto;
                             clienteBuscado.Email = Cliente.Email;
                             clienteBuscado.Telefono = Cliente.Telefono;
+                            clienteBuscado.Reentrenar = Cliente.Reentrenar;
                             clienteBuscado.Activo = Cliente.Activo;
                             var respNewCliente = ClienteData.UpdateCliente(clienteBuscado, ip);
                             if (respNewCliente > 0)

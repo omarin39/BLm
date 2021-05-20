@@ -12,6 +12,7 @@ namespace APIRestV2.Models.Request
         public string Codigo { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
+        public int Dificultad { get; set; }
         public bool Activo { get; set; }
         
     }

@@ -27,6 +27,7 @@ namespace APIRestV2.Controllers.Process
                     logNewRegistro.Nombre = Proceso.Nombre;
                     logNewRegistro.Descripcion = Proceso.Descripcion;
                     logNewRegistro.Codigo= Proceso.Codigo;
+                    logNewRegistro.Dificultad = Proceso.Dificultad;
                     logNewRegistro.Activo = Proceso.Activo;
                     long respNewUSR = ProcesoData.AddProceso(logNewRegistro,ip);
                     if(respNewUSR >0)
@@ -81,6 +82,7 @@ namespace APIRestV2.Controllers.Process
                         ProcesoBuscado.Nombre = Proceso.Nombre;
                         ProcesoBuscado.Descripcion = Proceso.Descripcion;
                         ProcesoBuscado.Codigo = Proceso.Codigo;
+                        ProcesoBuscado.Dificultad = Proceso.Dificultad;
                         ProcesoBuscado.Activo = Proceso.Activo;
                         var respNewProceso = ProcesoData.UpdateProceso(ProcesoBuscado, ip);
                         if (respNewProceso > 0)
