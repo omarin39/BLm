@@ -20,7 +20,7 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaProceso = new();
             try
             {
-                if ( ProcesoData.ValidaClaveExistente(Proceso.Codigo)==false ) {
+                if ( ProcesoData.ValidaClaveExistente(Proceso)==false ) {
                 
                
                     Proceso logNewRegistro = new();
@@ -64,34 +64,45 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaProceso;
             }
-            else if (ProcesoBuscado.IdProceso != -1)
+            else if (ProcesoBuscado.IdProceso == -1)
             {
-                respAltaProceso.Id = -1;
-                respAltaProceso.Codigo = "-1";
-                respAltaProceso.Mensaje = "Proceso Duplicado";
+                respAltaProceso.Id = ProcesoBuscado.IdProceso;
+                respAltaProceso.Codigo = "400";
+                respAltaProceso.Mensaje = "Record not found";
                 return respAltaProceso;
             }
             else
             {
                 try
                 {
-                    ProcesoBuscado.Nombre = Proceso.Nombre;
-                    ProcesoBuscado.Descripcion = Proceso.Descripcion;
-                    ProcesoBuscado.Codigo = Proceso.Codigo;
-                    ProcesoBuscado.Activo = Proceso.Activo;
-                    var respNewProceso = ProcesoData.UpdateProceso(ProcesoBuscado,ip);
-                    if (respNewProceso > 0)
+                    if (ProcesoData.ValidaClaveExistente(Proceso) == false)
                     {
-                        respAltaProceso.Id = ProcesoBuscado.IdProceso;
-                        respAltaProceso.Codigo = "200";
-                        respAltaProceso.Mensaje = "OK";
-                        return respAltaProceso;
+                        ProcesoBuscado.IdProceso = Proceso.IdProceso;
+                        ProcesoBuscado.Nombre = Proceso.Nombre;
+                        ProcesoBuscado.Descripcion = Proceso.Descripcion;
+                        ProcesoBuscado.Codigo = Proceso.Codigo;
+                        ProcesoBuscado.Activo = Proceso.Activo;
+                        var respNewProceso = ProcesoData.UpdateProceso(ProcesoBuscado, ip);
+                        if (respNewProceso > 0)
+                        {
+                            respAltaProceso.Id = ProcesoBuscado.IdProceso;
+                            respAltaProceso.Codigo = "200";
+                            respAltaProceso.Mensaje = "OK";
+                            return respAltaProceso;
+                        }
+                        else
+                        {
+                            respAltaProceso.Id = ProcesoBuscado.IdProceso;
+                            respAltaProceso.Codigo = "400";
+                            respAltaProceso.Mensaje = "Record not found";
+                            return respAltaProceso;
+                        }
                     }
                     else
                     {
-                        respAltaProceso.Id = ProcesoBuscado.IdProceso;
-                        respAltaProceso.Codigo = "400";
-                        respAltaProceso.Mensaje = "Record not found";
+                        respAltaProceso.Id = -1;
+                        respAltaProceso.Codigo = "-1";
+                        respAltaProceso.Mensaje = "Duplicidad";
                         return respAltaProceso;
                     }
                 }

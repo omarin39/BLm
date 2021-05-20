@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,11 @@ namespace APIRestV2.DataModels
             return _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Codigo == Proceso);
         }
 
-        public bool ValidaClaveExistente(string codigo)
+        public bool ValidaClaveExistente(RequestProceso Proceso)
         {
             //true si existe
             //false si no existe
-           var busqueda = _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Codigo.Trim().ToUpper() == codigo.Trim().ToUpper());
+           var busqueda = _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Codigo.Trim().ToUpper() == Proceso.Codigo.Trim().ToUpper() && us.IdProceso != Proceso.IdProceso);
             return busqueda==null ? false : true;
         }
 
