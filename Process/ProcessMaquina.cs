@@ -30,6 +30,7 @@ namespace APIRestV2.Controllers.Process
                     newRecord.CantidadAccesoMultiple = req.CantidadAccesoMultiple;
                     newRecord.FabricanteIdFabricante = req.FabricanteIdFabricante;
                     newRecord.TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso;
+                    newRecord.UsaPreguntaEstandar = req.UsaPreguntaEstandar;
                     newRecord.Activo = req.Activo;
 
                     long respNewUSR = entityData.AddMaquina(newRecord, ip);
@@ -91,6 +92,7 @@ namespace APIRestV2.Controllers.Process
                         CantidadAccesoMultiple = req.CantidadAccesoMultiple,
                         FabricanteIdFabricante = req.FabricanteIdFabricante,
                         TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso,
+                        UsaPreguntaEstandar = req.UsaPreguntaEstandar,
                         Activo = req.Activo
                     };
 

@@ -14,7 +14,6 @@ namespace APIRestV2.Models
         public long NaveIdNave { get; set; }
         public bool Activo { get; set; }
 
-        public virtual Maquina MaquinaIdMaquinaNavigation { get; set; }
         public virtual Nave NaveIdNaveNavigation { get; set; }
     }
 }

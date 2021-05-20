@@ -11,7 +11,6 @@ namespace APIRestV2.Models
         {
             Empleados = new HashSet<Empleado>();
             PreguntaMaquinaGenerals = new HashSet<PreguntaMaquinaGeneral>();
-            PreguntaMaquinas = new HashSet<PreguntaMaquina>();
             PreguntaPiezaGenerals = new HashSet<PreguntaPiezaGeneral>();
             PreguntaPiezas = new HashSet<PreguntaPieza>();
             PreguntaProcesoGenerals = new HashSet<PreguntaProcesoGeneral>();
@@ -26,7 +25,6 @@ namespace APIRestV2.Models
 
         public virtual ICollection<Empleado> Empleados { get; set; }
         public virtual ICollection<PreguntaMaquinaGeneral> PreguntaMaquinaGenerals { get; set; }
-        public virtual ICollection<PreguntaMaquina> PreguntaMaquinas { get; set; }
         public virtual ICollection<PreguntaPiezaGeneral> PreguntaPiezaGenerals { get; set; }
         public virtual ICollection<PreguntaPieza> PreguntaPiezas { get; set; }
         public virtual ICollection<PreguntaProcesoGeneral> PreguntaProcesoGenerals { get; set; }

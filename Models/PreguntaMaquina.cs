@@ -21,9 +21,6 @@ namespace APIRestV2.Models
         public long NivelCertificacionIdNivelCertificacion { get; set; }
         public bool? Activo { get; set; }
 
-        public virtual Idioma IdiomaIdIdiomaNavigation { get; set; }
-        public virtual Maquina MaquinaIdMaquinaNavigation { get; set; }
-        public virtual NivelCertificacion NivelCertificacionIdNivelCertificacionNavigation { get; set; }
         public virtual ICollection<RespuestaMaquina> RespuestaMaquinas { get; set; }
     }
 }

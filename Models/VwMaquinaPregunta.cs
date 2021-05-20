@@ -15,6 +15,7 @@ namespace APIRestV2.Models
         public int CantidadAccesoMultiple { get; set; }
         public long FabricanteIdFabricante { get; set; }
         public long TipoAccesoIdTipoAcceso { get; set; }
+        public bool UsaPreguntaEstandar { get; set; }
         public bool Activo { get; set; }
         public int? CountPreguntas { get; set; }
         public int? CountProcesos { get; set; }
