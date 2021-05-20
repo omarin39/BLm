@@ -64,7 +64,7 @@ namespace APIRestV2.Controllers.Process
             {
                 return respAltaProceso;
             }
-            else if (ProcesoBuscado.IdProceso == -1)
+            else if (ProcesoBuscado.IdProceso != -1)
             {
                 respAltaProceso.Id = -1;
                 respAltaProceso.Codigo = "-1";
