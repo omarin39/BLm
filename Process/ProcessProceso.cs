@@ -45,7 +45,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaProceso.Id = -1;
                     respAltaProceso.Codigo = "-1";
-                    respAltaProceso.Mensaje =nameof(Proceso.Codigo)+" Duplicado";
+                    respAltaProceso.Mensaje ="Proceso Duplicado";
                     return respAltaProceso;
 
                 }
@@ -66,9 +66,9 @@ namespace APIRestV2.Controllers.Process
             }
             else if (ProcesoBuscado.IdProceso == -1)
             {
-                respAltaProceso.Id = Proceso.IdProceso;
-                respAltaProceso.Codigo = "400";
-                respAltaProceso.Mensaje = "Not found";
+                respAltaProceso.Id = -1;
+                respAltaProceso.Codigo = "-1";
+                respAltaProceso.Mensaje = "Proceso Duplicado";
                 return respAltaProceso;
             }
             else

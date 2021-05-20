@@ -59,7 +59,9 @@ namespace APIRestV2.Controllers.Process
         public ResponseGral UpdatePieza( RequestPieza Pieza, String ip)
         {
             ResponseGral respAltaPieza = new();
-            var PiezaBuscado = FindPieza(Pieza.Nombre);
+            if (PiezaData.ValidaClaveExistente(Pieza.NumeroParte) == false)
+            { 
+                var PiezaBuscado = FindPieza(Pieza.Nombre);
             if (PiezaBuscado == null)
             {
                 return respAltaPieza;
@@ -102,6 +104,15 @@ namespace APIRestV2.Controllers.Process
                     respAltaPieza.Mensaje =ex.InnerException.Message;
                     return respAltaPieza;
                 }
+            }
+            }
+            else
+            {
+                respAltaPieza.Id = -1;
+                respAltaPieza.Codigo = "-1";
+                respAltaPieza.Mensaje = "Numero de parte Duplicado";
+                return respAltaPieza;
+
             }
         }
         public Pieza FindPieza(String Pieza){
