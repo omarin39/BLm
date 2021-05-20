@@ -9,6 +9,7 @@ namespace APIRestV2.Models
     {
         public Proceso()
         {
+            MaquinaProcesos = new HashSet<MaquinaProceso>();
             PreguntaProcesos = new HashSet<PreguntaProceso>();
         }
 
@@ -18,6 +19,7 @@ namespace APIRestV2.Models
         public string Descripcion { get; set; }
         public bool? Activo { get; set; }
 
+        public virtual ICollection<MaquinaProceso> MaquinaProcesos { get; set; }
         public virtual ICollection<PreguntaProceso> PreguntaProcesos { get; set; }
     }
 }
