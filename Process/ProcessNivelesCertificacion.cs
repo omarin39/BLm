@@ -20,27 +20,53 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaNivelesCertificacion = new();
             try
             {
-                NivelCertificacion logNewRegistro = new();
-                logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
-                logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
-                logNewRegistro.Color = NivelesCertificacion.Color;
-                logNewRegistro.Activo = NivelesCertificacion.Activo;
-             
-
-
-
-                long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (NivelesCertificacionData.ValidaClaveExistente1(NivelesCertificacion.DificultadNivelCertificacion) == false)
                 {
-                    respAltaNivelesCertificacion.Id = respNewUSR;
-                    respAltaNivelesCertificacion.Codigo = "200";
-                    respAltaNivelesCertificacion.Mensaje = "OK";
-                    return respAltaNivelesCertificacion;
+                    if (NivelesCertificacionData.ValidaClaveExistente2(NivelesCertificacion.Color) == false){
+                            if (NivelesCertificacionData.ValidaClaveExistente(NivelesCertificacion.NombreNivelCertificacion) == false) { 
+                   
+                                NivelCertificacion logNewRegistro = new();
+                                logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
+                                logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
+                                logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
+                                logNewRegistro.Color = NivelesCertificacion.Color;
+                                logNewRegistro.Activo = NivelesCertificacion.Activo;
+             
+                                long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro,ip);
+                                if(respNewUSR >0)
+                                {
+                                    respAltaNivelesCertificacion.Id = respNewUSR;
+                                    respAltaNivelesCertificacion.Codigo = "200";
+                                    respAltaNivelesCertificacion.Mensaje = "OK";
+                                    return respAltaNivelesCertificacion;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
+                            }
+                            else
+                            {
+                                respAltaNivelesCertificacion.Id = -1;
+                                respAltaNivelesCertificacion.Codigo = "-1";
+                                respAltaNivelesCertificacion.Mensaje = "Nombre Duplicado";
+                                return respAltaNivelesCertificacion;
+                            }
+                    }
+                    else
+                    {
+                        respAltaNivelesCertificacion.Id = -1;
+                        respAltaNivelesCertificacion.Codigo = "-1";
+                        respAltaNivelesCertificacion.Mensaje = "Color Duplicado";
+                        return respAltaNivelesCertificacion;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaNivelesCertificacion.Id = -1;
+                    respAltaNivelesCertificacion.Codigo = "-1";
+                    respAltaNivelesCertificacion.Mensaje = "Dificultad Duplicado";
+                    return respAltaNivelesCertificacion;
                 }
             }
             catch (Exception ex)

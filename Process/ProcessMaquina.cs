@@ -20,27 +20,38 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPieza = new();
             try
             {
-                Maquina newRecord = new();
-                newRecord.Nombre = req.Nombre;
-                newRecord.Descripcion = req.Descripcion;
-                newRecord.Modelo = req.Modelo;
-                newRecord.MaquinaPt = req.MaquinaPt;
-                newRecord.CantidadAccesoMultiple = req.CantidadAccesoMultiple;
-                newRecord.FabricanteIdFabricante = req.FabricanteIdFabricante;
-                newRecord.TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso;
-                newRecord.Activo = req.Activo;
-                
-                long respNewUSR = entityData.AddMaquina(newRecord, ip);
-                if(respNewUSR >0)
+                if (entityData.ValidaClaveExistente(req.Nombre) == false)
                 {
-                    respAltaPieza.Id = respNewUSR;
-                    respAltaPieza.Codigo = "200";
-                    respAltaPieza.Mensaje = "OK";
-                    return respAltaPieza;
+                    Maquina newRecord = new();
+                    newRecord.Nombre = req.Nombre;
+                    newRecord.Descripcion = req.Descripcion;
+                    newRecord.Modelo = req.Modelo;
+                    newRecord.MaquinaPt = req.MaquinaPt;
+                    newRecord.CantidadAccesoMultiple = req.CantidadAccesoMultiple;
+                    newRecord.FabricanteIdFabricante = req.FabricanteIdFabricante;
+                    newRecord.TipoAccesoIdTipoAcceso = req.TipoAccesoIdTipoAcceso;
+                    newRecord.Activo = req.Activo;
+
+                    long respNewUSR = entityData.AddMaquina(newRecord, ip);
+                    if (respNewUSR > 0)
+                    {
+                        respAltaPieza.Id = respNewUSR;
+                        respAltaPieza.Codigo = "200";
+                        respAltaPieza.Mensaje = "OK";
+                        return respAltaPieza;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaPieza.Id = -1;
+                    respAltaPieza.Codigo = "-1";
+                    respAltaPieza.Mensaje = "Numero de parte Duplicado";
+                    return respAltaPieza;
+
                 }
             }
             catch (Exception ex)

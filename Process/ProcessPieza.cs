@@ -20,24 +20,36 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPieza = new();
             try
             {
-                Pieza logNewRegistro = new();
-                logNewRegistro.Nombre = Pieza.Nombre;
-                logNewRegistro.Descripcion = Pieza.Descripcion;
-                logNewRegistro.Activo = Pieza.Activo;
-                logNewRegistro.NumeroParte = Pieza.NumeroParte;
-                long respNewUSR = PiezaData.AddPieza(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (PiezaData.ValidaClaveExistente(Pieza.NumeroParte) == false)
                 {
-                    respAltaPieza.Id = respNewUSR;
-                    respAltaPieza.Codigo = "200";
-                    respAltaPieza.Mensaje = "OK";
-                    return respAltaPieza;
+                    Pieza logNewRegistro = new();
+                    logNewRegistro.Nombre = Pieza.Nombre;
+                    logNewRegistro.Descripcion = Pieza.Descripcion;
+                    logNewRegistro.Activo = Pieza.Activo;
+                    logNewRegistro.NumeroParte = Pieza.NumeroParte;
+                    long respNewUSR = PiezaData.AddPieza(logNewRegistro, ip);
+                    if (respNewUSR > 0)
+                    {
+                        respAltaPieza.Id = respNewUSR;
+                        respAltaPieza.Codigo = "200";
+                        respAltaPieza.Mensaje = "OK";
+                        return respAltaPieza;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaPieza.Id = -1;
+                    respAltaPieza.Codigo = "-1";
+                    respAltaPieza.Mensaje =  "Numero de parte Duplicado";
+                    return respAltaPieza;
+
                 }
-            }
+
+                }
             catch (Exception ex)
             {
                 return null;

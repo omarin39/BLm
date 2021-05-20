@@ -19,23 +19,45 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaFabricante = new();
             try
             {
-                Fabricante logNewRegistro = new();
-                logNewRegistro.Nombre = Fabricante.Nombre;
-                logNewRegistro.Contacto = Fabricante.Contacto;
-                logNewRegistro.Email = Fabricante.Email;
-                logNewRegistro.Telefono = Fabricante.Telefono;
-                logNewRegistro.Activo = Fabricante.Activo;
-                long respNewUSR = FabricanteData.AddFabricante(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (FabricanteData.ValidaClaveExistente2(Fabricante.Email) == false)
                 {
-                    respAltaFabricante.Id = respNewUSR;
-                    respAltaFabricante.Codigo = "200";
-                    respAltaFabricante.Mensaje = "OK";
-                    return respAltaFabricante;
+                    if (FabricanteData.ValidaClaveExistente(Fabricante.Telefono) == false)
+                    {
+                        Fabricante logNewRegistro = new();
+                        logNewRegistro.Nombre = Fabricante.Nombre;
+                        logNewRegistro.Contacto = Fabricante.Contacto;
+                        logNewRegistro.Email = Fabricante.Email;
+                        logNewRegistro.Telefono = Fabricante.Telefono;
+                        logNewRegistro.Activo = Fabricante.Activo;
+                        long respNewUSR = FabricanteData.AddFabricante(logNewRegistro, ip);
+                        if (respNewUSR > 0)
+                        {
+                            respAltaFabricante.Id = respNewUSR;
+                            respAltaFabricante.Codigo = "200";
+                            respAltaFabricante.Mensaje = "OK";
+                            return respAltaFabricante;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        respAltaFabricante.Id = -1;
+                        respAltaFabricante.Codigo = "-1";
+                        respAltaFabricante.Mensaje = "Telefono Duplicado";
+                        return respAltaFabricante;
+
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaFabricante.Id = -1;
+                    respAltaFabricante.Codigo = "-1";
+                    respAltaFabricante.Mensaje = "Email Duplicado";
+                    return respAltaFabricante;
+
                 }
             }
             catch (Exception ex)

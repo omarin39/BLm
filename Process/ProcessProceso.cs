@@ -20,22 +20,34 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaProceso = new();
             try
             {
-                Proceso logNewRegistro = new();
-                logNewRegistro.Nombre = Proceso.Nombre;
-                logNewRegistro.Descripcion = Proceso.Descripcion;
-                logNewRegistro.Codigo= Proceso.Codigo;
-                logNewRegistro.Activo = Proceso.Activo;
-                long respNewUSR = ProcesoData.AddProceso(logNewRegistro,ip);
-                if(respNewUSR >0)
-                {
-                    respAltaProceso.Id = respNewUSR;
-                    respAltaProceso.Codigo = "200";
-                    respAltaProceso.Mensaje = "OK";
-                    return respAltaProceso;
+                if ( ProcesoData.ValidaClaveExistente(Proceso.Codigo)==false ) {
+                
+               
+                    Proceso logNewRegistro = new();
+                    logNewRegistro.Nombre = Proceso.Nombre;
+                    logNewRegistro.Descripcion = Proceso.Descripcion;
+                    logNewRegistro.Codigo= Proceso.Codigo;
+                    logNewRegistro.Activo = Proceso.Activo;
+                    long respNewUSR = ProcesoData.AddProceso(logNewRegistro,ip);
+                    if(respNewUSR >0)
+                    {
+                        respAltaProceso.Id = respNewUSR;
+                        respAltaProceso.Codigo = "200";
+                        respAltaProceso.Mensaje = "OK";
+                        return respAltaProceso;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaProceso.Id = -1;
+                    respAltaProceso.Codigo = "-1";
+                    respAltaProceso.Mensaje =nameof(Proceso.Codigo)+" Duplicado";
+                    return respAltaProceso;
+
                 }
             }
             catch (Exception ex)

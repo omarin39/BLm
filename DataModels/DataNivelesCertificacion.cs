@@ -26,6 +26,30 @@ namespace APIRestV2.DataModels
             return _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.IdNivelCertificacion == idNivelesCertificacion);
         }
 
+        public bool ValidaClaveExistente(string nombreNivelCertificacion)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.NombreNivelCertificacion.Trim().ToUpper() == nombreNivelCertificacion.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
+        public bool ValidaClaveExistente1(int dificultad)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.DificultadNivelCertificacion == dificultad);
+            return busqueda == null ? false : true;
+        }
+
+        public bool ValidaClaveExistente2(string color)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.Color.Trim().ToUpper() == color.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
         public long AddNivelesCertificacion(NivelCertificacion item,string ip)
         {
             try

@@ -27,7 +27,11 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaMultimediaPieza = new();
             try
             {
-                MultiMediaPieza logNewRegistro = new();
+                if (multimediaPiezaData.ValidaClaveExistente(MultimediaPieza.Nombre) == false)
+                {
+
+                
+                    MultiMediaPieza logNewRegistro = new();
                 logNewRegistro.IdPieza = MultimediaPieza.IdPieza;
                 logNewRegistro.IdTipoDocumento = MultimediaPieza.IdTipoDocumento;
                 logNewRegistro.Nombre = MultimediaPieza.Nombre;
@@ -74,6 +78,16 @@ namespace APIRestV2.Controllers.Process
                     respAltaMultimediaPieza.Codigo = "400";
                     respAltaMultimediaPieza.Mensaje = "Error al guardar datos";
                     return respAltaMultimediaPieza;
+                }
+
+                }
+                else
+                {
+                    respAltaMultimediaPieza.Id = -1;
+                    respAltaMultimediaPieza.Codigo = "-1";
+                    respAltaMultimediaPieza.Mensaje = "Nombdre de archivo Duplicado";
+                    return respAltaMultimediaPieza;
+
                 }
             }
             catch (Exception ex)

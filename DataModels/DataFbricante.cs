@@ -26,6 +26,22 @@ namespace APIRestV2.DataModels
             return _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.IdFabricante == idFabricante);
         }
 
+        public bool ValidaClaveExistente(string telefono)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim().ToUpper() == telefono.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
+        public bool ValidaClaveExistente2(string email)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Email.Trim().ToUpper() == email.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
         public long AddFabricante(Fabricante item,string ip)
         {
             try

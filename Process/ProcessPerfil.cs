@@ -19,20 +19,31 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPerfil = new();
             try
             {
-                Perfil logNewRegistro = new();
-                logNewRegistro.Perfil1 = perfil.Perfil1;
-                logNewRegistro.Activo = perfil.Activo;
-                long respNewUSR = perfilData.AddPerfil(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (perfilData.ValidaClaveExistente(perfil.Descripcion) == false)
                 {
-                    respAltaPerfil.Id = respNewUSR;
-                    respAltaPerfil.Codigo = "200";
-                    respAltaPerfil.Mensaje = "OK";
-                    return respAltaPerfil;
+                    Perfil logNewRegistro = new();
+                    logNewRegistro.Perfil1 = perfil.Perfil1;
+                    logNewRegistro.Activo = perfil.Activo;
+                    long respNewUSR = perfilData.AddPerfil(logNewRegistro, ip);
+                    if (respNewUSR > 0)
+                    {
+                        respAltaPerfil.Id = respNewUSR;
+                        respAltaPerfil.Codigo = "200";
+                        respAltaPerfil.Mensaje = "OK";
+                        return respAltaPerfil;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaPerfil.Id = -1;
+                    respAltaPerfil.Codigo = "-1";
+                    respAltaPerfil.Mensaje = "Descripcion Duplicado";
+                    return respAltaPerfil;
+
                 }
             }
             catch (Exception ex)

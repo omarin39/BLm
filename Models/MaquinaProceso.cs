@@ -13,6 +13,5 @@ namespace APIRestV2.Models
         public bool? Activo { get; set; }
 
         public virtual Maquina MaquinaIdMaquinaNavigation { get; set; }
-        public virtual Proceso ProcesoIdProcesoNavigation { get; set; }
     }
 }

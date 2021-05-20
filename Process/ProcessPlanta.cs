@@ -20,22 +20,44 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPlanta = new();
             try
             {
-                Plantum logNewRegistro = new();
-                logNewRegistro.Planta = Planta.Planta;
-                logNewRegistro.IdPlantaExterno = Planta.IdPlantaExterno;
-                logNewRegistro.Acronimo = Planta.Acronimo;
-                logNewRegistro.Activo = Planta.Activo;
-                long respNewUSR = PlantaData.AddPlanta(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (PlantaData.ValidaClaveExistente2(Planta.IdPlantaExterno) == false)
                 {
-                    respAltaPlanta.Id = respNewUSR;
-                    respAltaPlanta.Codigo = "200";
-                    respAltaPlanta.Mensaje = "OK";
-                    return respAltaPlanta;
+                    if (PlantaData.ValidaClaveExistente(Planta.Acronimo) == false)
+                    {
+                        Plantum logNewRegistro = new();
+                        logNewRegistro.Planta = Planta.Planta;
+                        logNewRegistro.IdPlantaExterno = Planta.IdPlantaExterno;
+                        logNewRegistro.Acronimo = Planta.Acronimo;
+                        logNewRegistro.Activo = Planta.Activo;
+                        long respNewUSR = PlantaData.AddPlanta(logNewRegistro, ip);
+                        if (respNewUSR > 0)
+                        {
+                            respAltaPlanta.Id = respNewUSR;
+                            respAltaPlanta.Codigo = "200";
+                            respAltaPlanta.Mensaje = "OK";
+                            return respAltaPlanta;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        respAltaPlanta.Id = -1;
+                        respAltaPlanta.Codigo = "-1";
+                        respAltaPlanta.Mensaje = "Acronimo Duplicado";
+                        return respAltaPlanta;
+
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaPlanta.Id = -1;
+                    respAltaPlanta.Codigo = "-1";
+                    respAltaPlanta.Mensaje = "IdPlantaExterno Duplicado";
+                    return respAltaPlanta;
+
                 }
             }
             catch (Exception ex)

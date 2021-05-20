@@ -22,10 +22,16 @@ namespace APIRestV2.DataModels
         {
             return _context.VwMaquinaPreguntas.ToList();
         }
-       
 
+        public bool ValidaClaveExistente(string nombre)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.VwMaquinaPreguntas.AsNoTracking().SingleOrDefault(us => us.Nombre.Trim().ToUpper() == nombre.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
 
-       public VwMaquinaPregunta findPiezaPorIdPieza(long id)
+        public VwMaquinaPregunta findPiezaPorIdPieza(long id)
         {
             return _context.VwMaquinaPreguntas.AsNoTracking().SingleOrDefault(p => p.IdMaquina == id);
         }

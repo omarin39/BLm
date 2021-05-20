@@ -26,6 +26,14 @@ namespace APIRestV2.DataModels
             return _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Id == idMultimedia && us.IdPieza== idPieza);
         }
 
+        public bool ValidaClaveExistente(string nombre)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Nombre.Trim().ToUpper() == nombre.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
         public List<MultiMediaPieza> FindMultimediaPiezaTipMedia(string TipoMedia, long idPieza)
         {
             if (string.IsNullOrEmpty(TipoMedia))

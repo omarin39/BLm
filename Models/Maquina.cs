@@ -25,7 +25,6 @@ namespace APIRestV2.Models
         public bool? Activo { get; set; }
 
         public virtual Fabricante FabricanteIdFabricanteNavigation { get; set; }
-        public virtual TipoAcceso TipoAccesoIdTipoAccesoNavigation { get; set; }
         public virtual ICollection<MaquinaFisica> MaquinaFisicas { get; set; }
         public virtual ICollection<MaquinaProceso> MaquinaProcesos { get; set; }
         public virtual ICollection<PreguntaMaquina> PreguntaMaquinas { get; set; }

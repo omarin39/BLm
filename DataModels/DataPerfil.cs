@@ -21,6 +21,15 @@ namespace APIRestV2.DataModels
         {
             return  _context.Perfils.ToList();
         }
+
+        public bool ValidaClaveExistente(string descripcion)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Descripcion.Trim().ToUpper() == descripcion.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
         public Perfil FindPerfil(long idPerfil)
         {
             return _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Id == idPerfil);

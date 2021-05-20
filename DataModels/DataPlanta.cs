@@ -26,6 +26,22 @@ namespace APIRestV2.DataModels
             return _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idPlantaExt);
         }
 
+        public bool ValidaClaveExistente(string acronimo)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.Acronimo.Trim().ToUpper() == acronimo.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
+        public bool ValidaClaveExistente2(long idExterno)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idExterno);
+            return busqueda == null ? false : true;
+        }
+
         public long AddPlanta(Plantum item,string ip)
         {
             try

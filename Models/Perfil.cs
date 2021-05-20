@@ -14,6 +14,7 @@ namespace APIRestV2.Models
 
         public long Id { get; set; }
         public string Perfil1 { get; set; }
+        public string Descripcion { get; set; }
         public bool Activo { get; set; }
 
         public virtual ICollection<PerfilOperacionPermiso> PerfilOperacionPermisos { get; set; }

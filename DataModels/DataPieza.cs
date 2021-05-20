@@ -24,6 +24,15 @@ namespace APIRestV2.DataModels
             return _context.VwPiezasMultimedias.ToList();
           
         }
+
+        public bool ValidaClaveExistente(string numeroParte)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.Piezas.AsNoTracking().SingleOrDefault(us => us.NumeroParte.Trim().ToUpper() == numeroParte.Trim().ToUpper());
+            return busqueda == null ? false : true;
+        }
+
         public Pieza FindPieza(string Pieza)
         {
            

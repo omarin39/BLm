@@ -26,6 +26,14 @@ namespace APIRestV2.DataModels
             return _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Codigo == Proceso);
         }
 
+        public bool ValidaClaveExistente(string codigo)
+        {
+            //true si existe
+            //false si no existe
+           var busqueda = _context.Procesos.AsNoTracking().SingleOrDefault(us => us.Codigo.Trim().ToUpper() == codigo.Trim().ToUpper());
+            return busqueda==null ? false : true;
+        }
+
         public long AddProceso(Proceso item,string ip)
         {
             try
