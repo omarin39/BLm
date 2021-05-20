@@ -34,30 +34,38 @@ namespace APIRestV2.DataModels
 
             var originalList = _context.MaquinaProcesos.Where(us => us.MaquinaIdMaquina == Maquina).ToList();
 
-            foreach (MaquinaProceso elemento in originalList)
-            {
-                Proceso proc = _context.Procesos.AsNoTracking().SingleOrDefault(us => us.IdProceso == elemento.ProcesoIdProceso);
-                elemento.ProcesoIdProcesoNavigation = proc;
-            }
+            var query = from pop in _context.MaquinaProcesos.Where(us => us.MaquinaIdMaquina == Maquina)
+                        join o in _context.Set<Proceso>()
+                            on pop.ProcesoIdProceso equals o.IdProceso
+                        select new ResponseMaquinaProceso { IdMaquinaProceso = pop.IdMaquinaProceso, MaquinaIdMaquina = pop.MaquinaIdMaquina, ProcesoIdProceso = o.IdProceso, Codigo = o.Codigo, Nombre = o.Nombre, Descripcion = o.Descripcion, Activo = pop.Activo };
 
-            var result = originalList.Select((maquinaProc, i) =>
+            List<ResponseMaquinaProceso> res = query.ToList();
 
-                   new ResponseMaquinaProceso
-                   {
-                       IdMaquinaProceso = maquinaProc.IdMaquinaProceso,
-                       MaquinaIdMaquina = maquinaProc.MaquinaIdMaquina,
-                       ProcesoIdProceso = maquinaProc.ProcesoIdProceso,
-                       Activo = (bool)maquinaProc.Activo,
-                       Proceso = new RequestProceso
-                       {
-                           IdProceso = maquinaProc.ProcesoIdProcesoNavigation.IdProceso,
-                           Codigo = maquinaProc.ProcesoIdProcesoNavigation.Codigo,
-                           Nombre = maquinaProc.ProcesoIdProcesoNavigation.Nombre,
-                           Descripcion = maquinaProc.ProcesoIdProcesoNavigation.Descripcion,
-                           Activo = (bool)maquinaProc.ProcesoIdProcesoNavigation.Activo
-                       }
-                   }).ToList();
-            return result;
+            //foreach (MaquinaProceso elemento in originalList)
+            //{
+            //    Proceso proc = _context.Procesos.AsNoTracking().SingleOrDefault(us => us.IdProceso == elemento.ProcesoIdProceso);
+            //    elemento.ProcesoIdProcesoNavigation = proc;
+            //}
+
+            //var result = originalList.Select((maquinaProc, i) =>
+
+            //       new ResponseMaquinaProceso
+            //       {
+            //           IdMaquinaProceso = maquinaProc.IdMaquinaProceso,
+            //           MaquinaIdMaquina = maquinaProc.MaquinaIdMaquina,
+            //           ProcesoIdProceso = maquinaProc.ProcesoIdProceso,
+            //           Activo = (bool)maquinaProc.Activo,
+            //           Proceso = new RequestProceso
+            //           {
+            //               IdProceso = maquinaProc.ProcesoIdProcesoNavigation.IdProceso,
+            //               Codigo = maquinaProc.ProcesoIdProcesoNavigation.Codigo,
+            //               Nombre = maquinaProc.ProcesoIdProcesoNavigation.Nombre,
+            //               Descripcion = maquinaProc.ProcesoIdProcesoNavigation.Descripcion,
+            //               Activo = (bool)maquinaProc.ProcesoIdProcesoNavigation.Activo
+            //           }
+            //       }).ToList();
+            //return result;
+            return res;
         }
 
 

@@ -1035,8 +1035,8 @@ SET IDENTITY_INSERT [dbo].[Operacion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Perfil] ON 
 
-INSERT [dbo].[Perfil] ([Id], [Perfil], [Activo], [Descripcion]) VALUES (1, N'Administrador',N'Administrador con todos los permisos en la plataforma', 1)
-INSERT [dbo].[Perfil] ([Id], [Perfil], [Activo], [Descripcion]) VALUES (2, N'Usuario',N'Solo algunos permisos para la plataforma', 1)
+INSERT [dbo].[Perfil] ([Id], [Perfil], [Descripcion], [Activo]) VALUES (1, N'Administrador', N'Administrador con todos los permisos en la plataforma', 1)
+INSERT [dbo].[Perfil] ([Id], [Perfil], [Descripcion], [Activo]) VALUES (2, N'Usuario', N'Solo algunos permisos para la plataforma', 1)
 SET IDENTITY_INSERT [dbo].[Perfil] OFF
 GO
 SET IDENTITY_INSERT [dbo].[PerfilOperacionPermiso] ON 
