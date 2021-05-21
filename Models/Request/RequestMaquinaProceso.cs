@@ -11,6 +11,7 @@ namespace APIRestV2.Models.Request
         public long MaquinaIdMaquina { get; set; }
         public long ProcesoIdProceso { get; set; }
         public bool? Activo { get; set; }
+        public bool UsaPreguntaEstandar { get; set; }
 
     }
 }

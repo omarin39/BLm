@@ -19,10 +19,11 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPerfil = new();
             try
             {
-                if (perfilData.ValidaClaveExistente(perfil.Descripcion) == false)
+                if (perfilData.ValidaClaveExistente(perfil) == false)
                 {
                     Perfil logNewRegistro = new();
                     logNewRegistro.Perfil1 = perfil.Perfil1;
+                    logNewRegistro.Descripcion = perfil.Descripcion;
                     logNewRegistro.Activo = perfil.Activo;
                     long respNewUSR = perfilData.AddPerfil(logNewRegistro, ip);
                     if (respNewUSR > 0)
@@ -41,7 +42,7 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPerfil.Id = -1;
                     respAltaPerfil.Codigo = "-1";
-                    respAltaPerfil.Mensaje = "Descripcion Duplicado";
+                    respAltaPerfil.Mensaje = "Perfíl Duplicado";
                     return respAltaPerfil;
 
                 }
@@ -104,22 +105,35 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    perfilBuscado.Perfil1 = perfil.Perfil1;
-                    perfilBuscado.Activo = perfil.Activo;
-                    var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado,ip);
-                    if (respNewPerfil > 0)
+
+                    if (perfilData.ValidaClaveExistente(perfil) == false)
                     {
-                        respAltaPerfil.Id = perfilBuscado.Id;
-                        respAltaPerfil.Codigo = "200";
-                        respAltaPerfil.Mensaje = "OK";
-                        return respAltaPerfil;
+                        perfilBuscado.Perfil1 = perfil.Perfil1;
+                        perfilBuscado.Descripcion = perfil.Descripcion;
+                        perfilBuscado.Activo = perfil.Activo;
+                        var respNewPerfil = perfilData.UpdatePerfil(perfilBuscado, ip);
+                        if (respNewPerfil > 0)
+                        {
+                            respAltaPerfil.Id = perfilBuscado.Id;
+                            respAltaPerfil.Codigo = "200";
+                            respAltaPerfil.Mensaje = "OK";
+                            return respAltaPerfil;
+                        }
+                        else
+                        {
+                            respAltaPerfil.Id = perfilBuscado.Id;
+                            respAltaPerfil.Codigo = "400";
+                            respAltaPerfil.Mensaje = "Record not found";
+                            return respAltaPerfil;
+                        }
                     }
                     else
                     {
-                        respAltaPerfil.Id = perfilBuscado.Id;
-                        respAltaPerfil.Codigo = "400";
-                        respAltaPerfil.Mensaje = "Record not found";
+                        respAltaPerfil.Id = -1;
+                        respAltaPerfil.Codigo = "-1";
+                        respAltaPerfil.Mensaje = "Perfíl Duplicado";
                         return respAltaPerfil;
+
                     }
                 }
                 catch (Exception ex)

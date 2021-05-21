@@ -19,9 +19,9 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaFabricante = new();
             try
             {
-                if (FabricanteData.ValidaClaveExistente2(Fabricante.Email) == false)
+                if (FabricanteData.FindFabricanteEmailTelefono(1,Fabricante) == false)
                 {
-                    if (FabricanteData.ValidaClaveExistente(Fabricante.Telefono) == false)
+                    if (FabricanteData.FindFabricanteEmailTelefono(2,Fabricante) == false)
                     {
                         Fabricante logNewRegistro = new();
                         logNewRegistro.Nombre = Fabricante.Nombre;
@@ -44,8 +44,8 @@ namespace APIRestV2.Controllers.Process
                     }
                     else
                     {
-                        respAltaFabricante.Id = -1;
-                        respAltaFabricante.Codigo = "-1";
+                        respAltaFabricante.Id = -2;
+                        respAltaFabricante.Codigo = "-2";
                         respAltaFabricante.Mensaje = "Telefono Duplicado";
                         return respAltaFabricante;
 
@@ -83,25 +83,47 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    FabricanteBuscado.Nombre = Fabricante.Nombre;
-                    FabricanteBuscado.Contacto = Fabricante.Contacto;
-                    FabricanteBuscado.Email = Fabricante.Email;
-                    FabricanteBuscado.Telefono = Fabricante.Telefono;
-                    FabricanteBuscado.Activo = Fabricante.Activo;
-                    var respNewFabricante = FabricanteData.UpdateFabricante(FabricanteBuscado,ip);
-                    if (respNewFabricante > 0)
+                    if (FabricanteData.FindFabricanteEmailTelefono(1, Fabricante) == false)
                     {
-                        respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
-                        respAltaFabricante.Codigo = "200";
-                        respAltaFabricante.Mensaje = "OK";
-                        return respAltaFabricante;
+                        if (FabricanteData.FindFabricanteEmailTelefono(2, Fabricante) == false)
+                        {
+                            FabricanteBuscado.Nombre = Fabricante.Nombre;
+                            FabricanteBuscado.Contacto = Fabricante.Contacto;
+                            FabricanteBuscado.Email = Fabricante.Email;
+                            FabricanteBuscado.Telefono = Fabricante.Telefono;
+                            FabricanteBuscado.Activo = Fabricante.Activo;
+                            var respNewFabricante = FabricanteData.UpdateFabricante(FabricanteBuscado, ip);
+                            if (respNewFabricante > 0)
+                            {
+                                respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
+                                respAltaFabricante.Codigo = "200";
+                                respAltaFabricante.Mensaje = "OK";
+                                return respAltaFabricante;
+                            }
+                            else
+                            {
+                                respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
+                                respAltaFabricante.Codigo = "400";
+                                respAltaFabricante.Mensaje = "Record not found";
+                                return respAltaFabricante;
+                            }
+                        }
+                        else
+                        {
+                            respAltaFabricante.Id = -1;
+                            respAltaFabricante.Codigo = "-1";
+                            respAltaFabricante.Mensaje = "Telefono Duplicado";
+                            return respAltaFabricante;
+
+                        }
                     }
                     else
                     {
-                        respAltaFabricante.Id = FabricanteBuscado.IdFabricante;
-                        respAltaFabricante.Codigo = "400";
-                        respAltaFabricante.Mensaje = "Record not found";
+                        respAltaFabricante.Id = -1;
+                        respAltaFabricante.Codigo = "-1";
+                        respAltaFabricante.Mensaje = "Email Duplicado";
                         return respAltaFabricante;
+
                     }
                 }
                 catch (Exception ex)

@@ -22,7 +22,7 @@ namespace APIRestV2.Controllers.Process
                 newRecord.MaquinaIdMaquina = req.MaquinaIdMaquina;
                 newRecord.ProcesoIdProceso = req.ProcesoIdProceso;
                 newRecord.Activo = req.Activo;
-
+                newRecord.UsaPreguntaEstandar = req.UsaPreguntaEstandar;
                 long respNewMaqPro = entityData.AddMaquinaProceso(newRecord, ip);
                 if (respNewMaqPro > 0)
                 {
@@ -66,7 +66,8 @@ namespace APIRestV2.Controllers.Process
                         IdMaquinaProceso = itemBuscado.IdMaquinaProceso,
                         MaquinaIdMaquina = itemBuscado.MaquinaIdMaquina,
                         ProcesoIdProceso = itemBuscado.ProcesoIdProceso,
-                        Activo = req.Activo
+                        Activo = req.Activo,
+                        UsaPreguntaEstandar = req.UsaPreguntaEstandar
                     };
 
                     var respNewItem = entityData.UpdateMaquinaProceso(maqProc, ip);

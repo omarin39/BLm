@@ -1,5 +1,7 @@
 ﻿
 using APIRestV2.Models;
+using APIRestV2.Models.Request;
+using APIRestV2.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -80,6 +82,13 @@ namespace APIRestV2.DataModels
             var naves = _context.LineaProduccions.Where(us => us.IdNave == id);
             return naves.ToList();
 
+        }
+
+        public bool FindNombreNave(RequestNave BusquedaVar)
+        {
+            Nave busqueda = new();
+            busqueda = _context.Naves.AsNoTracking().SingleOrDefault(us => us.Nombre.Trim().ToUpper() == BusquedaVar.nombre.Trim().ToUpper() && us.IdNave != BusquedaVar.IdNave);
+            return busqueda == null ? false : true;
         }
     }
 }

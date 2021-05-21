@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using APIRestV2.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,11 +26,11 @@ namespace APIRestV2.DataModels
           
         }
 
-        public bool ValidaClaveExistente(string numeroParte)
+        public bool ValidaClaveExistente(RequestPieza _Pieza)
         {
             //true si existe
             //false si no existe
-            var busqueda = _context.Piezas.AsNoTracking().SingleOrDefault(us => us.NumeroParte.Trim().ToUpper() == numeroParte.Trim().ToUpper());
+            var busqueda = _context.Piezas.AsNoTracking().SingleOrDefault(us => us.NumeroParte.Trim().ToUpper() == _Pieza.NumeroParte.Trim().ToUpper() && us.IdPieza != _Pieza.IdPieza);
             return busqueda == null ? false : true;
         }
 

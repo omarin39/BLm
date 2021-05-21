@@ -20,9 +20,9 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPlanta = new();
             try
             {
-                if (PlantaData.ValidaClaveExistente2(Planta.IdPlantaExterno) == false)
+                if (PlantaData.FindPlantaIdexttAcro(1,Planta) == false)
                 {
-                    if (PlantaData.ValidaClaveExistente(Planta.Acronimo) == false)
+                    if (PlantaData.FindPlantaIdexttAcro(2, Planta) == false)
                     {
                         Plantum logNewRegistro = new();
                         logNewRegistro.Planta = Planta.Planta;
@@ -44,8 +44,8 @@ namespace APIRestV2.Controllers.Process
                     }
                     else
                     {
-                        respAltaPlanta.Id = -1;
-                        respAltaPlanta.Codigo = "-1";
+                        respAltaPlanta.Id = -2;
+                        respAltaPlanta.Codigo = "-2";
                         respAltaPlanta.Mensaje = "Acronimo Duplicado";
                         return respAltaPlanta;
 
@@ -102,32 +102,53 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-
-                    var PlantaBuscadox = new Plantum
+                    if (PlantaData.FindPlantaIdexttAcro(1, planta) == false)
                     {
-                        Planta = planta.Planta,
-                        Acronimo = planta.Acronimo,
-                        Activo = planta.Activo,
-                        IdPlanta = PlantaBuscado.IdPlanta,
-                        IdPlantaExterno = PlantaBuscado.IdPlantaExterno,
-                    };
+                        if (PlantaData.FindPlantaIdexttAcro(2, planta) == false)
+                        {
+                            var PlantaBuscadox = new Plantum
+                            {
+                                Planta = planta.Planta,
+                                Acronimo = planta.Acronimo,
+                                Activo = planta.Activo,
+                                IdPlanta = PlantaBuscado.IdPlanta,
+                                IdPlantaExterno = PlantaBuscado.IdPlantaExterno,
+                            };
 
 
 
-                    var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscadox,ip);
-                    if (respNewPlanta > 0)
-                    {
-                        respAltaPlanta.Id = PlantaBuscado.IdPlanta;
-                        respAltaPlanta.Codigo = "200";
-                        respAltaPlanta.Mensaje = "OK";
-                        return respAltaPlanta;
+                            var respNewPlanta = PlantaData.UpdatePlanta(PlantaBuscadox, ip);
+                            if (respNewPlanta > 0)
+                            {
+                                respAltaPlanta.Id = PlantaBuscado.IdPlanta;
+                                respAltaPlanta.Codigo = "200";
+                                respAltaPlanta.Mensaje = "OK";
+                                return respAltaPlanta;
+                            }
+                            else
+                            {
+                                respAltaPlanta.Id = PlantaBuscado.IdPlanta;
+                                respAltaPlanta.Codigo = "400";
+                                respAltaPlanta.Mensaje = "Record not found";
+                                return respAltaPlanta;
+                            }
+                        }
+                        else
+                        {
+                            respAltaPlanta.Id = -2;
+                            respAltaPlanta.Codigo = "-2";
+                            respAltaPlanta.Mensaje = "Acronimo Duplicado";
+                            return respAltaPlanta;
+
+                        }
                     }
                     else
                     {
-                        respAltaPlanta.Id = PlantaBuscado.IdPlanta;
-                        respAltaPlanta.Codigo = "400";
-                        respAltaPlanta.Mensaje = "Record not found";
+                        respAltaPlanta.Id = -1;
+                        respAltaPlanta.Codigo = "-1";
+                        respAltaPlanta.Mensaje = "IdPlantaExterno Duplicado";
                         return respAltaPlanta;
+
                     }
                 }
                 catch (Exception ex)
@@ -177,7 +198,7 @@ namespace APIRestV2.Controllers.Process
                           Acronimo = planta.Acronimo,
                           Planta = planta.Planta,
                           Activo = (bool)planta.Activo,
-                          Naves = planta.Naves.Count,
+                          Naves = planta.Naves.Where(na => na.Activo==true).Count(),
                       }).ToList();
 
 

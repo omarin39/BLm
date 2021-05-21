@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,19 +27,20 @@ namespace APIRestV2.DataModels
             return _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.IdFabricante == idFabricante);
         }
 
-        public bool ValidaClaveExistente(string telefono)
+        public bool FindFabricanteEmailTelefono(int Tipobusqueda, RequestFabricante BusquedaVar)
         {
-            //true si existe
-            //false si no existe
-            var busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim().ToUpper() == telefono.Trim().ToUpper());
-            return busqueda == null ? false : true;
-        }
-
-        public bool ValidaClaveExistente2(string email)
-        {
-            //true si existe
-            //false si no existe
-            var busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Email.Trim().ToUpper() == email.Trim().ToUpper());
+            Fabricante busqueda = new();
+            switch (Tipobusqueda)
+            {
+                case 1:
+                    busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Email.Trim().ToUpper() == BusquedaVar.Email.Trim().ToUpper() && us.IdFabricante != BusquedaVar.IdFabricante);
+                    break;
+                case 2:
+                    busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim() == BusquedaVar.Telefono.Trim() && us.IdFabricante != BusquedaVar.IdFabricante);
+                    break;
+                default:
+                    break;
+            }
             return busqueda == null ? false : true;
         }
 

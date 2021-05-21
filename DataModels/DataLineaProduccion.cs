@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,13 @@ namespace APIRestV2.DataModels
 
         }
 
-        
+        public bool FindNombreLProduccion(RequestLineaProduccion BusquedaVar)
+        {
+            LineaProduccion busqueda = new();
+            busqueda = _context.LineaProduccions.AsNoTracking().SingleOrDefault(us => us.NombreLinea.Trim().ToUpper() == BusquedaVar.NombreLinea.Trim().ToUpper() && us.Id != BusquedaVar.Id);
+            return busqueda == null ? false : true;
+        }
+
+
     }
 }

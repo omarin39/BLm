@@ -10,6 +10,7 @@ namespace APIRestV2.Models
         public long IdMaquinaProceso { get; set; }
         public long MaquinaIdMaquina { get; set; }
         public long ProcesoIdProceso { get; set; }
+        public bool UsaPreguntaEstandar { get; set; }
         public bool? Activo { get; set; }
 
         public virtual Proceso ProcesoIdProcesoNavigation { get; set; }

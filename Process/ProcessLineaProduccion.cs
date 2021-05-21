@@ -20,22 +20,33 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaLineaProduccion = new();
             try
             {
-                LineaProduccion logNewRegistro = new();
-                logNewRegistro.IdNave = LineaProduccion.IdNave;
-                logNewRegistro.NombreLinea = LineaProduccion.NombreLinea;
-                logNewRegistro.DescripcionLinea = LineaProduccion.DescripcionLinea;
-                logNewRegistro.Activo = LineaProduccion.Activo;
-                long respNewUSR = LineaProduccionData.AddLineaProduccion(logNewRegistro,ip);
-                if(respNewUSR >0)
+                if (LineaProduccionData.FindNombreLProduccion(LineaProduccion) == false)
                 {
-                    respAltaLineaProduccion.Id = respNewUSR;
-                    respAltaLineaProduccion.Codigo = "200";
-                    respAltaLineaProduccion.Mensaje = "OK";
-                    return respAltaLineaProduccion;
+                    LineaProduccion logNewRegistro = new();
+                    logNewRegistro.IdNave = LineaProduccion.IdNave;
+                    logNewRegistro.NombreLinea = LineaProduccion.NombreLinea;
+                    logNewRegistro.DescripcionLinea = LineaProduccion.DescripcionLinea;
+                    logNewRegistro.Activo = LineaProduccion.Activo;
+                    long respNewUSR = LineaProduccionData.AddLineaProduccion(logNewRegistro, ip);
+                    if (respNewUSR > 0)
+                    {
+                        respAltaLineaProduccion.Id = respNewUSR;
+                        respAltaLineaProduccion.Codigo = "200";
+                        respAltaLineaProduccion.Mensaje = "OK";
+                        return respAltaLineaProduccion;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaLineaProduccion.Id = -1;
+                    respAltaLineaProduccion.Codigo = "-1";
+                    respAltaLineaProduccion.Mensaje = "Nombre Duplicado";
+                    return respAltaLineaProduccion;
+
                 }
             }
             catch (Exception ex)
@@ -66,25 +77,36 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    LineaProduccionBuscado.Id = LineaProduccion.Id;
-                    LineaProduccionBuscado.IdNave = LineaProduccion.IdNave;
-                    LineaProduccionBuscado.NombreLinea = LineaProduccion.NombreLinea;
-                    LineaProduccionBuscado.DescripcionLinea = LineaProduccion.DescripcionLinea;
-                    LineaProduccionBuscado.Activo = LineaProduccion.Activo;
-                    var respNewLineaProduccion = LineaProduccionData.UpdateLineaProduccion(LineaProduccionBuscado,ip);
-                    if (respNewLineaProduccion > 0)
+                    if (LineaProduccionData.FindNombreLProduccion(LineaProduccion) == false)
                     {
-                        respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
-                        respAltaLineaProduccion.Codigo = "200";
-                        respAltaLineaProduccion.Mensaje = "OK";
-                        return respAltaLineaProduccion;
+                        LineaProduccionBuscado.Id = LineaProduccion.Id;
+                        LineaProduccionBuscado.IdNave = LineaProduccion.IdNave;
+                        LineaProduccionBuscado.NombreLinea = LineaProduccion.NombreLinea;
+                        LineaProduccionBuscado.DescripcionLinea = LineaProduccion.DescripcionLinea;
+                        LineaProduccionBuscado.Activo = LineaProduccion.Activo;
+                        var respNewLineaProduccion = LineaProduccionData.UpdateLineaProduccion(LineaProduccionBuscado, ip);
+                        if (respNewLineaProduccion > 0)
+                        {
+                            respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
+                            respAltaLineaProduccion.Codigo = "200";
+                            respAltaLineaProduccion.Mensaje = "OK";
+                            return respAltaLineaProduccion;
+                        }
+                        else
+                        {
+                            respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
+                            respAltaLineaProduccion.Codigo = "400";
+                            respAltaLineaProduccion.Mensaje = "Record not found";
+                            return respAltaLineaProduccion;
+                        }
                     }
                     else
                     {
-                        respAltaLineaProduccion.Id = LineaProduccionBuscado.Id;
-                        respAltaLineaProduccion.Codigo = "400";
-                        respAltaLineaProduccion.Mensaje = "Record not found";
+                        respAltaLineaProduccion.Id = -1;
+                        respAltaLineaProduccion.Codigo = "-1";
+                        respAltaLineaProduccion.Mensaje = "Nombre Duplicado";
                         return respAltaLineaProduccion;
+
                     }
                 }
                 catch (Exception ex)

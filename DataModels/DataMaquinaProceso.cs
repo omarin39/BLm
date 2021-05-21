@@ -31,14 +31,10 @@ namespace APIRestV2.DataModels
 
         public List<ResponseMaquinaProceso> FindMaquinaProceso(long Maquina)
         {
-
-            var originalList = _context.MaquinaProcesos.Where(us => us.MaquinaIdMaquina == Maquina).ToList();
-
             var query = from pop in _context.MaquinaProcesos.Where(us => us.MaquinaIdMaquina == Maquina)
-                        join o in _context.Set<Proceso>()
+                        join o in _context.Set<Proceso>().Include("PreguntaProcesos")
                             on pop.ProcesoIdProceso equals o.IdProceso
-                        select new ResponseMaquinaProceso { IdMaquinaProceso = pop.IdMaquinaProceso, MaquinaIdMaquina = pop.MaquinaIdMaquina, ProcesoIdProceso = o.IdProceso, Codigo = o.Codigo, Nombre = o.Nombre, Descripcion = o.Descripcion, Activo = pop.Activo };
-
+                        select new ResponseMaquinaProceso { IdMaquinaProceso = pop.IdMaquinaProceso, MaquinaIdMaquina = pop.MaquinaIdMaquina, UsaPreguntaEstandar = pop.UsaPreguntaEstandar, ProcesoIdProceso = o.IdProceso, Codigo = o.Codigo, Nombre = o.Nombre, Descripcion = o.Descripcion, Activo = pop.Activo , countPreguntas = o.PreguntaProcesos.Count() };
             List<ResponseMaquinaProceso> res = query.ToList();
 
             //foreach (MaquinaProceso elemento in originalList)

@@ -1,49 +1,47 @@
 ﻿using APIRestV2.Models;
-using APIRestV2.Models.Request;
-using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace APIRestV2.DataModels
 {
-    public class DataPerfil
+    public class DataPreguntaProceso
     {
         private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
-        public DataPerfil()
+
+        public DataPreguntaProceso()
         {
             _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public  List<Perfil> FindAllPerfil()
+        public List<PreguntaProceso> findAllPreguntaProceso()
         {
-            return  _context.Perfils.ToList();
+            return _context.PreguntaProcesos.ToList();
         }
 
-        public bool ValidaClaveExistente(RequestPerfiles descripcion)
+        public PreguntaProceso findPreguntaProcesoIdPreguntaProceso(long id)
         {
-            //true si existe
-            //false si no existe
-            var busqueda = _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Perfil1.Trim().ToUpper() == descripcion.Perfil1.Trim().ToUpper() && us.Id != descripcion.Id);
-            return busqueda == null ? false : true;
+            return _context.PreguntaProcesos.AsNoTracking().SingleOrDefault(us => us.IdPreguntaProceso == id);
         }
 
-        public Perfil FindPerfil(long idPerfil)
+        public List<PreguntaProceso> findPreguntaProcesoIdProceso(long id)
         {
-            return _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Id == idPerfil);
+            var preguntas = _context.PreguntaProcesos.Where(us => us.ProcesoIdProceso == id);
+            return preguntas.ToList();
         }
 
-        public long AddPerfil(Perfil item,string ip)
+        public long AddPreguntaProceso(PreguntaProceso item, string ip)
         {
             try
             {
-                var perfilRes = _context.Perfils.Add(item);
+                var PreguntaProcesoRes = _context.PreguntaProcesos.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
-                return Int32.Parse(perfilRes.Entity.Id.ToString());
+                return Int32.Parse(PreguntaProcesoRes.Entity.IdPreguntaProceso.ToString());
             }
             catch (Exception ex)
             {
@@ -53,11 +51,11 @@ namespace APIRestV2.DataModels
             }
         }
 
-        public int UpdatePerfil(Perfil item,string ip)
+        public int UpdatePreguntaProceso(PreguntaProceso item, string ip)
         {
             try
             {
-                _context.Perfils.Update(item);
+                _context.PreguntaProcesos.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

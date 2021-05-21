@@ -43,7 +43,7 @@ namespace APIRestV2.Controllers
                 if (req.Perfil1 != null)
                 {
                     var result = ProcPerfil.AddPerfil(req, remoteIpAddress.ToString());
-                    if (result != null)
+                    if (result.Codigo == "200")
                     {
                         ProcessOperacion ProOper = new();
                         ProcessPerfilOperacionPermiso insPer = new();
@@ -61,6 +61,9 @@ namespace APIRestV2.Controllers
                             _Lstpermiso.Add(_permiso);
                         }
                         insPer.AddPerfilOperacionPermisoList(_Lstpermiso, ip);
+                        return Ok(result);
+                    }else if (result.Codigo == "-1")
+                    {
                         return Ok(result);
                     }
                     else
@@ -132,7 +135,7 @@ namespace APIRestV2.Controllers
                 List<Perfil> result = ProcPerfil.FindAllPerfil();
                 if (result != null)
                     {
-                        return result;
+                        return Ok(result);
                     }
                     else
                     {
@@ -161,11 +164,12 @@ namespace APIRestV2.Controllers
                 
 
                 ResponseGral result = ProcPerfil.UpdatePerfil(req, remoteIpAddress.ToString());
+
                 if (result.Codigo == "200")
                 {
                     return Ok(result);
                 }
-                else if (result.Codigo == "501" || result.Codigo == "502" || result.Codigo == "503")
+                else if (result.Codigo == "501" || result.Codigo == "502" || result.Codigo == "503" || result.Codigo == "-1")
                 {
                     return Ok(result);
                 }

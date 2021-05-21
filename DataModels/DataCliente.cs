@@ -35,7 +35,7 @@ namespace APIRestV2.DataModels
             switch (Tipobusqueda)
             {
                 case 1:
-                    busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Email == BusquedaVar.Email && us.IdCliente != BusquedaVar.IdCliente);
+                    busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Email.Trim().ToUpper() == BusquedaVar.Email.Trim().ToUpper() && us.IdCliente != BusquedaVar.IdCliente);
                     break;
                 case 2:
                     busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim() == BusquedaVar.Telefono.Trim() && us.IdCliente != BusquedaVar.IdCliente);

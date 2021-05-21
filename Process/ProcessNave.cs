@@ -20,22 +20,33 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaNave = new();
             try
             {
-                Nave logNewRegistro = new();
-                logNewRegistro.Nombre = Nave.nombre;
-                logNewRegistro.Descripcion = Nave.descripcion;
-                logNewRegistro.PlantaIdPlanta = Nave.PlantaIdPlanta;
-                logNewRegistro.Activo = Nave.Activo;
-                long respNewUSR = NaveData.AddNave(logNewRegistro, ip);
-                if(respNewUSR >0)
+                if (NaveData.FindNombreNave(Nave)==false)
                 {
-                    respAltaNave.Id = respNewUSR;
-                    respAltaNave.Codigo = "200";
-                    respAltaNave.Mensaje = "OK";
-                    return respAltaNave;
+                    Nave logNewRegistro = new();
+                    logNewRegistro.Nombre = Nave.nombre;
+                    logNewRegistro.Descripcion = Nave.descripcion;
+                    logNewRegistro.PlantaIdPlanta = Nave.PlantaIdPlanta;
+                    logNewRegistro.Activo = Nave.Activo;
+                    long respNewUSR = NaveData.AddNave(logNewRegistro, ip);
+                    if (respNewUSR > 0)
+                    {
+                        respAltaNave.Id = respNewUSR;
+                        respAltaNave.Codigo = "200";
+                        respAltaNave.Mensaje = "OK";
+                        return respAltaNave;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    respAltaNave.Id = -1;
+                    respAltaNave.Codigo = "-1";
+                    respAltaNave.Mensaje = "Nombre Duplicado";
+                    return respAltaNave;
+
                 }
             }
             catch (Exception ex)
@@ -80,29 +91,41 @@ namespace APIRestV2.Controllers.Process
             {
                 try
                 {
-                    var NaveBuscadox = new Nave { 
-                        IdNave= NaveBuscado.IdNave,
-                        PlantaIdPlanta= NaveBuscado.PlantasIdPlanta,
-                    Nombre= Nave.nombre,
-                    Descripcion= Nave.descripcion,
-                    Activo= Nave.Activo
-                    };
-
-
-                    var respNewNave = NaveData.UpdateNave(NaveBuscadox,ip);
-                    if (respNewNave > 0)
+                    if (NaveData.FindNombreNave(Nave) == false)
                     {
-                        respAltaNave.Id = NaveBuscado.IdNave;
-                        respAltaNave.Codigo = "200";
-                        respAltaNave.Mensaje = "OK";
-                        return respAltaNave;
+                        var NaveBuscadox = new Nave
+                        {
+                            IdNave = NaveBuscado.IdNave,
+                            PlantaIdPlanta = NaveBuscado.PlantasIdPlanta,
+                            Nombre = Nave.nombre,
+                            Descripcion = Nave.descripcion,
+                            Activo = Nave.Activo
+                        };
+
+
+                        var respNewNave = NaveData.UpdateNave(NaveBuscadox, ip);
+                        if (respNewNave > 0)
+                        {
+                            respAltaNave.Id = NaveBuscado.IdNave;
+                            respAltaNave.Codigo = "200";
+                            respAltaNave.Mensaje = "OK";
+                            return respAltaNave;
+                        }
+                        else
+                        {
+                            respAltaNave.Id = NaveBuscado.IdNave;
+                            respAltaNave.Codigo = "400";
+                            respAltaNave.Mensaje = "Record not found";
+                            return respAltaNave;
+                        }
                     }
                     else
                     {
-                        respAltaNave.Id = NaveBuscado.IdNave;
-                        respAltaNave.Codigo = "400";
-                        respAltaNave.Mensaje = "Record not found";
+                        respAltaNave.Id = -1;
+                        respAltaNave.Codigo = "-1";
+                        respAltaNave.Mensaje = "Nombre Duplicado";
                         return respAltaNave;
+
                     }
                 }
                 catch (Exception ex)
@@ -157,7 +180,7 @@ namespace APIRestV2.Controllers.Process
                        PlantasIdPlanta = nave.PlantaIdPlanta,
                        Activo = (bool)nave.Activo,
                        PlantasIdPlantaNavigation = nave.PlantaIdPlantaNavigation,
-                       LineaProduccions = nave.LineaProduccions.Count,
+                       LineaProduccions = nave.LineaProduccions.Where(lp => lp.Activo ==true).Count(),
                        MáquinasFisicas = nave.MaquinaFisicas
                    }).ToList();
 

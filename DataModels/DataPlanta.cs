@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,23 @@ namespace APIRestV2.DataModels
         public Plantum FindPlanta(long idPlantaExt)
         {
             return _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idPlantaExt);
+        }
+
+        public bool FindPlantaIdexttAcro(int Tipobusqueda, RequestPlanta BusquedaVar)
+        {
+            Plantum busqueda = new();
+            switch (Tipobusqueda)
+            {
+                case 1:
+                    busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == BusquedaVar.IdPlantaExterno && us.IdPlanta != BusquedaVar.IdPlanta);
+                    break;
+                case 2:
+                    busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.Acronimo.Trim().ToUpper() == BusquedaVar.Acronimo.Trim().ToUpper() && us.IdPlanta != BusquedaVar.IdPlanta);
+                    break;
+                default:
+                    break;
+            }
+            return busqueda == null ? false : true;
         }
 
         public bool ValidaClaveExistente(string acronimo)

@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,26 @@ namespace APIRestV2.DataModels
             return _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.IdNivelCertificacion == idNivelesCertificacion);
         }
 
+        public bool FindNivelCertificacionsDuplicidad(int Tipobusqueda, RequestNivelesCertificacion BusquedaVar)
+        {
+            NivelCertificacion busqueda = new();
+            switch (Tipobusqueda)
+            {
+                case 1:
+                    busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.NombreNivelCertificacion.Trim().ToUpper() == BusquedaVar.NombreNivelCertificacion.Trim().ToUpper() && us.IdNivelCertificacion!= BusquedaVar.IdNivelCertificacion);
+                    break;
+                case 2:
+                    busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.DificultadNivelCertificacion == BusquedaVar.DificultadNivelCertificacion && us.IdNivelCertificacion != BusquedaVar.IdNivelCertificacion);
+                    break;
+                case 3:
+                    busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.Color.Trim() == BusquedaVar.Color.Trim() && us.IdNivelCertificacion != BusquedaVar.IdNivelCertificacion);
+                    break;
+                default:
+                    break;
+            }
+            return busqueda == null ? false : true;
+        }
+
         public bool ValidaClaveExistente(string nombreNivelCertificacion)
         {
             //true si existe
@@ -33,6 +54,7 @@ namespace APIRestV2.DataModels
             var busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.NombreNivelCertificacion.Trim().ToUpper() == nombreNivelCertificacion.Trim().ToUpper());
             return busqueda == null ? false : true;
         }
+
 
         public bool ValidaClaveExistente1(int dificultad)
         {

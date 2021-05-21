@@ -20,7 +20,7 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPieza = new();
             try
             {
-                if (PiezaData.ValidaClaveExistente(Pieza.NumeroParte) == false)
+                if (PiezaData.ValidaClaveExistente(Pieza) == false)
                 {
                     Pieza logNewRegistro = new();
                     logNewRegistro.Nombre = Pieza.Nombre;
@@ -59,52 +59,52 @@ namespace APIRestV2.Controllers.Process
         public ResponseGral UpdatePieza( RequestPieza Pieza, String ip)
         {
             ResponseGral respAltaPieza = new();
-            if (PiezaData.ValidaClaveExistente(Pieza.NumeroParte) == false)
-            { 
+            if (PiezaData.ValidaClaveExistente(Pieza) == false)
+            {
                 var PiezaBuscado = FindPieza(Pieza.Nombre);
-            if (PiezaBuscado == null)
-            {
-                return respAltaPieza;
-            }
-            else if (PiezaBuscado.IdPieza == -1)
-            {
-                respAltaPieza.Id = Pieza.IdPieza;
-                respAltaPieza.Codigo = "400";
-                respAltaPieza.Mensaje = "Not found";
-                return respAltaPieza;
-            }
-            else
-            {
-                try
+                if (PiezaBuscado == null)
                 {
-                    PiezaBuscado.Nombre = Pieza.Nombre;
-                    PiezaBuscado.Descripcion = Pieza.Descripcion;
-                    PiezaBuscado.Activo = Pieza.Activo;
-                    PiezaBuscado.NumeroParte = Pieza.NumeroParte;
-                    var respNewPieza = PiezaData.UpdatePieza(PiezaBuscado,ip);
-                    if (respNewPieza > 0)
+                    return respAltaPieza;
+                }
+                else if (PiezaBuscado.IdPieza == -1)
+                {
+                    respAltaPieza.Id = Pieza.IdPieza;
+                    respAltaPieza.Codigo = "400";
+                    respAltaPieza.Mensaje = "Not found";
+                    return respAltaPieza;
+                }
+                else
+                {
+                    try
                     {
-                        respAltaPieza.Id = PiezaBuscado.IdPieza;
-                        respAltaPieza.Codigo = "200";
-                        respAltaPieza.Mensaje = "OK";
-                        return respAltaPieza;
+                        PiezaBuscado.Nombre = Pieza.Nombre;
+                        PiezaBuscado.Descripcion = Pieza.Descripcion;
+                        PiezaBuscado.Activo = Pieza.Activo;
+                        PiezaBuscado.NumeroParte = Pieza.NumeroParte;
+                        var respNewPieza = PiezaData.UpdatePieza(PiezaBuscado, ip);
+                        if (respNewPieza > 0)
+                        {
+                            respAltaPieza.Id = PiezaBuscado.IdPieza;
+                            respAltaPieza.Codigo = "200";
+                            respAltaPieza.Mensaje = "OK";
+                            return respAltaPieza;
+                        }
+                        else
+                        {
+                            respAltaPieza.Id = PiezaBuscado.IdPieza;
+                            respAltaPieza.Codigo = "400";
+                            respAltaPieza.Mensaje = "Record not found";
+                            return respAltaPieza;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
                         respAltaPieza.Id = PiezaBuscado.IdPieza;
                         respAltaPieza.Codigo = "400";
-                        respAltaPieza.Mensaje = "Record not found";
+                        respAltaPieza.Mensaje = ex.InnerException.Message;
                         return respAltaPieza;
                     }
                 }
-                catch (Exception ex)
-                {
-                    respAltaPieza.Id = PiezaBuscado.IdPieza;
-                    respAltaPieza.Codigo = "400";
-                    respAltaPieza.Mensaje =ex.InnerException.Message;
-                    return respAltaPieza;
-                }
-            }
             }
             else
             {

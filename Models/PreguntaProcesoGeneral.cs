@@ -13,6 +13,7 @@ namespace APIRestV2.Models
         public long Orden { get; set; }
         public long IdiomaIdIdioma { get; set; }
         public long NivelCertificacionIdNivelCertificacion { get; set; }
+        public bool Activo { get; set; }
 
         public virtual Idioma IdiomaIdIdiomaNavigation { get; set; }
         public virtual NivelCertificacion NivelCertificacionIdNivelCertificacionNavigation { get; set; }
