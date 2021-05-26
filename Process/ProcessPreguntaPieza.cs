@@ -3,6 +3,8 @@ using APIRestV2.Helpers;
 using APIRestV2.Models;
 using APIRestV2.Models.Request;
 using APIRestV2.Models.Response;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,25 +12,25 @@ using System.Threading.Tasks;
 
 namespace APIRestV2.Controllers.Process
 {
-    public class ProcessPreguntaProceso
+    public class ProcessPreguntaPieza
     {
-        public DataPreguntaProceso entityData = new();
+        public DataPreguntaPieza entityData = new();
 
 
-        public ResponseGral AddPreguntaProceso(RequestPreguntaProceso PreguntaProceso, String ip)
+        public ResponseGral AddPreguntaPieza(RequestPreguntaPieza PreguntaPieza, String ip)
         {
             ResponseGral respAltaPreguntaGeneral = new();
             try
             {
-                PreguntaProceso logNewRegistro = new();
-                logNewRegistro.Pregunta = PreguntaProceso.Pregunta;
-                logNewRegistro.Respuesta = PreguntaProceso.Respuesta;
-                logNewRegistro.Orden = PreguntaProceso.Orden;
-                logNewRegistro.IdiomaIdIdioma = PreguntaProceso.IdiomaIdIdioma;
-                logNewRegistro.MaquinaProcesoIdMaquinaProceso = PreguntaProceso.MaquinaProcesoIdMaquinaProceso;
-                logNewRegistro.NivelCertificacionIdNivelCertificacion = PreguntaProceso.NivelCertificacionIdNivelCertificacion;
-                logNewRegistro.Activo = PreguntaProceso.Activo;
-                long respNewUSR = entityData.AddPreguntaProceso(logNewRegistro, ip);
+                PreguntaPieza logNewRegistro = new();
+                logNewRegistro.Pregunta = PreguntaPieza.Pregunta;
+                logNewRegistro.Respuesta = PreguntaPieza.Respuesta;
+                logNewRegistro.Orden = PreguntaPieza.Orden;
+                logNewRegistro.IdiomaIdIdioma = PreguntaPieza.IdiomaIdIdioma;
+                logNewRegistro.ProcesoPiezaMaquinaIdProcesoPiezaMaquina = PreguntaPieza.ProcesoPiezaMaquinaIdProcesoPiezaMaquina;
+                logNewRegistro.NivelCertificacionIdNivelCertificacion = PreguntaPieza.NivelCertificacionIdNivelCertificacion;
+                logNewRegistro.Activo = PreguntaPieza.Activo;
+                long respNewUSR = entityData.AddPreguntaPieza(logNewRegistro, ip);
                 if (respNewUSR > 0)
                 {
                     respAltaPreguntaGeneral.Id = respNewUSR;
@@ -47,19 +49,19 @@ namespace APIRestV2.Controllers.Process
             }
         }
 
-        public ResponseGral UpdatePreguntaProceso(RequestPreguntaProceso req, String ip)
+        public ResponseGral UpdatePreguntaPieza(RequestPreguntaPieza req, String ip)
         {
             ResponseGral response = new();
 
-            var itemBuscado = FindPreguntaProcesoById(req.IdPreguntaProceso);
+            var itemBuscado = FindPreguntaPiezaById(req.IdPreguntaPieza);
 
             if (itemBuscado == null)
             {
                 return response;
             }
-            else if (itemBuscado.IdPreguntaProceso == -1)
+            else if (itemBuscado.IdPreguntaPieza == -1)
             {
-                response.Id = req.IdPreguntaProceso;
+                response.Id = req.IdPreguntaPieza;
                 response.Codigo = "400";
                 response.Mensaje = "Not found";
                 return response;
@@ -69,25 +71,25 @@ namespace APIRestV2.Controllers.Process
                 try
                 {
 
-                    itemBuscado.IdPreguntaProceso = req.IdPreguntaProceso;
+                    itemBuscado.IdPreguntaPieza = req.IdPreguntaPieza;
                     itemBuscado.Pregunta = req.Pregunta;
                     itemBuscado.Respuesta = req.Respuesta;
                     itemBuscado.Orden = req.Orden;
-                    itemBuscado.MaquinaProcesoIdMaquinaProceso = req.MaquinaProcesoIdMaquinaProceso;
+                    itemBuscado.ProcesoPiezaMaquinaIdProcesoPiezaMaquina = req.ProcesoPiezaMaquinaIdProcesoPiezaMaquina;
                     itemBuscado.IdiomaIdIdioma = req.IdiomaIdIdioma;
                     itemBuscado.NivelCertificacionIdNivelCertificacion = req.NivelCertificacionIdNivelCertificacion;
                     itemBuscado.Activo = req.Activo;
-                    var respNewItem = entityData.UpdatePreguntaProceso(itemBuscado, ip);
+                    var respNewItem = entityData.UpdatePreguntaPieza(itemBuscado, ip);
                     if (respNewItem > 0)
                     {
-                        response.Id = req.IdPreguntaProceso;
+                        response.Id = req.IdPreguntaPieza;
                         response.Codigo = "200";
                         response.Mensaje = "OK";
                         return response;
                     }
                     else
                     {
-                        response.Id = req.IdPreguntaProceso;
+                        response.Id = req.IdPreguntaPieza;
                         response.Codigo = "400";
                         response.Mensaje = "Record not found";
                         return response;
@@ -95,7 +97,7 @@ namespace APIRestV2.Controllers.Process
                 }
                 catch (Exception ex)
                 {
-                    response.Id = req.IdPreguntaProceso;
+                    response.Id = req.IdPreguntaPieza;
                     response.Codigo = "400";
                     response.Mensaje = ex.InnerException.Message;
                     return response;
@@ -103,30 +105,28 @@ namespace APIRestV2.Controllers.Process
             }
         }
 
-        public List<PreguntaProceso> FindAllPreguntaProceso()
+        public List<PreguntaPieza> FindAllPreguntaPieza()
         {
-            List<PreguntaProceso> resPreguntaProcesoRet = entityData.findAllPreguntaProceso();
-            return resPreguntaProcesoRet;
+            List<PreguntaPieza> resPreguntaPiezaRet = entityData.findAllPreguntaPieza();
+            return resPreguntaPiezaRet;
         }
 
-        public PreguntaProceso FindPreguntaProcesoById(long id)
+        public PreguntaPieza FindPreguntaPiezaById(long id)
         {
-            PreguntaProceso respPreguntaProceso = entityData.findPreguntaProcesoIdPreguntaProceso(id);
-            if (respPreguntaProceso == null)
+            PreguntaPieza respPreguntaPieza = entityData.findPreguntaPiezaIdPreguntaPieza(id);
+            if (respPreguntaPieza == null)
             {
-                respPreguntaProceso = new PreguntaProceso();
-                respPreguntaProceso.IdPreguntaProceso = -1;
+                respPreguntaPieza = new PreguntaPieza();
+                respPreguntaPieza.IdPreguntaPieza = -1;
             }
-            return respPreguntaProceso;
+            return respPreguntaPieza;
         }
 
 
-        public List <PreguntaProceso> FindPreguntaProcesoByMaquinaProceso(long id)
+        public List<PreguntaPieza> FindPreguntaPiezaByProcesoPiezaMaquina(long id)
         {
-            List<PreguntaProceso> respPreguntaProcesoRet = entityData.findPreguntaProcesoIdMaquinaProceso(id);
-            return respPreguntaProcesoRet;
+            List<PreguntaPieza> respPreguntaPiezaRet = entityData.findPreguntaPiezaIdProcesoPiezaMaquina(id);
+            return respPreguntaPiezaRet;
         }
-
-
     }
 }

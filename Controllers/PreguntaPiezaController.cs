@@ -10,40 +10,38 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http.Formatting;
 
-
 namespace APIRestV2.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class PiezaClienteController : ControllerBase
+    public class PreguntaPiezaController : ControllerBase
     {
         private JsonMediaTypeFormatter _formatter = new();
-        private ProcessPiezaCliente process = new();
-       // private ValidaDatosRequest _validaReq = new();
+        private ProcessPreguntaPieza process = new();
+
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
         private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
-
-        public PiezaClienteController(IConfiguration configuration)
+        public PreguntaPiezaController(IConfiguration configuration)
         {
             Configuration = configuration;
-            
+
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
 
-
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPiezaCliente req)
+        public ActionResult Post([FromBody] RequestPreguntaPieza req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-               
 
-                if (req.ClienteIdCliente > 0)
+
+                if (req.Pregunta != null)
                 {
-                    var result = process.AddPiezaCliente(req, remoteIpAddress.ToString());
+                    var result = process.AddPreguntaPieza(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
@@ -51,87 +49,74 @@ namespace APIRestV2.Controllers
                     else
                     {
                         procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                        return NotFound("PiezaCliente not found");
+                        return NotFound("Pregunta Pieza not found");
                     }
 
                 }
                 else
                 {
                     procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
-                    return NotFound("PiezaCliente not found");
+                    return NotFound("Pregunta Pieza not found");
                 }
-               
+
             }
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("PiezaCliente not found");
-              
+                return NotFound("Pregunta Pieza not found");
+
             }
-         
+
         }
 
-        [HttpPut]
-        public ActionResult Put([FromBody] RequestPiezaCliente req)
+        [HttpPut()]
+        public ActionResult Put([FromBody] RequestPreguntaPieza req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
 
-
-                if (req.ClienteIdCliente > 0)
+                ResponseGral result = process.UpdatePreguntaPieza(req, remoteIpAddress.ToString());
+                if (result != null)
                 {
-                    var result = process.UpdatePiezasCliente(req, remoteIpAddress.ToString());
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
-                    else
-                    {
-                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                        return NotFound("PiezaCliente not found");
-                    }
-
+                    return Ok(result);
                 }
                 else
                 {
-                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
-                    return NotFound("PiezaCliente not found");
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
+                    return NotFound("Pregunta Pieza not found");
                 }
+
 
             }
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("PiezaCliente not found");
+                return NotFound("Pregunta Pieza not found");
 
             }
 
         }
 
-
-
-
-
-        [HttpGet("{idPieza}")]
-        public ActionResult<VwPiezaCliente> Find(long idPieza) 
+        [HttpGet("{id}")]
+        public ActionResult<PreguntaProceso> Find(long id)
         {
             try
             {
-                if (idPieza <=0)
+                if (id <= 0)
                 {
-                    return NotFound("PiezaClienteCliente not found");
+                    return NotFound("Pregunta Pieza not found");
                 }
                 else
                 {
-                    var result = process.FindClientesPorIdPieza(idPieza);
+                    var result = process.FindPreguntaPiezaById(id);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("PiezaCliente not found");
+                        return NotFound("Pregunta Pieza not found");
                     }
 
                 }
@@ -139,45 +124,64 @@ namespace APIRestV2.Controllers
             }
             catch (Exception e)
             {
-                return NotFound("PiezaCliente not found");
-               
+                return NotFound("Pregunta Pieza not found");
+
             }
-         
+
         }
 
-     
+        [HttpGet("FindPreguntaPiezaProcesoPiezaMaquina/{Proceso}")]
+        public ActionResult<List<RequestPreguntaProceso>> FindPreguntaProceso(long Proceso)
+        {
+            try
+            {
+
+                if (Proceso <= 0)
+                {
+                    return NotFound("Pregunta Pieza not found");
+                }
+                else
+                {
+                    var result = process.FindPreguntaPiezaByProcesoPiezaMaquina(Proceso);
+                    return Ok(result);
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pregunta Proceso not found");
+
+            }
+
+        }
+
+
 
         [HttpGet()]
-        public ActionResult<List<VwPiezaCliente>> FindAll()
+        public ActionResult<List<PreguntaPieza>> FindAll()
         {
             try
             {
-               
-                List<VwPiezaCliente> result = process.FindAllPiezaCliente();
-                if (result != null)
-                    {
-                        return result;
-                    }
-                    else
-                    {
-                        return NotFound("PiezaCliente not found");
-                    }
 
-                
+                List<PreguntaPieza> result = process.FindAllPreguntaPieza();
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Pregunta Pieza not found");
+                }
+
+
             }
             catch (Exception e)
             {
-                return NotFound("PiezaCliente not found");
-               
+                return NotFound("Pregunta Pieza not found");
+
             }
-         
+
         }
-
-
-
-
-
-
-
     }
 }

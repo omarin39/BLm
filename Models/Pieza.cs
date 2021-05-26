@@ -11,7 +11,7 @@ namespace APIRestV2.Models
         {
             MultiMediaPiezas = new HashSet<MultiMediaPieza>();
             PiezaClientes = new HashSet<PiezaCliente>();
-            PreguntaPiezas = new HashSet<PreguntaPieza>();
+            ProcesoPiezaMaquinas = new HashSet<ProcesoPiezaMaquina>();
         }
 
         public long IdPieza { get; set; }
@@ -22,6 +22,6 @@ namespace APIRestV2.Models
 
         public virtual ICollection<MultiMediaPieza> MultiMediaPiezas { get; set; }
         public virtual ICollection<PiezaCliente> PiezaClientes { get; set; }
-        public virtual ICollection<PreguntaPieza> PreguntaPiezas { get; set; }
+        public virtual ICollection<ProcesoPiezaMaquina> ProcesoPiezaMaquinas { get; set; }
     }
 }

@@ -18,6 +18,7 @@ namespace APIRestV2.Models.Response
         public bool? Activo { get; set; }
         public bool UsaPreguntaEstandar { get; set; }
         public int countPreguntas { get; set; }
+        public int countPiezas { get; set; }
         //public virtual RequestProceso Proceso { get; set; }
     }
 }

@@ -3,28 +3,27 @@ using APIRestV2.Controllers.Process;
 using APIRestV2.Models;
 using APIRestV2.Models.Request;
 using APIRestV2.Models.Response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Formatting;
+using System.Threading.Tasks;
 
 namespace APIRestV2.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
-    public class PreguntaProcesoController : ControllerBase
+    public class ProcesoPiezaMaquinaController : ControllerBase
     {
         private JsonMediaTypeFormatter _formatter = new();
-        private ProcessPreguntaProceso process = new();
-
+        private ProcessProcesoPiezaMaquina process = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
-        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
+        private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log(); 
 
-        public PreguntaProcesoController(IConfiguration configuration)
+        public ProcesoPiezaMaquinaController(IConfiguration configuration)
         {
             Configuration = configuration;
 
@@ -32,51 +31,12 @@ namespace APIRestV2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPreguntaProceso req)
+        public ActionResult Post([FromBody] RequestProcesoPiezaMaquina req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
-
-
-                if (req.Pregunta != null)
-                {
-                    var result = process.AddPreguntaProceso(req, remoteIpAddress.ToString());
-                    if (result != null)
-                    {
-                        return Ok(result);
-                    }
-                    else
-                    {
-                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                        return NotFound("Pregunta Proceso not found");
-                    }
-
-                }
-                else
-                {
-                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
-                    return NotFound("Pregunta Proceso not found");
-                }
-
-            }
-            catch (Exception e)
-            {
-                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("Pregunta Proceso not found");
-
-            }
-
-        }
-
-        [HttpPut()]
-        public ActionResult Put([FromBody] RequestPreguntaProceso req)
-        {
-            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
-            try
-            {
-
-                ResponseGral result = process.UpdatePreguntaProceso(req, remoteIpAddress.ToString());
+                var result = process.AddProcesoPiezaMaquina(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
@@ -84,7 +44,33 @@ namespace APIRestV2.Controllers
                 else
                 {
                     procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                    return NotFound("Pregunta Proceso not found");
+                    return NotFound("Proceso Pieza Maquina found");
+                }
+            }
+            catch (Exception e)
+            {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
+                return NotFound("Proceso Pieza Maquina not found");
+
+            }
+        }
+
+        [HttpPut()]
+        public ActionResult Put([FromBody] RequestProcesoPiezaMaquina req)
+        {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+            try
+            {
+
+                ResponseGral result = process.UpdateProcesoPiezaMaquina(req, remoteIpAddress.ToString());
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
+                    return NotFound("Proceso Pieza Maquina not Found");
                 }
 
 
@@ -92,96 +78,83 @@ namespace APIRestV2.Controllers
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("Pregunta Proceso not found");
+                return NotFound("Proceso Pieza Maquina not Found");
 
             }
-
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PreguntaProceso> Find(long id)
+        public ActionResult<ProcesoPiezaMaquina> Find(long id)
         {
             try
             {
-                if (id <= 0)
+                if (id < 0)
                 {
-                    return NotFound("Pregunta Proceso not found");
+                    return NotFound("Proceso Pieza Maquina not Found");
                 }
                 else
                 {
-                    var result = process.FindPreguntaProcesoById(id);
+                    var result = process.FindProcesoPiezaById(id);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Pregunta Proceso not found");
+                        return NotFound("Proceso Pieza Maquina not found");
                     }
 
                 }
-
             }
             catch (Exception e)
             {
-                return NotFound("Pregunta Proceso not found");
+                return NotFound("Proceso Pieza Maquina not Found");
 
             }
-
         }
-
-        [HttpGet("FindPreguntaProcesoMaquinaProceso/{Proceso}")]
-        public ActionResult<List<RequestPreguntaProceso>> FindPreguntaProceso(long Proceso)
-        {
-            try
-            {
-
-                if (Proceso <= 0)
-                {
-                    return NotFound("Pregunta Proceso not found");
-                }
-                else
-                {
-                    var result = process.FindPreguntaProcesoByMaquinaProceso(Proceso);
-                    return Ok(result);
-
-                }
-
-            }
-            catch (Exception e)
-            {
-                return NotFound("Pregunta Proceso not found");
-
-            }
-
-        }
-
-
 
         [HttpGet()]
-        public ActionResult<List<PreguntaProceso>> FindAll()
+        public ActionResult<List<ProcesoPiezaMaquina>> FindAll()
         {
             try
             {
-
-                List<PreguntaProceso> result = process.FindAllPreguntaProceso();
+                List<ProcesoPiezaMaquina> result = process.FindAllProcesoPiezaMaquina();
                 if (result != null)
                 {
                     return result;
                 }
                 else
                 {
-                    return NotFound("Pregunta Proceso not found");
+                    return NotFound("Proceso Pieza Maquina not Found");
                 }
-
-
             }
             catch (Exception e)
             {
-                return NotFound("Pregunta Proceso not found");
+                return NotFound("Proceso Pieza Maquina not Found");
 
             }
-
         }
+
+        [HttpGet("FindProcesoPiezaMaquina/{ProcesoMaquina}")]
+        public ActionResult<List<ResponseProcesoPiezaMaquina>> FindPiezaProceso(long ProcesoMaquina)
+        {
+            try
+            {
+                if (ProcesoMaquina <= 0)
+                {
+                    return NotFound("Proceso Pieza Maquina not Found");
+                }
+                else
+                {
+                    var result = process.FindProcesoPiezaoByMaquinaProceso(ProcesoMaquina);
+                    return Ok(result);
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound("Proceso Pieza Maquina not Found");
+            }
+        }
+
     }
 }

@@ -27,9 +27,9 @@ namespace APIRestV2.DataModels
        
 
 
-       public VwPiezaCliente findPiezaPorIdPieza(long idPieza)
+       public List<VwPiezaCliente> FindClientesPorIdPieza(long idPieza)
         {
-            return _context.VwPiezaClientes.AsNoTracking().SingleOrDefault(p => p.PiezaIdPieza == idPieza);
+            return _context.VwPiezaClientes.AsNoTracking().Where(p => p.PiezaIdPieza == idPieza).ToList();
         }
 
         public long AddPiezaCliente(PiezaCliente item,string ip)
@@ -48,6 +48,23 @@ namespace APIRestV2.DataModels
                 return 0;
             }
         }
-      
+
+        public long UpdatePiezaCliente(PiezaCliente item, string ip)
+        {
+            try
+            {
+                var PiezaRes = _context.PiezaClientes.Update(item);
+                _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
+                return Int32.Parse(PiezaRes.Entity.ClienteIdCliente.ToString());
+            }
+            catch (Exception ex)
+            {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.InnerException.Message, 400);
+                var r = ex.Message;
+                return 0;
+            }
+        }
+
     }
 }

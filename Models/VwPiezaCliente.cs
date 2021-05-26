@@ -7,6 +7,7 @@ namespace APIRestV2.Models
 {
     public partial class VwPiezaCliente
     {
+        public long Id { get; set; }
         public long ClienteIdCliente { get; set; }
         public long PiezaIdPieza { get; set; }
         public string Nombre { get; set; }

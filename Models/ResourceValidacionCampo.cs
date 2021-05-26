@@ -10,7 +10,7 @@ namespace APIRestV2.Models
         public long IdReglaValidacion { get; set; }
         public string Nombre { get; set; }
         public string TipoDato { get; set; }
-        public int TamañoCampo { get; set; }
+        public int TamanioCampo { get; set; }
         public bool? Requerido { get; set; }
         public string Formato { get; set; }
         public int? CodigoErrorRequerido { get; set; }

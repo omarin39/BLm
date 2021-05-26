@@ -16,14 +16,14 @@ namespace APIRestV2.Models
         public string Pregunta { get; set; }
         public string Respuesta { get; set; }
         public int Orden { get; set; }
-        public long ProcesoIdProceso { get; set; }
+        public long MaquinaProcesoIdMaquinaProceso { get; set; }
         public long IdiomaIdIdioma { get; set; }
         public long NivelCertificacionIdNivelCertificacion { get; set; }
         public bool Activo { get; set; }
 
         public virtual Idioma IdiomaIdIdiomaNavigation { get; set; }
+        public virtual MaquinaProceso MaquinaProcesoIdMaquinaProcesoNavigation { get; set; }
         public virtual NivelCertificacion NivelCertificacionIdNivelCertificacionNavigation { get; set; }
-        public virtual Proceso ProcesoIdProcesoNavigation { get; set; }
         public virtual ICollection<RespuestaProceso> RespuestaProcesos { get; set; }
     }
 }

@@ -62,6 +62,11 @@ namespace APIRestV2.Controllers.Process
             return respAltaPieza;
         }
 
+        public List<PreguntaMaquina> FindPreguntaPorIdMaquina(long id)
+        {
+            return entityData.FindPreguntaPorIdMaquina(id);
+        }
+
 
 
         public List<PreguntaMaquina> FindAllPreguntaMaquina()

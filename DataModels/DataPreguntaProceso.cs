@@ -28,9 +28,9 @@ namespace APIRestV2.DataModels
             return _context.PreguntaProcesos.AsNoTracking().SingleOrDefault(us => us.IdPreguntaProceso == id);
         }
 
-        public List<PreguntaProceso> findPreguntaProcesoIdProceso(long id)
+        public List<PreguntaProceso> findPreguntaProcesoIdMaquinaProceso(long id)
         {
-            var preguntas = _context.PreguntaProcesos.Where(us => us.ProcesoIdProceso == id);
+            var preguntas = _context.PreguntaProcesos.Where(us => us.MaquinaProcesoIdMaquinaProceso == id);
             return preguntas.ToList();
         }
 

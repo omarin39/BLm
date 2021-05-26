@@ -134,7 +134,40 @@ namespace APIRestV2.Controllers
          
         }
 
-     
+
+        [HttpGet("FindIdMaquina/{idMaquina}")]
+        public ActionResult<List<PreguntaMaquina>> FindPreguntasPorMaquina(long idMaquina)
+        {
+            try
+            {
+                if (idMaquina <= 0)
+                {
+                    return NotFound("PreguntaMaquina not found");
+                }
+                else
+                {
+                    var result = process.FindPreguntaPorIdMaquina(idMaquina);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("PreguntaMaquina not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("PreguntaMaquina not found");
+
+            }
+
+        }
+
+
 
         [HttpGet()]
         public ActionResult<List<PreguntaMaquina>> FindAll()

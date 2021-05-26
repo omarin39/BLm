@@ -173,7 +173,7 @@ namespace APIRestV2.Helpers
 
         public bool ValidaTamaño(object ValorPropiedad, ResourceValidacionCampo ValidaActual)
         {
-            return ValorPropiedad.ToString().Length <= Int32.Parse(ValidaActual.TamañoCampo.ToString());
+            return ValorPropiedad.ToString().Length <= Int32.Parse(ValidaActual.TamanioCampo.ToString());
         }
         public void CrearErrorRequerido(ResourceValidacionCampo ValidaActual, RequestUsers reqUSR, PropertyInfo prop)
         {

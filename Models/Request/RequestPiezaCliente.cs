@@ -8,6 +8,7 @@ namespace APIRestV2.Models.Request
 {
     public class RequestPiezaCliente
     {
+        public long Id { get; set; }
         public long ClienteIdCliente { get; set; }
         public long PiezaIdPieza { get; set; }
         public bool? Activo { get; set; }

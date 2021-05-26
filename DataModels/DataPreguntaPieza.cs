@@ -1,50 +1,47 @@
 ﻿using APIRestV2.Models;
-using APIRestV2.Models.Response;
-using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace APIRestV2.DataModels
 {
-    public class DataPreguntaMaquina
+    public class DataPreguntaPieza
     {
         private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
-        public DataPreguntaMaquina()
+
+        public DataPreguntaPieza()
         {
             _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<PreguntaMaquina> FindAllPreguntaMaquina()
+        public List<PreguntaPieza> findAllPreguntaPieza()
         {
-           
-            return _context.PreguntaMaquinas.ToList();
-          
-        }
-       
-
-
-       public PreguntaMaquina findPreguntaMaquinaIdMaquina(long id)
-        {
-            return _context.PreguntaMaquinas.AsNoTracking().SingleOrDefault(p => p.IdPreguntaMaquina == id);
+            return _context.PreguntaPiezas.ToList();
         }
 
-        public List<PreguntaMaquina> FindPreguntaPorIdMaquina(long _IdMaquina)
+        public PreguntaPieza findPreguntaPiezaIdPreguntaPieza(long id)
         {
-            return _context.PreguntaMaquinas.AsNoTracking().Where(p => p.MaquinaIdMaquina == _IdMaquina).ToList(); ;
+            return _context.PreguntaPiezas.AsNoTracking().SingleOrDefault(us => us.IdPreguntaPieza == id);
         }
 
-        public long AddPreguntaMaquina(PreguntaMaquina item,string ip)
+        public List<PreguntaPieza> findPreguntaPiezaIdProcesoPiezaMaquina(long id)
+        {
+            var preguntas = _context.PreguntaPiezas.Where(us => us.ProcesoPiezaMaquinaIdProcesoPiezaMaquina == id);
+            return preguntas.ToList();
+        }
+
+        public long AddPreguntaPieza(PreguntaPieza item, string ip)
         {
             try
             {
-                var PiezaRes = _context.PreguntaMaquinas.Add(item);
+                var PreguntaPiezaRes = _context.PreguntaPiezas.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
-                return Int32.Parse(PiezaRes.Entity.IdPreguntaMaquina.ToString());
+                return Int32.Parse(PreguntaPiezaRes.Entity.IdPreguntaPieza.ToString());
             }
             catch (Exception ex)
             {
@@ -54,11 +51,11 @@ namespace APIRestV2.DataModels
             }
         }
 
-        public int UpdatePreguntaMaquina(PreguntaMaquina item, string ip)
+        public int UpdatePreguntaPieza(PreguntaPieza item, string ip)
         {
             try
             {
-                _context.PreguntaMaquinas.Update(item);
+                _context.PreguntaPiezas.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
@@ -69,6 +66,5 @@ namespace APIRestV2.DataModels
             }
 
         }
-
     }
 }
