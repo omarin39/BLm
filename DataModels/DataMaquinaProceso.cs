@@ -30,7 +30,7 @@ namespace APIRestV2.DataModels
         }
 
         public List<ResponseMaquinaProceso> FindMaquinaProceso(long Maquina)
-        {
+        { 
             var query = from pop in _context.MaquinaProcesos.Where(us => us.MaquinaIdMaquina == Maquina).Include("PreguntaProcesos")
                         join o in _context.Set<Proceso>()
                             on pop.ProcesoIdProceso equals o.IdProceso

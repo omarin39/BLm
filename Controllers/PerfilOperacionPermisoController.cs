@@ -115,10 +115,6 @@ namespace APIRestV2.Controllers
         [HttpGet("{id}")]
         public ActionResult<RequestPerfilOperacionPermiso> Find(long idPerfil) //idPerfil
         {
-            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
-            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
-           
-
             try
             {
                 if (idPerfil <= 0)

@@ -9,6 +9,7 @@ namespace APIRestV2.Models
     {
         public long IdEmpleado { get; set; }
         public string NumeroNomina { get; set; }
+        public string CuentaUsuario { get; set; }
         public string Nombre { get; set; }
         public string ApellidoPaterno { get; set; }
         public string ApellidoMaterno { get; set; }

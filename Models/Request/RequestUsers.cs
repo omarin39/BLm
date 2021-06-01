@@ -10,6 +10,7 @@ namespace APIRestV2.Models.Request
     {        
         public string Operacion { get; set; }
         public int NoNomina { get; set; }
+        public string CuentaUsuario { get; set; }
         public string Nombre { get; set; }
         public string ApellidoPaterno { get; set; }
         public string ApellidoMaterno { get; set; }

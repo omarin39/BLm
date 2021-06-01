@@ -9,6 +9,7 @@ namespace APIRestV2.Models
     {
         public Plantum()
         {
+            MaquinaFisicas = new HashSet<MaquinaFisica>();
             Naves = new HashSet<Nave>();
         }
 
@@ -18,6 +19,7 @@ namespace APIRestV2.Models
         public string Planta { get; set; }
         public bool? Activo { get; set; }
 
+        public virtual ICollection<MaquinaFisica> MaquinaFisicas { get; set; }
         public virtual ICollection<Nave> Naves { get; set; }
     }
 }

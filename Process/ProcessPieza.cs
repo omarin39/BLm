@@ -61,7 +61,7 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaPieza = new();
             if (PiezaData.ValidaClaveExistente(Pieza) == false)
             {
-                var PiezaBuscado = FindPieza(Pieza.Nombre);
+                var PiezaBuscado = FindPiezaToIdPieza(Pieza.IdPieza);
                 if (PiezaBuscado == null)
                 {
                     return respAltaPieza;
@@ -117,6 +117,17 @@ namespace APIRestV2.Controllers.Process
         }
         public Pieza FindPieza(String Pieza){
             Pieza respAltaPieza = PiezaData.FindPieza(Pieza);
+            if (respAltaPieza == null)
+            {
+                respAltaPieza = new Pieza();
+                respAltaPieza.IdPieza = -1;
+            }
+            return respAltaPieza;
+        }
+
+        public Pieza FindPiezaToIdPieza(long IdPieza)
+        {
+            Pieza respAltaPieza = PiezaData.FindPiezaToId(IdPieza);
             if (respAltaPieza == null)
             {
                 respAltaPieza = new Pieza();

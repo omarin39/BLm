@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [CARTAV]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Database [CARTAV]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 CREATE DATABASE [CARTAV]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,7 +80,25 @@ ALTER DATABASE [CARTAV] SET QUERY_STORE = OFF
 GO
 USE [CARTAV]
 GO
-/****** Object:  Table [dbo].[Pieza]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Workflow]    Script Date: 31/05/2021 10:02:00 a. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Workflow](
+	[IdWorkFlow] [bigint] IDENTITY(1,1) NOT NULL,
+	[PiezaIdPieza] [bigint] NOT NULL,
+	[ProcesoIdProceso] [bigint] NOT NULL,
+	[Tiempo] [int] NULL,
+	[Orden] [int] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_Workflow] PRIMARY KEY CLUSTERED 
+(
+	[IdWorkFlow] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Pieza]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -97,7 +115,7 @@ CREATE TABLE [dbo].[Pieza](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Cliente]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Cliente]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -116,7 +134,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PiezaCliente]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PiezaCliente]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -132,7 +150,7 @@ CREATE TABLE [dbo].[PiezaCliente](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MultiMediaPieza]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[MultiMediaPieza]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -156,7 +174,7 @@ CREATE TABLE [dbo].[MultiMediaPieza](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[VW_PIEZAS_MULTIMEDIAS]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  View [dbo].[VW_PIEZAS_MULTIMEDIAS]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -164,17 +182,19 @@ GO
 /* Retorna las piezas y sus totales de multimedia*/
 CREATE VIEW [dbo].[VW_PIEZAS_MULTIMEDIAS]
 AS
-SELECT        IdPieza, NumeroParte, Nombre, Descripcion, Activo, SUM(countDoc) AS countDoc, SUM(countVideo) AS countVideo, SUM(countImg) AS countImg, SUM(countClientes) AS countClientes
+SELECT        IdPieza, NumeroParte, Nombre, Descripcion, Activo, SUM(countDoc) AS countDoc, SUM(countVideo) AS countVideo, SUM(countImg) AS countImg, SUM(countClientes) AS countClientes, SUM(countWorkflow) 
+                         AS countWorkflow
 FROM            (SELECT        p.IdPieza, p.NumeroParte, p.Nombre, p.Descripcion, p.Activo, CASE m.TipoMedia WHEN 'DOC' THEN COUNT(m.TipoMedia) ELSE 0 END AS countDoc, CASE m.TipoMedia WHEN 'VIDEO' THEN COUNT(m.TipoMedia) 
-                                                    ELSE 0 END AS countVideo, CASE m.TipoMedia WHEN 'IMG' THEN COUNT(m.TipoMedia) ELSE 0 END AS countImg, COUNT(pc.ClienteIdCliente) AS countClientes
+                                                    ELSE 0 END AS countVideo, CASE m.TipoMedia WHEN 'IMG' THEN COUNT(m.TipoMedia) ELSE 0 END AS countImg, COUNT(pc.ClienteIdCliente) AS countClientes, COUNT(wf.PiezaIdPieza) AS countWorkflow
                           FROM            dbo.Pieza AS p LEFT OUTER JOIN
                                                     dbo.MultiMediaPieza AS m ON p.IdPieza = m.IdPieza LEFT OUTER JOIN
                                                     dbo.PiezaCliente AS pc ON pc.PiezaIdPieza = p.IdPieza LEFT OUTER JOIN
-                                                    dbo.Cliente AS c ON c.IdCliente = pc.ClienteIdCliente
+                                                    dbo.Cliente AS c ON c.IdCliente = pc.ClienteIdCliente LEFT OUTER JOIN
+                                                    dbo.Workflow AS wf ON p.IdPieza = wf.PiezaIdPieza
                           GROUP BY p.IdPieza, p.NumeroParte, p.Nombre, p.Descripcion, p.Activo, m.TipoMedia) AS U
 GROUP BY IdPieza, NumeroParte, Nombre, Descripcion, Activo
 GO
-/****** Object:  View [dbo].[VW_PIEZA_CLIENTE]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  View [dbo].[VW_PIEZA_CLIENTE]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -185,7 +205,7 @@ SELECT        pc.Id, pc.ClienteIdCliente, pc.PiezaIdPieza, C.Nombre, C.Contacto,
 FROM            dbo.PiezaCliente AS pc LEFT OUTER JOIN
                          dbo.Cliente AS C ON pc.ClienteIdCliente = C.IdCliente
 GO
-/****** Object:  Table [dbo].[MaquinaProceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[MaquinaProceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -202,7 +222,7 @@ CREATE TABLE [dbo].[MaquinaProceso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaMaquina]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaMaquina]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -222,7 +242,7 @@ CREATE TABLE [dbo].[PreguntaMaquina](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Maquina]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Maquina]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -244,7 +264,7 @@ CREATE TABLE [dbo].[Maquina](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[VW_MAQUINA_PREGUNTAS]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  View [dbo].[VW_MAQUINA_PREGUNTAS]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -257,7 +277,7 @@ FROM     dbo.Maquina AS m LEFT OUTER JOIN
                   dbo.PreguntaMaquina AS pm ON m.IdMaquina = pm.MaquinaIdMaquina LEFT OUTER JOIN
                   dbo.MaquinaProceso AS pro ON m.IdMaquina = pro.MaquinaIdMaquina GROUP BY m.IdMaquina, m.Nombre, m.Descripcion, m.Modelo, m.MaquinaPt, m.CantidadAccesoMultiple, m.FabricanteIdFabricante, m.TipoAccesoIdTipoAcceso, m.UsaPreguntaEstandar, m.Activo
 GO
-/****** Object:  Table [dbo].[CentroCosto]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[CentroCosto]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -274,7 +294,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Certificacion]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Certificacion]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -300,7 +320,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Departamento]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Departamento]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -316,7 +336,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel1]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel1]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -333,7 +353,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel2]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel2]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -351,7 +371,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel3]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel3]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -369,7 +389,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DocumentoPiezaProceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[DocumentoPiezaProceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -386,7 +406,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Empleado]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Empleado]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -394,6 +414,7 @@ GO
 CREATE TABLE [dbo].[Empleado](
 	[IdEmpleado] [bigint] IDENTITY(1,1) NOT NULL,
 	[NumeroNomina] [varchar](max) NOT NULL,
+	[CuentaUsuario] [varchar](50) NOT NULL,
 	[Nombre] [varchar](max) NOT NULL,
 	[ApellidoPaterno] [varchar](max) NOT NULL,
 	[ApellidoMaterno] [varchar](max) NULL,
@@ -417,7 +438,7 @@ CREATE TABLE [dbo].[Empleado](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Fabricante]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Fabricante]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -435,7 +456,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Idioma]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Idioma]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -451,7 +472,7 @@ CREATE TABLE [dbo].[Idioma](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[LineaProduccion]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[LineaProduccion]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -468,7 +489,7 @@ CREATE TABLE [dbo].[LineaProduccion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MaquinaFisica]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[MaquinaFisica]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -477,8 +498,11 @@ CREATE TABLE [dbo].[MaquinaFisica](
 	[IdMaquinaFisica] [bigint] IDENTITY(1,1) NOT NULL,
 	[NSerie] [varchar](max) NOT NULL,
 	[Ubicacion] [varchar](max) NULL,
+	[MaquinaPt] [bit] NOT NULL,
 	[MaquinaIdMaquina] [bigint] NOT NULL,
+	[PlantaIdPlanta] [bigint] NOT NULL,
 	[NaveIdNave] [bigint] NOT NULL,
+	[LineaProduccionIdLineaProduccion] [bigint] NOT NULL,
 	[Activo] [bit] NOT NULL,
  CONSTRAINT [PK_Maquina_5BE456CBA6BE8746] PRIMARY KEY CLUSTERED 
 (
@@ -486,7 +510,7 @@ CREATE TABLE [dbo].[MaquinaFisica](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Menu]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Menu]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -502,7 +526,7 @@ CREATE TABLE [dbo].[Menu](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Nave]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Nave]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -519,7 +543,7 @@ CREATE TABLE [dbo].[Nave](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[NivelCertificacion]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[NivelCertificacion]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -537,7 +561,7 @@ CREATE TABLE [dbo].[NivelCertificacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Operacion]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Operacion]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -555,7 +579,7 @@ CREATE TABLE [dbo].[Operacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Perfil]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Perfil]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -571,7 +595,7 @@ CREATE TABLE [dbo].[Perfil](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PerfilOperacionPermiso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PerfilOperacionPermiso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -590,7 +614,7 @@ CREATE TABLE [dbo].[PerfilOperacionPermiso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Planta]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Planta]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -607,7 +631,27 @@ CREATE TABLE [dbo].[Planta](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaMaquinaGeneral]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaGeneral]    Script Date: 31/05/2021 10:02:00 a. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PreguntaGeneral](
+	[IdPreguntaGeneral] [bigint] IDENTITY(1,1) NOT NULL,
+	[Pregunta] [nvarchar](max) NOT NULL,
+	[Respuesta] [nvarchar](max) NULL,
+	[Orden] [int] NOT NULL,
+	[IdiomaIdIdioma] [bigint] NOT NULL,
+	[NivelCertificacionIdNivelCertificacion] [bigint] NOT NULL,
+	[TipoPreguntaIdTipoPregunta] [bigint] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_PreguntaGeneral] PRIMARY KEY CLUSTERED 
+(
+	[IdPreguntaGeneral] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[PreguntaMaquinaGeneral]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -626,7 +670,7 @@ CREATE TABLE [dbo].[PreguntaMaquinaGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPieza]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaPieza]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -646,7 +690,7 @@ CREATE TABLE [dbo].[PreguntaPieza](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPiezaGeneral]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaPiezaGeneral]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -665,7 +709,7 @@ CREATE TABLE [dbo].[PreguntaPiezaGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaProceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaProceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -685,7 +729,7 @@ CREATE TABLE [dbo].[PreguntaProceso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaProcesoGeneral]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaProcesoGeneral]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -704,7 +748,7 @@ CREATE TABLE [dbo].[PreguntaProcesoGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPtGeneral]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[PreguntaPtGeneral]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -723,7 +767,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Proceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Proceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -741,7 +785,7 @@ CREATE TABLE [dbo].[Proceso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProcesoPiezaMaquina]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[ProcesoPiezaMaquina]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -758,7 +802,7 @@ CREATE TABLE [dbo].[ProcesoPiezaMaquina](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProcessLog]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[ProcessLog]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -776,7 +820,7 @@ CREATE TABLE [dbo].[ProcessLog](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Puesto]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[Puesto]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -792,7 +836,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResourceValidacionCampo]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[ResourceValidacionCampo]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -814,7 +858,7 @@ CREATE TABLE [dbo].[ResourceValidacionCampo](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaMaquina]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[RespuestaMaquina]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -831,7 +875,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaPieza]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[RespuestaPieza]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -848,7 +892,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaProceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[RespuestaProceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -865,7 +909,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoMaquina]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[ResultadoMaquina]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -879,7 +923,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoPieza]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[ResultadoPieza]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -893,7 +937,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoProceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[ResultadoProceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -907,7 +951,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoAcceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[TipoAcceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -921,7 +965,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoDocumento]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[TipoDocumento]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -936,7 +980,21 @@ CREATE TABLE [dbo].[TipoDocumento](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UnidadNegocio]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[TipoPregunta]    Script Date: 31/05/2021 10:02:00 a. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TipoPregunta](
+	[IdTipoPregunta] [bigint] IDENTITY(1,1) NOT NULL,
+	[Nombre] [nchar](10) NOT NULL,
+ CONSTRAINT [PK_TipoPregunta] PRIMARY KEY CLUSTERED 
+(
+	[IdTipoPregunta] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[UnidadNegocio]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -951,7 +1009,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[VideoPiezaProceso]    Script Date: 26/05/2021 12:12:23 p. m. ******/
+/****** Object:  Table [dbo].[VideoPiezaProceso]    Script Date: 31/05/2021 10:02:00 a. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -967,7 +1025,25 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
+SET IDENTITY_INSERT [dbo].[CentroCosto] ON 
 
+INSERT [dbo].[CentroCosto] ([IdCentroCosto], [IdCentroCostoExterno], [DescCentroCosto], [DuenoCeco], [Activo]) VALUES (1, 2314, N'SUELDOS1', 253, 1)
+SET IDENTITY_INSERT [dbo].[CentroCosto] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Departamento] ON 
+
+INSERT [dbo].[Departamento] ([IdDepartamento], [IdDepartamentExterno], [Departamento], [Activo]) VALUES (1, 12, N'DEPARTAMENTO0321123', 1)
+SET IDENTITY_INSERT [dbo].[Departamento] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Empleado] ON 
+
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (1, N'2610', N'omar.alvarez', N'OMAR', N'ALVAREZ', N'ALCANTARA', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'omar.alvarez@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (2, N'34425', N'gerardo.hernandez.f', N'GERARDO', N'HERNÁNDEZ', N'FADIÑO', CAST(N'1978-01-03' AS Date), CAST(N'2019-01-01' AS Date), N'gerardo.hernandez.f@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (3, N'21042', N'adria.arguelles', N'ADRIAN', N'ARGUELLES', N'BECERRIL', CAST(N'1984-01-31' AS Date), CAST(N'2012-01-11' AS Date), N'adria.arguelles@bocar.com', N'21042', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (4, N'2611', N'laura.zemeno', N'LAURA', N'ZERMEÑO', N'PICHARDO', CAST(N'1997-01-02' AS Date), CAST(N'2021-01-01' AS Date), N'laura.zemeno@bocar.com', N'2611', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (5, N'558577', N'jorge.bernal', N'JORGE', N'BERNAL', N'GARCÍA', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'jorge.bernal@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1)
+SET IDENTITY_INSERT [dbo].[Empleado] OFF
+GO
 SET IDENTITY_INSERT [dbo].[Fabricante] ON 
 
 INSERT [dbo].[Fabricante] ([IdFabricante], [Nombre], [Contacto], [Email], [Telefono], [Activo]) VALUES (1, N'N/A', N'N/A', N'N/A', N'N/A', 1)
@@ -979,7 +1055,6 @@ INSERT [dbo].[Idioma] ([IdIdioma], [CodigoIdioma], [Idioma], [Activo]) VALUES (1
 INSERT [dbo].[Idioma] ([IdIdioma], [CodigoIdioma], [Idioma], [Activo]) VALUES (2, N'en-US', N'English', 1)
 SET IDENTITY_INSERT [dbo].[Idioma] OFF
 GO
-
 SET IDENTITY_INSERT [dbo].[Menu] ON 
 
 INSERT [dbo].[Menu] ([Id], [NombreMenu], [Icon], [Activo]) VALUES (1, N'Administracion', N'fas fa-users-cog', 1)
@@ -989,7 +1064,11 @@ INSERT [dbo].[Menu] ([Id], [NombreMenu], [Icon], [Activo]) VALUES (4, N'Necesida
 INSERT [dbo].[Menu] ([Id], [NombreMenu], [Icon], [Activo]) VALUES (5, N'Reportes', N'fas fa-chart-line', 1)
 SET IDENTITY_INSERT [dbo].[Menu] OFF
 GO
+SET IDENTITY_INSERT [dbo].[MultiMediaPieza] ON 
 
+INSERT [dbo].[MultiMediaPieza] ([Id], [IdPieza], [IdTipoDocumento], [Nombre], [Descripcion], [Version], [Recertificacion], [Ruta], [TipoMedia], [Extension], [Tamanio], [Activo]) VALUES (1, 1, 2, N'Documento1.2', N'Documento1.2', N'1.0', 1, N'/documentos/documento1.2.rtf', N'DOC', N'.rtf', N'460', 0)
+SET IDENTITY_INSERT [dbo].[MultiMediaPieza] OFF
+GO
 SET IDENTITY_INSERT [dbo].[NivelCertificacion] ON 
 
 INSERT [dbo].[NivelCertificacion] ([IdNivelCertificacion], [NombreNivelCertificacion], [DescripcionNivelCertificacion], [DificultadNivelCertificacion], [Color], [Activo]) VALUES (1, N'Principiante', N'Nivel de principiante. Debe operar bajo supervisión', 1, N'#eda507', 1)
@@ -998,7 +1077,6 @@ INSERT [dbo].[NivelCertificacion] ([IdNivelCertificacion], [NombreNivelCertifica
 INSERT [dbo].[NivelCertificacion] ([IdNivelCertificacion], [NombreNivelCertificacion], [DescripcionNivelCertificacion], [DificultadNivelCertificacion], [Color], [Activo]) VALUES (4, N'Avanzado', N'Nivel avanzado. Puede hacer labores de mentor', 4, N'#18d9fb', 1)
 SET IDENTITY_INSERT [dbo].[NivelCertificacion] OFF
 GO
-
 SET IDENTITY_INSERT [dbo].[Operacion] ON 
 
 INSERT [dbo].[Operacion] ([Id], [Operacion], [NombreMenu], [NombrePagina], [IdMenu], [Activo]) VALUES (1, N'MaquinasPTrabajo', N'MaquinasPTrabajo', N'MaquinasPTrabajo', 1, 1)
@@ -1032,7 +1110,7 @@ SET IDENTITY_INSERT [dbo].[PerfilOperacionPermiso] ON
 
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (1, 1, 1, 1, 1, 1, 1)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (2, 1, 2, 1, 1, 1, 1)
-INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (3, 1, 3, 1, 0, 1, 1)
+INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (3, 1, 3, 1, 1, 1, 1)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (4, 1, 4, 1, 1, 1, 1)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (5, 1, 5, 1, 1, 1, 1)
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (6, 1, 6, 1, 1, 1, 1)
@@ -1070,38 +1148,666 @@ INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear],
 INSERT [dbo].[PerfilOperacionPermiso] ([Id], [IdPerfil], [IdOperacion], [Crear], [Editar], [Eliminar], [Ver]) VALUES (38, 2, 19, 0, 0, 0, 0)
 SET IDENTITY_INSERT [dbo].[PerfilOperacionPermiso] OFF
 GO
+SET IDENTITY_INSERT [dbo].[Pieza] ON 
 
+INSERT [dbo].[Pieza] ([IdPieza], [NumeroParte], [Nombre], [Descripcion], [Activo]) VALUES (1, N'80A821169/170', N'Cubierta frontal interna izq/der ffffff', N'Cubierta frontal interna izq/der eeeeeeeeeee', 1)
+SET IDENTITY_INSERT [dbo].[Pieza] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Planta] ON 
+
+INSERT [dbo].[Planta] ([IdPlanta], [IdPlantaExterno], [Acronimo], [Planta], [Activo]) VALUES (1, 111, N'BOLERMA', N'Bocar Lerma', 1)
+INSERT [dbo].[Planta] ([IdPlanta], [IdPlantaExterno], [Acronimo], [Planta], [Activo]) VALUES (2, 113, N'AUCHI', N'Planta de Chihuahua', 1)
+SET IDENTITY_INSERT [dbo].[Planta] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Proceso] ON 
+
+INSERT [dbo].[Proceso] ([IdProceso], [Codigo], [Nombre], [Descripcion], [Dificultad], [Activo]) VALUES (1, N'OP 1000-10', N'Maquinado', N'Maquinado', 1, 1)
+SET IDENTITY_INSERT [dbo].[Proceso] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ProcessLog] ON 
+
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (1, N'::1', CAST(N'2021-05-27T06:20:03.470' AS DateTime), N'Operation (OPERACIÓN = AddPlanta)Type: PlantumProperties (N = 7)  IdPlanta (Int64): 1
+  IdPlantaExterno (Nullable`1): 111
+  Acronimo (String): BOLERMA
+  Planta (String): Bocar Lerma
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (2, N'::1', CAST(N'2021-05-27T06:20:03.843' AS DateTime), N'Operation (OPERACIÓN = AddDepartamento)Type: DepartamentoProperties (N = 5)  IdDepartamento (Int64): 1
+  IdDepartamentExterno (Int64): 12
+  Departamento1 (String): DEPARTAMENTO0321123
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (3, N'::1', CAST(N'2021-05-27T06:20:03.980' AS DateTime), N'Operation (OPERACIÓN = AddPuesto)Type: PuestoProperties (N = 4)  IdPuesto (Int64): 1
+  IdPuestoExterno (Int64): 9
+  DescPuesto (String): PUESTO66666
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (4, N'::1', CAST(N'2021-05-27T06:20:04.130' AS DateTime), N'Operation (OPERACIÓN = AddUnidadNeg)Type: UnidadNegocioProperties (N = 3)  IdUnidadNegocio (Int64): 1
+  IdUnidadNegocioExterno (Int64): 0
+  DescUnidadNegocio (String): AUMA SERVICIOS, S.A. DE C.V.
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (5, N'::1', CAST(N'2021-05-27T06:20:04.297' AS DateTime), N'Operation (OPERACIÓN = AddCECO)Type: CentroCostoProperties (N = 5)  IdCentroCosto (Int64): 1
+  IdCentroCostoExterno (Int64): 2314
+  DescCentroCosto (String): SUELDOS1
+  DuenoCeco (Int64): 253
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (6, N'::1', CAST(N'2021-05-27T06:20:04.620' AS DateTime), N'Operation (OPERACIÓN = AddEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 1
+  NumeroNomina (String): 2610
+  CuentaUsuario (String): omar.alvarez
+  Nombre (String): OMAR
+  ApellidoPaterno (String): ALVAREZ
+  ApellidoMaterno (String): ALCANTARA
+  FechaNacimiento (DateTime): 12/01/1983 12:09:00 a. m.
+  FechaIngreso (DateTime): 02/01/2020 12:01:00 a. m.
+  Email (String): omar.alvarez@bocar.com
+  NominaJefe (String): 17441
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 2
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (7, N'::1', CAST(N'2021-05-27T06:20:04.870' AS DateTime), N'Operation (OPERACIÓN = AddEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 2
+  NumeroNomina (String): 34425
+  CuentaUsuario (String): gerardo.hernandez.f
+  Nombre (String): GERARDO
+  ApellidoPaterno (String): HERNÁNDEZ
+  ApellidoMaterno (String): FADIÑO
+  FechaNacimiento (DateTime): 03/01/1978 12:07:00 a. m.
+  FechaIngreso (DateTime): 01/01/2019 12:11:00 a. m.
+  Email (String): gerardo.hernandez.f@bocar.com
+  NominaJefe (String): 17441
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 2
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (8, N'::1', CAST(N'2021-05-27T06:20:04.883' AS DateTime), N'Operation (OPERACIÓN = AddPlanta)Type: PlantumProperties (N = 7)  IdPlanta (Int64): 2
+  IdPlantaExterno (Nullable`1): 113
+  Acronimo (String): AUCHI
+  Planta (String): Planta de Chihuahua
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (9, N'::1', CAST(N'2021-05-27T06:20:04.897' AS DateTime), N'Operation (OPERACIÓN = AddEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 3
+  NumeroNomina (String): 21042
+  CuentaUsuario (String): adria.arguelles
+  Nombre (String): ADRIAN
+  ApellidoPaterno (String): ARGUELLES
+  ApellidoMaterno (String): BECERRIL
+  FechaNacimiento (DateTime): 31/01/1984 12:08:00 a. m.
+  FechaIngreso (DateTime): 11/01/2012 12:09:00 a. m.
+  Email (String): adria.arguelles@bocar.com
+  NominaJefe (String): 17441
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 2
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (10, N'::1', CAST(N'2021-05-27T06:20:04.940' AS DateTime), N'Operation (OPERACIÓN = AddEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): laura.zemeno
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:04:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:02:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 17441
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 2
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (11, N'::1', CAST(N'2021-05-27T06:20:04.960' AS DateTime), N'Operation (OPERACIÓN = AddEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 5
+  NumeroNomina (String): 558577
+  CuentaUsuario (String): jorge.bernal
+  Nombre (String): JORGE
+  ApellidoPaterno (String): BERNAL
+  ApellidoMaterno (String): GARCÍA
+  FechaNacimiento (DateTime): 12/01/1983 12:09:00 a. m.
+  FechaIngreso (DateTime): 02/01/2020 12:01:00 a. m.
+  Email (String): jorge.bernal@bocar.com
+  NominaJefe (String): 17441
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 2
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (12, N'::1', CAST(N'2021-05-27T09:38:51.960' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 3
+  NumeroNomina (String): 21042
+  CuentaUsuario (String): adria.arguelles
+  Nombre (String): ADRIAN
+  ApellidoPaterno (String): ARGUELLES
+  ApellidoMaterno (String): BECERRIL
+  FechaNacimiento (DateTime): 31/01/1984 12:00:00 a. m.
+  FechaIngreso (DateTime): 11/01/2012 12:00:00 a. m.
+  Email (String): adria.arguelles@bocar.com
+  NominaJefe (String): 21042
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (13, N'::1', CAST(N'2021-05-27T09:39:33.887' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 3
+  NumeroNomina (String): 21042
+  CuentaUsuario (String): adria.arguelles
+  Nombre (String): ADRIAN
+  ApellidoPaterno (String): ARGUELLES
+  ApellidoMaterno (String): BECERRIL
+  FechaNacimiento (DateTime): 31/01/1984 12:00:00 a. m.
+  FechaIngreso (DateTime): 11/01/2012 12:00:00 a. m.
+  Email (String): adria.arguelles@bocar.com
+  NominaJefe (String): 21042
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (14, N'::1', CAST(N'2021-05-27T09:41:13.303' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 3
+  NumeroNomina (String): 21042
+  CuentaUsuario (String): adria.arguelles
+  Nombre (String): ADRIAN
+  ApellidoPaterno (String): ARGUELLES
+  ApellidoMaterno (String): BECERRIL
+  FechaNacimiento (DateTime): 31/01/1984 12:00:00 a. m.
+  FechaIngreso (DateTime): 11/01/2012 12:00:00 a. m.
+  Email (String): adria.arguelles@bocar.com
+  NominaJefe (String): 21042
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (15, N'::1', CAST(N'2021-05-27T09:52:43.043' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (16, N'::1', CAST(N'2021-05-27T09:52:43.290' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'Cannot insert the value NULL into column ''CuentaUsuario'', table ''CARTAV.dbo.Empleado''; column does not allow nulls. UPDATE fails.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (17, N'::1', CAST(N'2021-05-27T09:53:21.877' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (18, N'::1', CAST(N'2021-05-27T09:53:21.933' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'Cannot insert the value NULL into column ''CuentaUsuario'', table ''CARTAV.dbo.Empleado''; column does not allow nulls. UPDATE fails.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (19, N'::1', CAST(N'2021-05-27T09:56:17.577' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (20, N'::1', CAST(N'2021-05-27T09:56:17.927' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'Cannot insert the value NULL into column ''CuentaUsuario'', table ''CARTAV.dbo.Empleado''; column does not allow nulls. UPDATE fails.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (21, N'::1', CAST(N'2021-05-27T09:56:35.130' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (22, N'::1', CAST(N'2021-05-27T09:57:55.913' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (23, N'::1', CAST(N'2021-05-27T09:58:05.953' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): 
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'Cannot insert the value NULL into column ''CuentaUsuario'', table ''CARTAV.dbo.Empleado''; column does not allow nulls. UPDATE fails.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (24, N'::1', CAST(N'2021-05-27T10:03:00.433' AS DateTime), N'Operation (OPERACIÓN = UpdateEmpleado)Type: EmpleadoProperties (N = 24)  IdEmpleado (Int64): 4
+  NumeroNomina (String): 2611
+  CuentaUsuario (String): laura.zemeno
+  Nombre (String): LAURA
+  ApellidoPaterno (String): ZERMEÑO
+  ApellidoMaterno (String): PICHARDO
+  FechaNacimiento (DateTime): 02/01/1997 12:00:00 a. m.
+  FechaIngreso (DateTime): 01/01/2021 12:00:00 a. m.
+  Email (String): laura.zemeno@bocar.com
+  NominaJefe (String): 2611
+  DepartamentoIdDepartamentoNivel0 (Int64): 1
+  DepartamentoIdDepartamentoNivel1 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel2 (Nullable`1): 
+  DepartamentoIdDepartamentoNivel3 (Nullable`1): 
+  IdiomaIdIdioma (Int64): 1
+  PuestoIdPuesto (Int64): 1
+  UnidadNegocioIdUnidadNegocio (Int64): 1
+  CentroCostoIdCentroCosto (Int64): 1
+  IdPerfil (Nullable`1): 1
+  Activo (Nullable`1): True
+  DepartamentoIdDepartamentoNivel1Navigation (DepartamentoNivel1): 
+  DepartamentoIdDepartamentoNivel2Navigation (DepartamentoNivel2): 
+  DepartamentoIdDepartamentoNivel3Navigation (DepartamentoNivel3): 
+  IdiomaIdIdiomaNavigation (Idioma): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (25, N'::1', CAST(N'2021-05-27T11:19:57.023' AS DateTime), N'Operation (OPERACIÓN = AddPieza)Type: PiezaProperties (N = 9)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der
+  Descripcion (String): Cubierta frontal interna izq/der
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (26, N'::1', CAST(N'2021-05-27T11:34:09.943' AS DateTime), N'Operation (OPERACIÓN = UpdatePieza)Type: PiezaProperties (N = 9)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der asdsadsadsda
+  Descripcion (String): Cubierta frontal interna izq/der
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (27, N'::1', CAST(N'2021-05-27T11:35:00.637' AS DateTime), N'Operation (OPERACIÓN = AddProceso)Type: ProcesoProperties (N = 8)  IdProceso (Int64): 1
+  Codigo (String): OP 1000-10
+  Nombre (String): Maquinado
+  Descripcion (String): Maquinado
+  Dificultad (Int32): 1
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (28, N'::1', CAST(N'2021-05-27T11:35:06.393' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 8)  IdProceso (Int64): 1
+  Codigo (String): OP 1000-10
+  Nombre (String): Maquinado asdsadsad
+  Descripcion (String): Maquinadoasdsadasd
+  Dificultad (Int32): 1
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (29, N'::1', CAST(N'2021-05-27T11:35:14.050' AS DateTime), N'Operation (OPERACIÓN = UpdateProceso)Type: ProcesoProperties (N = 8)  IdProceso (Int64): 1
+  Codigo (String): OP 1000-10
+  Nombre (String): Maquinado
+  Descripcion (String): Maquinado
+  Dificultad (Int32): 1
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (30, N'::1', CAST(N'2021-05-27T11:53:10.083' AS DateTime), N'Operation (OPERACIÓN = UpdatePieza)Type: PiezaProperties (N = 9)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der
+  Descripcion (String): Cubierta frontal interna izq/der
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (31, N'::1', CAST(N'2021-05-27T11:58:32.190' AS DateTime), N'Operation (OPERACIÓN = UpdatePieza)Type: PiezaProperties (N = 9)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der ffffff
+  Descripcion (String): Cubierta frontal interna izq/der
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (32, N'::1', CAST(N'2021-05-27T12:00:41.307' AS DateTime), N'Operation (OPERACIÓN = UpdatePieza)Type: PiezaProperties (N = 9)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der
+  Descripcion (String): Cubierta frontal interna izq/der
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (33, N'::1', CAST(N'2021-05-31T09:53:24.683' AS DateTime), N'Operation (OPERACIÓN = AddMultimediaPieza)Type: MultiMediaPiezaProperties (N = 14)  Id (Int64): 1
+  IdPieza (Int64): 1
+  IdTipoDocumento (Int64): 2
+  Nombre (String): Documento1
+  Descripcion (String): Documento1
+  Version (String): 1.0
+  Recertificacion (Nullable`1): True
+  Ruta (String): /documentos/documento1.rtf
+  TipoMedia (String): DOC
+  Extension (String): .rtf
+  Tamanio (String): 460
+  Activo (Boolean): True
+  IdPiezaNavigation (Pieza): 
+  IdTipoDocumentoNavigation (TipoDocumento): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (34, N'::1', CAST(N'2021-05-31T09:54:30.513' AS DateTime), N'Operation (OPERACIÓN = UpdateMultimediaPieza)Type: MultiMediaPiezaProperties (N = 14)  Id (Int64): 1
+  IdPieza (Int64): 1
+  IdTipoDocumento (Int64): 2
+  Nombre (String): Documento1
+  Descripcion (String): Documento1
+  Version (String): 1.0
+  Recertificacion (Nullable`1): True
+  Ruta (String): /documentos/documento1.rtf
+  TipoMedia (String): DOC
+  Extension (String): .rtf
+  Tamanio (String): 439
+  Activo (Boolean): True
+  IdPiezaNavigation (Pieza): 
+  IdTipoDocumentoNavigation (TipoDocumento): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (35, N'::1', CAST(N'2021-05-31T09:59:49.117' AS DateTime), N'Operation (OPERACIÓN = UpdatePieza)Type: PiezaProperties (N = 9)  IdPieza (Int64): 1
+  NumeroParte (String): 80A821169/170
+  Nombre (String): Cubierta frontal interna izq/der ffffff
+  Descripcion (String): Cubierta frontal interna izq/der eeeeeeeeeee
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (36, N'::1', CAST(N'2021-05-31T10:00:19.060' AS DateTime), N'Operation (OPERACIÓN = UpdateMultimediaPieza)Type: MultiMediaPiezaProperties (N = 14)  Id (Int64): 1
+  IdPieza (Int64): 1
+  IdTipoDocumento (Int64): 2
+  Nombre (String): Documento1.2
+  Descripcion (String): Documento1.2
+  Version (String): 1.0
+  Recertificacion (Nullable`1): True
+  Ruta (String): /documentos/documento1.2.rtf
+  TipoMedia (String): DOC
+  Extension (String): .rtf
+  Tamanio (String): 460
+  Activo (Boolean): True
+  IdPiezaNavigation (Pieza): 
+  IdTipoDocumentoNavigation (TipoDocumento): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (37, N'::1', CAST(N'2021-05-31T10:00:48.317' AS DateTime), N'Operation (OPERACIÓN = UpdateMultimediaPieza)Type: MultiMediaPiezaProperties (N = 14)  Id (Int64): 1
+  IdPieza (Int64): 1
+  IdTipoDocumento (Int64): 2
+  Nombre (String): Documento1.2
+  Descripcion (String): Documento1.2
+  Version (String): 1.0
+  Recertificacion (Nullable`1): True
+  Ruta (String): /documentos/documento1.2.rtf
+  TipoMedia (String): DOC
+  Extension (String): .rtf
+  Tamanio (String): 460
+  Activo (Boolean): False
+  IdPiezaNavigation (Pieza): 
+  IdTipoDocumentoNavigation (TipoDocumento): 
+', N'OK', 200)
+SET IDENTITY_INSERT [dbo].[ProcessLog] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Puesto] ON 
+
+INSERT [dbo].[Puesto] ([IdPuesto], [IdPuestoExterno], [DescPuesto], [Activo]) VALUES (1, 9, N'PUESTO66666', 1)
+SET IDENTITY_INSERT [dbo].[Puesto] OFF
+GO
 SET IDENTITY_INSERT [dbo].[ResourceValidacionCampo] ON 
 
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (1, N'noNomina', N'int', 100, 1, N'Ninguno', 412, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 429, N'supera el maximo permitIdo de caracteres (10)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (2, N'Nombre', N'string', 250, 1, N'Ninguno', 413, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 430, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (1, N'noNomina', N'int', 100, 1, N'Ninguno', 412, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 429, N'supera el maximo permitIdo de caracteres (10)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (2, N'Nombre', N'string', 250, 1, N'Ninguno', 413, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 430, N'supera el maximo permitIdo de caracteres (250)')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (3, N'apellIdoPaterno', N'string', 250, 0, N'Ninguno', 0, N'Ninguno', 414, N'supera el maximo permitIdo de caracteres (250)')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (4, N'apellIdoMaterno', N'string', 250, 0, N'Ninguno', 0, N'Ninguno', 415, N'supera el maximo permitIdo de caracteres (250)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (5, N'fechaNacimiento', N'date', 10, 1, N'Y/m/d', 416, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 410, N'no cumple con el Formato de fechas (yyyy/mm/dd)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (6, N'fechaIngreso', N'date', 10, 0, N'Y/m/d', 417, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 411, N'no cumple con el Formato de fechas aaaa/mm/dd')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (7, N'email', N'email', 250, 0, N'Ninguno', 418, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 423, N'no contiene un @ o no cumple con el Formato de email (usuario@dominio.com)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (8, N'IdPlanta', N'int', 10, 1, N'Ninguno', 442, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 443, N'supera el maximo permitIdo de caracteres (10)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (9, N'DescripcionPlanta', N'string', 250, 1, N'Ninguno', 419, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 424, N'supera el maximo permitIdo de caracteres (250)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (10, N'IdDepartamento', N'int', 10, 1, N'Ninguno', 444, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 445, N'supera el maximo permitIdo de caracteres (10)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (11, N'departamento', N'string', 250, 1, N'Ninguno', 420, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 425, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (5, N'fechaNacimiento', N'date', 10, 1, N'Y/m/d', 416, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 410, N'no cumple con el Formato de fechas (yyyy/mm/dd)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (6, N'fechaIngreso', N'date', 10, 0, N'Y/m/d', 417, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 411, N'no cumple con el Formato de fechas aaaa/mm/dd')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (7, N'email', N'email', 250, 0, N'Ninguno', 418, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 423, N'no contiene un @ o no cumple con el Formato de email (usuario@dominio.com)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (8, N'IdPlanta', N'int', 10, 1, N'Ninguno', 442, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 443, N'supera el maximo permitIdo de caracteres (10)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (9, N'DescripcionPlanta', N'string', 250, 1, N'Ninguno', 419, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 424, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (10, N'IdDepartamento', N'int', 10, 1, N'Ninguno', 444, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 445, N'supera el maximo permitIdo de caracteres (10)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (11, N'departamento', N'string', 250, 1, N'Ninguno', 420, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 425, N'supera el maximo permitIdo de caracteres (250)')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (12, N'IdDepNivel1', N'int', 10, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (13, N'DepNivel1', N'string', 250, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (14, N'IdDepNivel2', N'int', 10, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (15, N'DepNivel2', N'string', 250, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (16, N'IdDepNivel3', N'int', 10, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (17, N'DepNivel3', N'string', 250, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (18, N'IdPuesto', N'int', 10, 1, N'Ninguno', 446, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 447, N'supera el maximo permitIdo de caracteres (10)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (19, N'Puesto', N'string', 250, 1, N'Ninguno', 421, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 426, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (18, N'IdPuesto', N'int', 10, 1, N'Ninguno', 446, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 447, N'supera el maximo permitIdo de caracteres (10)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (19, N'Puesto', N'string', 250, 1, N'Ninguno', 421, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 426, N'supera el maximo permitIdo de caracteres (250)')
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (20, N'nominaJefe', N'string', 250, 0, N'Ninguno', 0, N'Ninguno', 0, N'Ninguno')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (21, N'IdUnidad', N'int', 10, 1, N'Ninguno', 448, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 449, N'supera el maximo permitIdo de caracteres (10)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (22, N'Unidad', N'string', 250, 1, N'Ninguno', 431, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 432, N'supera el maximo permitIdo de caracteres (250)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (23, N'IdCeCo', N'int', 10, 1, N'Ninguno', 450, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 451, N'supera el maximo permitIdo de caracteres (10)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (24, N'CeCo', N'string', 250, 1, N'Ninguno', 433, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 434, N'supera el maximo permitIdo de caracteres (250)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (25, N'NoCentros', N'string', 250, 1, N'Ninguno', 436, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 436, N'supera el maximo permitIdo de caracteres (250)')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (26, N'dueno', N'string', 255, 1, N'Ninguno', 437, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 0, N'Ninguno')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (27, N'Id_depa_externo', N'string', 255, 1, N'Ninguno', 440, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 0, N'Ninguno')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (28, N'Id_Puesto_externo', N'string', 255, 1, N'Ninguno', 441, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 0, N'Ninguno')
-INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (29, N'AcronimoPlanta', N'string', 255, 1, N'Ninguno', 0, N'es Requerido, esta vacio o el valor es null, por favor ingrese informaci�n', 0, N'Ninguno')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (21, N'IdUnidad', N'int', 10, 1, N'Ninguno', 448, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 449, N'supera el maximo permitIdo de caracteres (10)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (22, N'Unidad', N'string', 250, 1, N'Ninguno', 431, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 432, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (23, N'IdCeCo', N'int', 10, 1, N'Ninguno', 450, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 451, N'supera el maximo permitIdo de caracteres (10)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (24, N'CeCo', N'string', 250, 1, N'Ninguno', 433, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 434, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (25, N'NoCentros', N'string', 250, 1, N'Ninguno', 436, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 436, N'supera el maximo permitIdo de caracteres (250)')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (26, N'dueno', N'string', 255, 1, N'Ninguno', 437, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 0, N'Ninguno')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (27, N'Id_depa_externo', N'string', 255, 1, N'Ninguno', 440, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 0, N'Ninguno')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (28, N'Id_Puesto_externo', N'string', 255, 1, N'Ninguno', 441, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 0, N'Ninguno')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (29, N'AcronimoPlanta', N'string', 255, 1, N'Ninguno', 0, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 0, N'Ninguno')
+INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (30, N'CuentaUsuario', N'string', 50, 1, N'Ninguno', 413, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 430, N'supera el maximo permitIdo de caracteres (250)')
 SET IDENTITY_INSERT [dbo].[ResourceValidacionCampo] OFF
 GO
 SET IDENTITY_INSERT [dbo].[TipoAcceso] ON 
@@ -1117,37 +1823,49 @@ INSERT [dbo].[TipoDocumento] ([Id], [Descripcion], [TipoDocumento]) VALUES (1, N
 INSERT [dbo].[TipoDocumento] ([Id], [Descripcion], [TipoDocumento]) VALUES (2, N'Documento Dummy', N'HOE')
 SET IDENTITY_INSERT [dbo].[TipoDocumento] OFF
 GO
-/****** Object:  Index [UQ__CentroCo__DBD8185BE3487CA4]    Script Date: 26/05/2021 12:12:24 p. m. ******/
+SET IDENTITY_INSERT [dbo].[TipoPregunta] ON 
+
+INSERT [dbo].[TipoPregunta] ([IdTipoPregunta], [Nombre]) VALUES (1, N'Maquina   ')
+INSERT [dbo].[TipoPregunta] ([IdTipoPregunta], [Nombre]) VALUES (2, N'Proceso   ')
+INSERT [dbo].[TipoPregunta] ([IdTipoPregunta], [Nombre]) VALUES (3, N'Pieza     ')
+SET IDENTITY_INSERT [dbo].[TipoPregunta] OFF
+GO
+SET IDENTITY_INSERT [dbo].[UnidadNegocio] ON 
+
+INSERT [dbo].[UnidadNegocio] ([IdUnidadNegocio], [IdUnidadNegocioExterno], [DescUnidadNegocio]) VALUES (1, 0, N'AUMA SERVICIOS, S.A. DE C.V.')
+SET IDENTITY_INSERT [dbo].[UnidadNegocio] OFF
+GO
+/****** Object:  Index [UQ__CentroCo__DBD8185BC752D50A]    Script Date: 31/05/2021 10:02:01 a. m. ******/
 ALTER TABLE [dbo].[CentroCosto] ADD UNIQUE NONCLUSTERED 
 (
 	[IdCentroCostoExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D6E2CE280]    Script Date: 26/05/2021 12:12:24 p. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D4F2B2A7B]    Script Date: 31/05/2021 10:02:01 a. m. ******/
 ALTER TABLE [dbo].[Departamento] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38DC936FF4A]    Script Date: 26/05/2021 12:12:24 p. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38DD4EA060C]    Script Date: 31/05/2021 10:02:01 a. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel1] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D41806A35]    Script Date: 26/05/2021 12:12:24 p. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38DA43DCE66]    Script Date: 31/05/2021 10:02:01 a. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel2] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38DAF715CEF]    Script Date: 26/05/2021 12:12:24 p. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38DB69A1A8B]    Script Date: 31/05/2021 10:02:01 a. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel3] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Puesto__52F767D7EB734B01]    Script Date: 26/05/2021 12:12:24 p. m. ******/
+/****** Object:  Index [UQ__Puesto__52F767D7736CD6F1]    Script Date: 31/05/2021 10:02:01 a. m. ******/
 ALTER TABLE [dbo].[Puesto] ADD UNIQUE NONCLUSTERED 
 (
 	[IdPuestoExterno] ASC
@@ -1278,11 +1996,25 @@ REFERENCES [dbo].[TipoAcceso] ([IdTipoAcceso])
 GO
 ALTER TABLE [dbo].[Maquina] CHECK CONSTRAINT [FK_MaquinaTipoAcceso_TipoAccesoIdTipoAcceso]
 GO
+ALTER TABLE [dbo].[MaquinaFisica]  WITH CHECK ADD  CONSTRAINT [FK_MaquinaFisicaLineaProduccion_LineaProduccionIdLineaProduccion] FOREIGN KEY([LineaProduccionIdLineaProduccion])
+REFERENCES [dbo].[LineaProduccion] ([Id])
+GO
+ALTER TABLE [dbo].[MaquinaFisica] CHECK CONSTRAINT [FK_MaquinaFisicaLineaProduccion_LineaProduccionIdLineaProduccion]
+GO
+ALTER TABLE [dbo].[MaquinaFisica]  WITH CHECK ADD  CONSTRAINT [FK_MaquinaFisicaMaquina_MaquinaIdMaquina] FOREIGN KEY([MaquinaIdMaquina])
+REFERENCES [dbo].[Maquina] ([IdMaquina])
+GO
+ALTER TABLE [dbo].[MaquinaFisica] CHECK CONSTRAINT [FK_MaquinaFisicaMaquina_MaquinaIdMaquina]
+GO
 ALTER TABLE [dbo].[MaquinaFisica]  WITH CHECK ADD  CONSTRAINT [FK_MaquinaFisicaNave_NaveIdNave] FOREIGN KEY([NaveIdNave])
 REFERENCES [dbo].[Nave] ([IdNave])
-ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[MaquinaFisica] CHECK CONSTRAINT [FK_MaquinaFisicaNave_NaveIdNave]
+GO
+ALTER TABLE [dbo].[MaquinaFisica]  WITH CHECK ADD  CONSTRAINT [FK_MaquinaFisicaPlanta_PlantaIdPlanta] FOREIGN KEY([PlantaIdPlanta])
+REFERENCES [dbo].[Planta] ([IdPlanta])
+GO
+ALTER TABLE [dbo].[MaquinaFisica] CHECK CONSTRAINT [FK_MaquinaFisicaPlanta_PlantaIdPlanta]
 GO
 ALTER TABLE [dbo].[MaquinaProceso]  WITH CHECK ADD  CONSTRAINT [FK_MaquinaProcesoProceso_ProcesoIdProceso] FOREIGN KEY([ProcesoIdProceso])
 REFERENCES [dbo].[Proceso] ([IdProceso])
@@ -1326,6 +2058,21 @@ REFERENCES [dbo].[Pieza] ([IdPieza])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[PiezaCliente] CHECK CONSTRAINT [FK_PiezaClientePieza_PiezaIdPieza]
+GO
+ALTER TABLE [dbo].[PreguntaGeneral]  WITH CHECK ADD  CONSTRAINT [FK_PreguntaGeneral_Idioma] FOREIGN KEY([IdiomaIdIdioma])
+REFERENCES [dbo].[Idioma] ([IdIdioma])
+GO
+ALTER TABLE [dbo].[PreguntaGeneral] CHECK CONSTRAINT [FK_PreguntaGeneral_Idioma]
+GO
+ALTER TABLE [dbo].[PreguntaGeneral]  WITH CHECK ADD  CONSTRAINT [FK_PreguntaGeneral_NivelCertificacion] FOREIGN KEY([NivelCertificacionIdNivelCertificacion])
+REFERENCES [dbo].[NivelCertificacion] ([IdNivelCertificacion])
+GO
+ALTER TABLE [dbo].[PreguntaGeneral] CHECK CONSTRAINT [FK_PreguntaGeneral_NivelCertificacion]
+GO
+ALTER TABLE [dbo].[PreguntaGeneral]  WITH CHECK ADD  CONSTRAINT [FK_PreguntaGeneral_TipoPregunta] FOREIGN KEY([TipoPreguntaIdTipoPregunta])
+REFERENCES [dbo].[TipoPregunta] ([IdTipoPregunta])
+GO
+ALTER TABLE [dbo].[PreguntaGeneral] CHECK CONSTRAINT [FK_PreguntaGeneral_TipoPregunta]
 GO
 ALTER TABLE [dbo].[PreguntaMaquinaGeneral]  WITH CHECK ADD  CONSTRAINT [Preguntas_Maquina_Generales_Idioma_Idioma_Id_Idioma] FOREIGN KEY([IdiomaIdIdioma])
 REFERENCES [dbo].[Idioma] ([IdIdioma])
@@ -1456,6 +2203,16 @@ REFERENCES [dbo].[ResultadoProceso] ([IdResultadoProceso])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[RespuestaProceso] CHECK CONSTRAINT [Respuestas_Proceso_Resultados_Proceso_Resultados_Proceso_Id_Resultado_Proceso]
+GO
+ALTER TABLE [dbo].[Workflow]  WITH CHECK ADD  CONSTRAINT [FK_Workflow_Pieza] FOREIGN KEY([PiezaIdPieza])
+REFERENCES [dbo].[Pieza] ([IdPieza])
+GO
+ALTER TABLE [dbo].[Workflow] CHECK CONSTRAINT [FK_Workflow_Pieza]
+GO
+ALTER TABLE [dbo].[Workflow]  WITH CHECK ADD  CONSTRAINT [FK_Workflow_Proceso] FOREIGN KEY([ProcesoIdProceso])
+REFERENCES [dbo].[Proceso] ([IdProceso])
+GO
+ALTER TABLE [dbo].[Workflow] CHECK CONSTRAINT [FK_Workflow_Proceso]
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -1775,7 +2532,7 @@ Begin DesignProperties =
                Top = 6
                Left = 38
                Bottom = 136
-               Right = 224
+               Right = 225
             End
             DisplayFlags = 280
             TopColumn = 0

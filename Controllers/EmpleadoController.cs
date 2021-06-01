@@ -70,10 +70,6 @@ namespace APIRestV2.Controllers
          
         }
 
-
-
-
-
         [HttpGet("{id}")]
         public ActionResult<RequestEmpleado> Find(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
         {
@@ -109,10 +105,6 @@ namespace APIRestV2.Controllers
         [HttpGet("FindAllEmpleadosPorPerfil/{idPerfil}")]
         public ActionResult<List<Empleado>> FindAllEmpleadosPorPerfil(long idPerfil)
         {
-            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
-            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
-
-
             try
             {
                 if (idPerfil <= 0)
@@ -122,6 +114,34 @@ namespace APIRestV2.Controllers
                 else
                 {
                     var result = ProcEmpleado.FindAllEmpleadosPorPerfil(idPerfil);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("Empleado not found");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound("Empleado not found");
+            }
+        }
+
+        [HttpGet("FindEmpleadoPorCuenta/{CuentaUsuario}")]
+        public ActionResult<ResponseEmpleado> FindEmpleadoPorCuenta(string CuentaUsuario)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(CuentaUsuario) || String.IsNullOrWhiteSpace(CuentaUsuario))
+                {
+                    return NotFound("Empleado not found");
+                }
+                else
+                {
+                    var result = ProcEmpleado.FindEmpleadoPorCuenta(CuentaUsuario);
                     if (result != null)
                     {
                         return Ok(result);

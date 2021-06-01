@@ -9,6 +9,7 @@ namespace APIRestV2.Models
     {
         public NivelCertificacion()
         {
+            PreguntaGenerals = new HashSet<PreguntaGeneral>();
             PreguntaMaquinaGenerals = new HashSet<PreguntaMaquinaGeneral>();
             PreguntaPiezaGenerals = new HashSet<PreguntaPiezaGeneral>();
             PreguntaPiezas = new HashSet<PreguntaPieza>();
@@ -24,6 +25,7 @@ namespace APIRestV2.Models
         public string Color { get; set; }
         public bool? Activo { get; set; }
 
+        public virtual ICollection<PreguntaGeneral> PreguntaGenerals { get; set; }
         public virtual ICollection<PreguntaMaquinaGeneral> PreguntaMaquinaGenerals { get; set; }
         public virtual ICollection<PreguntaPiezaGeneral> PreguntaPiezaGenerals { get; set; }
         public virtual ICollection<PreguntaPieza> PreguntaPiezas { get; set; }

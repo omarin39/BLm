@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace APIRestV2.Models.Request
+#nullable disable
+
+namespace APIRestV2.Models
 {
-    public class RequestPreguntaGeneral
+    public partial class PreguntaGeneral
     {
         public long IdPreguntaGeneral { get; set; }
         public string Pregunta { get; set; }
@@ -16,5 +15,9 @@ namespace APIRestV2.Models.Request
         public long NivelCertificacionIdNivelCertificacion { get; set; }
         public long TipoPreguntaIdTipoPregunta { get; set; }
         public bool Activo { get; set; }
+
+        public virtual Idioma IdiomaIdIdiomaNavigation { get; set; }
+        public virtual NivelCertificacion NivelCertificacionIdNivelCertificacionNavigation { get; set; }
+        public virtual TipoPreguntum TipoPreguntaIdTipoPreguntaNavigation { get; set; }
     }
 }

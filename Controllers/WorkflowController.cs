@@ -10,38 +10,38 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http.Formatting;
 
-
 namespace APIRestV2.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class PreguntaGeneralController : ControllerBase
+    public class WorkflowController : ControllerBase
     {
         private JsonMediaTypeFormatter _formatter = new();
-        private ProcessPreguntaGeneral process = new();
-
+        private ProcessWorkflow workflow = new();
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
         private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
-        public PreguntaGeneralController(IConfiguration configuration)
+        public WorkflowController(IConfiguration configuration)
         {
             Configuration = configuration;
 
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
 
+
         [HttpPost]
-        public ActionResult Post([FromBody] RequestPreguntaGeneral req)
+        public ActionResult Post([FromBody] RequestWorkflow req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
 
 
-                if (req.Pregunta != null)
+                if (req.PiezaIdPieza != null)
                 {
-                    var result = process.AddPreguntaGeneral(req, remoteIpAddress.ToString());
+                    var result = workflow.AddWorkflow(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
@@ -49,34 +49,34 @@ namespace APIRestV2.Controllers
                     else
                     {
                         procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                        return NotFound("Pregunta Proceso not found");
+                        return NotFound("Workflow not found");
                     }
 
                 }
                 else
                 {
                     procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
-                    return NotFound("Pregunta Proceso not found");
+                    return NotFound("Workflow not found");
                 }
 
             }
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("Pregunta Proceso not found");
+                return NotFound("Workflow not found");
 
             }
 
         }
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestPreguntaGeneral req)
+        public ActionResult Put([FromBody] RequestWorkflow req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
 
-                ResponseGral result = process.UpdatePreguntaGeneral(req, remoteIpAddress.ToString());
+                ResponseGral result = workflow.UpdateWorkflow(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
@@ -84,7 +84,7 @@ namespace APIRestV2.Controllers
                 else
                 {
                     procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                    return NotFound("Pregunta Proceso not found");
+                    return NotFound("Workflow not found");
                 }
 
 
@@ -92,31 +92,66 @@ namespace APIRestV2.Controllers
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("Pregunta Proceso not found");
+                return NotFound("Workflow not found");
+
+            }
+
+        }
+
+        [HttpPut("Orden")]
+        public ActionResult Put([FromBody] List<RequestWorkflow> wfs)
+        {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+            RequestWorkflow req=null;
+            try
+            {
+                ResponseGral result = null;
+                
+                foreach (var item in wfs)
+                {
+                    req = item;
+                    result = workflow.UpdateWorkflow(item, remoteIpAddress.ToString());
+
+                    if (result == null)
+                    {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
+                        return NotFound("Workflow not found");
+                    }
+                }
+                
+                return Ok(result);
+                
+
+
+            }
+            catch (Exception e)
+            {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
+                return NotFound("Workflow not found");
 
             }
 
         }
 
         [HttpGet("{id}")]
-        public ActionResult<PreguntaGeneral> Find(long id)
+        public ActionResult<Workflow> Find(long id)
         {
             try
             {
                 if (id <= 0)
                 {
-                    return NotFound("Pregunta Proceso not found");
+                    return NotFound("Workflow not found");
                 }
                 else
                 {
-                    var result = process.FindPreguntaGeneral(id);
+                    var result = workflow.FindWorflowById(id);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Pregunta Proceso not found");
+                        return NotFound("Workflow not found");
                     }
 
                 }
@@ -124,25 +159,25 @@ namespace APIRestV2.Controllers
             }
             catch (Exception e)
             {
-                return NotFound("Pregunta Proceso not found");
+                return NotFound("Workflow not found");
 
             }
 
         }
 
-        [HttpGet("FindPreguntaGeneral/{TipoPregunta}")]
-        public ActionResult<List<RequestPreguntaGeneral>> FindPreguntaProceso(long TipoPregunta)
+        [HttpGet("FindWorkflowPieza/{Pieza}")]
+        public ActionResult<List<RequestWorkflow>> FindWorkflow(long Pieza)
         {
             try
             {
-                var result = process.FindPreguntaGeneralByTipo(TipoPregunta);
-                if (result == null)
+
+                if (Pieza <= 0)
                 {
-                    return NotFound("Pregunta General not found");
+                    return NotFound("Workflow not found");
                 }
                 else
                 {
-                    
+                    var result = workflow.FindWorkflowByPieza(Pieza);
                     return Ok(result);
 
                 }
@@ -150,39 +185,10 @@ namespace APIRestV2.Controllers
             }
             catch (Exception e)
             {
-                return NotFound("Pregunta General not found");
+                return NotFound("Workflow not found");
 
             }
 
         }
-
-
-
-        [HttpGet()]
-        public ActionResult<List<PreguntaGeneral>> FindAll()
-        {
-            try
-            {
-
-                List<PreguntaGeneral> result = process.FindAllPreguntaGeneral();
-                if (result != null)
-                {
-                    return result;
-                }
-                else
-                {
-                    return NotFound("Pregunta Proceso not found");
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                return NotFound("Pregunta Proceso not found");
-
-            }
-
-        }
-
     }
 }

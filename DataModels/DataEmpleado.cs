@@ -1,4 +1,5 @@
 ﻿using APIRestV2.Models;
+using APIRestV2.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace APIRestV2.DataModels
         {
             try
             {
-                //_context.Empleados.Update(editEmpleado);
+                //_context.Empleados.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
@@ -60,9 +61,16 @@ namespace APIRestV2.DataModels
 
         internal List<Empleado> FindAllEmpleadosPorPerfil(long idPerfil)
         {
-            var empleados= _context.Empleados.Where(us => us.IdPerfil == idPerfil);
+            var empleados= _context.Empleados.AsNoTracking().Where(us => us.IdPerfil == idPerfil);
            
             return empleados.ToList();
         }
+
+        public Empleado FindEmpleadoPorCuenta(string CuentaUsuario)
+        {
+            return _context.Empleados.AsNoTracking().SingleOrDefault(us => us.CuentaUsuario == CuentaUsuario);
+        }
+
+        
     }
 }

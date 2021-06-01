@@ -98,6 +98,7 @@ namespace APIRestV2.Controllers.Process
                     empleadoBuscado.PuestoIdPuesto = empleado.PuestoIdPuesto;
                     empleadoBuscado.UnidadNegocioIdUnidadNegocio = empleado.UnidadNegocioIdUnidadNegocio;
                     empleadoBuscado.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
+                    empleadoBuscado.CuentaUsuario = empleado.CuentaUsuario;
                     empleadoBuscado.IdPerfil = empleado.IdPerfil;
                     var respNewEmpleado = empleadoData.UpdateEmpleado(empleadoBuscado,ip);
                     if (respNewEmpleado > 0)
@@ -137,13 +138,27 @@ namespace APIRestV2.Controllers.Process
             return ResEmpleadoRet;
         }
 
-        
-            public List<Empleado> FindAllEmpleadosPorPerfil(long idPerfil)
+
+        public List<Empleado> FindAllEmpleadosPorPerfil(long idPerfil)
         {
             List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleadosPorPerfil(idPerfil);
             return ResEmpleadoRet;
         }
 
+        public ResponseEmpleado FindEmpleadoPorCuenta(string CuentaUsuario)
+        {
+            ResponseEmpleado EmpleadoCuentaREt = new();
+            Empleado ResEmpleadoCuenta = empleadoData.FindEmpleadoPorCuenta(CuentaUsuario);
+
+            DataPerfil PerfilNombre = new();
+            var PerfiFinal = PerfilNombre.FindPerfil((long)ResEmpleadoCuenta.IdPerfil);
+            DataPerfilOperacionPermiso PermisoB = new();
+            var respermiso = PermisoB.FindPerfilOperacionPermisoJoined((long)ResEmpleadoCuenta.IdPerfil);
+            EmpleadoCuentaREt.IdPerfil = PerfiFinal.Id;
+            EmpleadoCuentaREt.NombrePerfil = PerfiFinal.Perfil1;
+            EmpleadoCuentaREt.Permisos = respermiso;
+            return EmpleadoCuentaREt;
+        }
 
     }
 }

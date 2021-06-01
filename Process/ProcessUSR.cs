@@ -128,6 +128,7 @@ namespace APIRestV2.Controllers.Process
                 Empleado empleadoNewRegistro = new();
                 empleadoNewRegistro.NumeroNomina = RegBien.NoNomina.ToString();
                 empleadoNewRegistro.Nombre = RegBien.Nombre;
+                empleadoNewRegistro.CuentaUsuario = RegBien.CuentaUsuario;
                 empleadoNewRegistro.ApellidoPaterno = RegBien.ApellidoPaterno;
                 empleadoNewRegistro.ApellidoMaterno = RegBien.ApellidoMaterno;
                 empleadoNewRegistro.FechaIngreso = FechaIngreso;
@@ -184,6 +185,7 @@ namespace APIRestV2.Controllers.Process
                 _Empleado.ApellidoMaterno = RegBien.ApellidoMaterno;
                 _Empleado.FechaIngreso = FechaIngreso;
                 _Empleado.Email = RegBien.Email;
+                _Empleado.CuentaUsuario= RegBien.CuentaUsuario;
                 _Empleado.DepartamentoIdDepartamentoNivel0 = id_departamento;
                 _Empleado.PuestoIdPuesto = id_puesto;
                 _Empleado.NominaJefe = RegBien.NominaJefe.ToString();

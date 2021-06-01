@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace APIRestV2.Models
+namespace APIRestV2.Models.Response
 {
-    public partial class MaquinaFisica
+    public class ResponseMaquinaFisica
     {
         public long IdMaquinaFisica { get; set; }
         public string Nserie { get; set; }
@@ -16,10 +16,9 @@ namespace APIRestV2.Models
         public long NaveIdNave { get; set; }
         public long LineaProduccionIdLineaProduccion { get; set; }
         public bool Activo { get; set; }
-
-        public virtual LineaProduccion LineaProduccionIdLineaProduccionNavigation { get; set; }
-        public virtual Maquina MaquinaIdMaquinaNavigation { get; set; }
-        public virtual Nave NaveIdNaveNavigation { get; set; }
-        public virtual Plantum PlantaIdPlantaNavigation { get; set; }
+        public string NombreMaquina { get; set; }
+        public string NombrePlanta { get; set; }
+        public string NombreNave { get; set; }
+        public string NombreLineaProduccion { get; set; }
     }
 }
