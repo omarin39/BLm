@@ -147,11 +147,27 @@ namespace APIRestV2.Controllers.Process
             return respAltaPieza;
         }
 
+        internal List<ResponsePieza> FindPiezaAutoComplete(string param)
+        {
+            List<Pieza> resPiezaRet = PiezaData.FindPiezaAutoComplete(param);
 
+            var result = resPiezaRet.Select((pza, i) =>
+                    new ResponsePieza
+                    {
+                       IdPieza= pza.IdPieza,
+                       Nombre= pza.Nombre,
+                     // Descripcion=pza.Descripcion,
+                      NumeroParte=pza.NumeroParte,
+                     // Activo=pza.Activo
+                    }).ToList();
+            return result;
+        }
 
         public List<VwPiezasMultimedia> FindAllPieza()
     {
         List<VwPiezasMultimedia> resPiezaRet = PiezaData.FindAllPiezas();
+
+
         return resPiezaRet;
     }
 

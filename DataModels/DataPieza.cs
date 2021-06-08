@@ -82,5 +82,12 @@ namespace APIRestV2.DataModels
             }
 
         }
+
+        internal List<Pieza> FindPiezaAutoComplete(string param)
+        {
+            param = param.ToUpper().Replace("%2F", "/").Trim();
+            return _context.Piezas.Where(p => p.Nombre.ToUpper().Contains(param) || p.NumeroParte.ToUpper().Contains(param)).Take(200).ToList();
+           
+        }
     }
 }

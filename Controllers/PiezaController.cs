@@ -166,6 +166,32 @@ namespace APIRestV2.Controllers
          
         }
 
+        [HttpGet("FindPiezaAutoComplete/{param}")]
+        public ActionResult<List<ResponsePieza>> FindPiezaAutoComplete(String param)
+        {
+            try
+            {
+
+                List<ResponsePieza> result = procPieza.FindPiezaAutoComplete(param);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Pieza not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pieza not found");
+
+            }
+
+        }
+
 
 
 
