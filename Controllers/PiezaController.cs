@@ -171,6 +171,16 @@ namespace APIRestV2.Controllers
         {
             try
             {
+                if (param == null)
+                {
+                    return NotFound("Pieza not found");
+                }
+
+                if (param.Trim().Equals(""))
+                {
+                    return NotFound("Pieza not found");
+                }
+
 
                 List<ResponsePieza> result = procPieza.FindPiezaAutoComplete(param);
                 if (result != null)

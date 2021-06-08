@@ -117,6 +117,23 @@ namespace APIRestV2.Controllers.Process
                 }
             }
         }
+
+        internal List<ResponseProceso> FindProcesoAutoComplete(string param)
+        {
+            List<Proceso> resPiezaRet = ProcesoData.FindProcesoAutoComplete(param);
+
+            var result = resPiezaRet.Select((proc, i) =>
+                    new ResponseProceso
+                    {
+                      Nombre=proc.Nombre,
+                      Codigo=proc.Codigo,
+                      Descripcion=proc.Descripcion,
+                      Dificultad=proc.Dificultad,
+                      IdProceso=proc.IdProceso
+                    }).ToList();
+            return result;
+        }
+
         public Proceso FindProceso(String Proceso){
             Proceso respAltaProceso = ProcesoData.FindProceso(Proceso);
             if (respAltaProceso == null)

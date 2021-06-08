@@ -66,5 +66,12 @@ namespace APIRestV2.DataModels
             }
 
         }
+
+        internal List<Proceso> FindProcesoAutoComplete(string param)
+        {
+            param = param.ToUpper().Replace("%2F", "/").Trim();
+            return _context.Procesos.Where(p => p.Codigo.ToUpper().Contains(param) || p.Nombre.ToUpper().Contains(param)).Take(200).ToList();
+
+        }
     }
 }

@@ -133,6 +133,41 @@ namespace APIRestV2.Controllers
          
         }
 
+        [HttpGet("FindProcesoAutoComplete/{param}")]
+        public ActionResult<List<ResponseProceso>> FindProcesoAutoComplete(String param)
+        {
+            try
+            {
+                if (param==null)
+                {
+                    return NotFound("Proceso not found");
+                }
+
+                if (param.Trim().Equals(""))
+                {
+                    return NotFound("Proceso not found");
+                }
+
+                List<ResponseProceso> result = procProceso.FindProcesoAutoComplete(param);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Proceso not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Proceso not found");
+
+            }
+
+        }
+
 
 
 
