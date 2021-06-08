@@ -22,7 +22,7 @@ namespace APIRestV2.DataModels
         public List<VwPiezasMultimedia> FindAllPiezas()
         {
            
-            return _context.VwPiezasMultimedias.ToList();
+            return _context.VwPiezasMultimedias.AsNoTracking().ToList();
           
         }
 

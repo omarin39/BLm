@@ -20,6 +20,7 @@ namespace APIRestV2.Models
         public virtual DbSet<CentroCosto> CentroCostos { get; set; }
         public virtual DbSet<Certificacion> Certificacions { get; set; }
         public virtual DbSet<Cliente> Clientes { get; set; }
+        public virtual DbSet<ConfiguracionNivelCertificacion> ConfiguracionNivelCertificacions { get; set; }
         public virtual DbSet<Departamento> Departamentos { get; set; }
         public virtual DbSet<DepartamentoNivel1> DepartamentoNivel1s { get; set; }
         public virtual DbSet<DepartamentoNivel2> DepartamentoNivel2s { get; set; }
@@ -75,7 +76,7 @@ namespace APIRestV2.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=172.21.2.75;Database=CARTAV;Trusted_Connection=False;User ID=usr_adbcv;Password=4$HngsRm%xe#");
+                optionsBuilder.UseSqlServer("Server=.\\SQLOMARIN;Database=CARTAV;Trusted_Connection=False;User ID=sa;Password=O1p5r1r2b3");
             }
         }
 
@@ -150,6 +151,27 @@ namespace APIRestV2.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Telefono).IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ConfiguracionNivelCertificacion>(entity =>
+            {
+                entity.HasKey(e => e.IdConfiguraNivelCertifica);
+
+                entity.ToTable("ConfiguracionNivelCertificacion");
+
+                entity.Property(e => e.IdsPerfilExaminan)
+                    .IsRequired()
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.IdsPerfilFirman)
+                    .IsRequired()
+                    .HasDefaultValueSql("((0))");
+
+                entity.HasOne(d => d.IdNivelCertificacionNavigation)
+                    .WithMany(p => p.ConfiguracionNivelCertificacions)
+                    .HasForeignKey(d => d.IdNivelCertificacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ConfiguracionNivelCertificacionIdNivel_NivelCertificacionID");
             });
 
             modelBuilder.Entity<Departamento>(entity =>

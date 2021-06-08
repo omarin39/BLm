@@ -1,5 +1,4 @@
 ﻿using APIRestV2.Models;
-using APIRestV2.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,47 +7,40 @@ using System.Threading.Tasks;
 
 namespace APIRestV2.DataModels
 {
-    public class DataPerfil
+    public class DataConfiguracionNivelesCertificacion
     {
         private readonly CARTAVContext _context;
-        private Controllers.Process.Process_Log procLog;
-        public DataPerfil()
+        private readonly Controllers.Process.Process_Log procLog;
+
+        public DataConfiguracionNivelesCertificacion()
         {
             _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public  List<Perfil> FindAllPerfil()
+        public List<ConfiguracionNivelCertificacion> FindAllConfiguracionNivelesCertificacion()
         {
-            return  _context.Perfils.ToList();
+            return _context.ConfiguracionNivelCertificacions.AsNoTracking().ToList();
+        }
+        public ConfiguracionNivelCertificacion FindById(long Id)
+        {
+            return _context.ConfiguracionNivelCertificacions.AsNoTracking().SingleOrDefault(cn=> cn.IdConfiguraNivelCertifica == Id);
         }
 
-        public List<Perfil> FindAllPerfilTemp()
+        public ConfiguracionNivelCertificacion FindByIdNivelCertificacion(long Id)
         {
-            return _context.Perfils.AsNoTracking().ToList();
+            return _context.ConfiguracionNivelCertificacions.AsNoTracking().SingleOrDefault(cn => cn.IdNivelCertificacion == Id);
         }
 
-        public bool ValidaClaveExistente(RequestPerfiles descripcion)
-        {
-            //true si existe
-            //false si no existe
-            var busqueda = _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Perfil1.Trim().ToUpper() == descripcion.Perfil1.Trim().ToUpper() && us.Id != descripcion.Id);
-            return busqueda == null ? false : true;
-        }
-
-        public Perfil FindPerfil(long idPerfil)
-        {
-            return _context.Perfils.AsNoTracking().SingleOrDefault(us => us.Id == idPerfil);
-        }
-
-        public long AddPerfil(Perfil item,string ip)
+        public long AddConfiguracionNivelesCertificacion(ConfiguracionNivelCertificacion item, string ip)
         {
             try
             {
-                var perfilRes = _context.Perfils.Add(item);
+                var ConfigNivelesCertificacionRes = _context.ConfiguracionNivelCertificacions.Add(item);
                 _context.SaveChanges();
+
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
-                return Int32.Parse(perfilRes.Entity.Id.ToString());
+                return Int32.Parse(ConfigNivelesCertificacionRes.Entity.IdConfiguraNivelCertifica.ToString());
             }
             catch (Exception ex)
             {
@@ -57,12 +49,11 @@ namespace APIRestV2.DataModels
                 return 0;
             }
         }
-
-        public int UpdatePerfil(Perfil item,string ip)
+        public int UpdateConfiguracionNivelesCertificacion(ConfiguracionNivelCertificacion item, string ip)
         {
             try
             {
-                _context.Perfils.Update(item);
+                _context.ConfiguracionNivelCertificacions.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }

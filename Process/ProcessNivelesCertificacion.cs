@@ -13,7 +13,6 @@ namespace APIRestV2.Controllers.Process
 {
     public class ProcessNivelesCertificacion
     {
-        private ResponseNivelesCertificacion ResponseWS = new();
         public DataNivelesCertificacion NivelesCertificacionData = new();
         public ResponseGral AddNivelesCertificacion(RequestNivelesCertificacion NivelesCertificacion, String ip)
         {
@@ -24,38 +23,38 @@ namespace APIRestV2.Controllers.Process
                 {
                     if (NivelesCertificacionData.FindNivelCertificacionsDuplicidad(2, NivelesCertificacion) == false)
                     {
-                        //if (NivelesCertificacionData.FindNivelCertificacionsDuplicidad(3, NivelesCertificacion) == false)
-                        //{
-
-                        //}
-                        //else
-                        //{
-                        //    respAltaNivelesCertificacion.Id = -3;
-                        //    respAltaNivelesCertificacion.Codigo = "-";
-                        //    respAltaNivelesCertificacion.Mensaje = "Color Duplicado";
-                        //    return respAltaNivelesCertificacion;
-
-                        //}
-
-                        NivelCertificacion logNewRegistro = new();
-                        logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                        logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
-                        logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
-                        logNewRegistro.Color = NivelesCertificacion.Color;
-                        logNewRegistro.Activo = NivelesCertificacion.Activo;
-
-                        long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro, ip);
-                        if (respNewUSR > 0)
+                        if (NivelesCertificacionData.FindNivelCertificacionsDuplicidad(3, NivelesCertificacion) == false)
                         {
-                            respAltaNivelesCertificacion.Id = respNewUSR;
-                            respAltaNivelesCertificacion.Codigo = "200";
-                            respAltaNivelesCertificacion.Mensaje = "OK";
-                            return respAltaNivelesCertificacion;
+                            NivelCertificacion logNewRegistro = new();
+                            logNewRegistro.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
+                            logNewRegistro.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
+                            logNewRegistro.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
+                            logNewRegistro.Color = NivelesCertificacion.Color;
+                            logNewRegistro.Activo = NivelesCertificacion.Activo;
+
+                            long respNewUSR = NivelesCertificacionData.AddNivelesCertificacion(logNewRegistro, ip);
+                            if (respNewUSR > 0)
+                            {
+                                respAltaNivelesCertificacion.Id = respNewUSR;
+                                respAltaNivelesCertificacion.Codigo = "200";
+                                respAltaNivelesCertificacion.Mensaje = "OK";
+                                return respAltaNivelesCertificacion;
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
                         else
                         {
-                            return null;
+                            respAltaNivelesCertificacion.Id = -3;
+                            respAltaNivelesCertificacion.Codigo = "-";
+                            respAltaNivelesCertificacion.Mensaje = "Color Duplicado";
+                            return respAltaNivelesCertificacion;
+
                         }
+
+                       
                     }
                     else
                     {
@@ -103,42 +102,42 @@ namespace APIRestV2.Controllers.Process
                     {
                         if (NivelesCertificacionData.FindNivelCertificacionsDuplicidad(2, NivelesCertificacion) == false)
                         {
-                            //if (NivelesCertificacionData.FindNivelCertificacionsDuplicidad(3, NivelesCertificacion) == false)
-                            //{
-
-                            //}
-                            //else
-                            //{
-                            //    respAltaNivelesCertificacion.Id = -3;
-                            //    respAltaNivelesCertificacion.Codigo = "-";
-                            //    respAltaNivelesCertificacion.Mensaje = "Color Duplicado";
-                            //    return respAltaNivelesCertificacion;
-
-                            //}
-
-                            nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
-                            nivelesCertificacionBuscado.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
-                            nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
-                            nivelesCertificacionBuscado.Color = NivelesCertificacion.Color;
-                            nivelesCertificacionBuscado.Activo = NivelesCertificacion.Activo;
-
-
-
-                            var respNewNivelesCertificacion = NivelesCertificacionData.UpdateNivelesCertificacion(nivelesCertificacionBuscado, ip);
-                            if (respNewNivelesCertificacion > 0)
+                            if (NivelesCertificacionData.FindNivelCertificacionsDuplicidad(3, NivelesCertificacion) == false)
                             {
-                                respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
-                                respAltaNivelesCertificacion.Codigo = "200";
-                                respAltaNivelesCertificacion.Mensaje = "OK";
-                                return respAltaNivelesCertificacion;
+                                nivelesCertificacionBuscado.NombreNivelCertificacion = NivelesCertificacion.NombreNivelCertificacion;
+                                nivelesCertificacionBuscado.DescripcionNivelCertificacion = NivelesCertificacion.DescripcionNivelCertificacion;
+                                nivelesCertificacionBuscado.DificultadNivelCertificacion = NivelesCertificacion.DificultadNivelCertificacion;
+                                nivelesCertificacionBuscado.Color = NivelesCertificacion.Color;
+                                nivelesCertificacionBuscado.Activo = NivelesCertificacion.Activo;
+
+
+
+                                var respNewNivelesCertificacion = NivelesCertificacionData.UpdateNivelesCertificacion(nivelesCertificacionBuscado, ip);
+                                if (respNewNivelesCertificacion > 0)
+                                {
+                                    respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
+                                    respAltaNivelesCertificacion.Codigo = "200";
+                                    respAltaNivelesCertificacion.Mensaje = "OK";
+                                    return respAltaNivelesCertificacion;
+                                }
+                                else
+                                {
+                                    respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
+                                    respAltaNivelesCertificacion.Codigo = "400";
+                                    respAltaNivelesCertificacion.Mensaje = "Record not found";
+                                    return respAltaNivelesCertificacion;
+                                }
                             }
                             else
                             {
-                                respAltaNivelesCertificacion.Id = nivelesCertificacionBuscado.IdNivelCertificacion;
-                                respAltaNivelesCertificacion.Codigo = "400";
-                                respAltaNivelesCertificacion.Mensaje = "Record not found";
+                                respAltaNivelesCertificacion.Id = -3;
+                                respAltaNivelesCertificacion.Codigo = "-";
+                                respAltaNivelesCertificacion.Mensaje = "Color Duplicado";
                                 return respAltaNivelesCertificacion;
+
                             }
+
+                           
                         }
                         else
                         {

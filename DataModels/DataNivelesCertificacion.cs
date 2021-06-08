@@ -39,7 +39,7 @@ namespace APIRestV2.DataModels
                     busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.DificultadNivelCertificacion == BusquedaVar.DificultadNivelCertificacion && us.IdNivelCertificacion != BusquedaVar.IdNivelCertificacion);
                     break;
                 case 3:
-                    busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.Color.Trim() == BusquedaVar.Color.Trim() && us.IdNivelCertificacion != BusquedaVar.IdNivelCertificacion);
+                    busqueda = _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.Color.Trim().ToUpper() == BusquedaVar.Color.Trim().ToUpper() && us.IdNivelCertificacion != BusquedaVar.IdNivelCertificacion);
                     break;
                 default:
                     break;

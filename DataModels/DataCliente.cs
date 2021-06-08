@@ -31,19 +31,72 @@ namespace APIRestV2.DataModels
          */
         public Cliente FindClienteEmailTelefono(int Tipobusqueda, RequestCliente BusquedaVar)
         {
-            Cliente busqueda=new();
+            List<Cliente> busqueda=new();
+            Cliente busqueda_u=new();
             switch (Tipobusqueda)
             {
                 case 1:
-                    busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Email.Trim().ToUpper() == BusquedaVar.Email.Trim().ToUpper() && us.IdCliente != BusquedaVar.IdCliente);
+                   
+                    busqueda = _context.Clientes.Where(us => us.Email == BusquedaVar.Email && us.IdCliente != BusquedaVar.IdCliente).ToList();
+                    if (busqueda.Count == 0)
+                    {
+                        busqueda_u = null;
+                       
+
+                    }
+                    else
+                    {
+
+                        foreach (var item in busqueda)
+                        {
+
+                            if (item.Email.Equals("Default@CV.com"))
+                            {
+                                busqueda_u = null;
+                                break;
+                            }
+                            else
+                            {
+                                busqueda_u = item;
+                            }
+
+                        }
+                    }
+                    
+                                    
                     break;
-                case 2:
-                    busqueda = _context.Clientes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim() == BusquedaVar.Telefono.Trim() && us.IdCliente != BusquedaVar.IdCliente);
+                case 2:                    
+                    busqueda = _context.Clientes.Where(us => us.Telefono == BusquedaVar.Telefono && us.IdCliente != BusquedaVar.IdCliente).ToList();
+                    if (busqueda.Count == 0)
+                    {
+                        busqueda_u = null;
+                    }
+                    else
+                    {
+                        foreach (var item in busqueda)
+                        {
+
+                            if (item.Telefono.Equals("+0112345689"))
+                            {
+                                busqueda_u = null;
+                                break;
+                            }
+                            else
+                            {
+                                busqueda_u = item;
+                            }
+
+                        }
+
+                    }
+                    
+                    
+                    
                     break;
                 default:
                     break;
             }
-            return busqueda;
+            return busqueda_u;
         }
        
         public long AddCliente(Cliente item, string ip)
