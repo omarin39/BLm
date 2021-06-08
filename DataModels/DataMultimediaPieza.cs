@@ -34,15 +34,22 @@ namespace APIRestV2.DataModels
             return busqueda == null ? false : true;
         }
 
+        public MultiMediaPieza findMultimediaPiezaPorNombre(string nombre)
+        {
+
+            var busqueda = _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Nombre.Trim().ToUpper() == nombre.Trim().ToUpper());
+            return busqueda;
+        }
+
         public List<MultiMediaPieza> FindMultimediaPiezaTipMedia(string TipoMedia, long idPieza)
         {
             if (string.IsNullOrEmpty(TipoMedia))
             {
-                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza).ToList();
+                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza).Take(1).OrderByDescending(u => u.Id).ToList();
             }
             else
             {
-                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.TipoMedia == TipoMedia && us.IdPieza == idPieza).ToList();
+                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.TipoMedia == TipoMedia && us.IdPieza == idPieza).Take(1).OrderByDescending(u => u.Id).ToList();
             }
             
         }
@@ -77,6 +84,11 @@ namespace APIRestV2.DataModels
                 return 0;
             }
 
+        }
+
+        internal List<MultiMediaPieza> FindMultimediaPiezaVersiones(long idPieza, string version)
+        {
+            return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza && us.Version != version).OrderBy(u => u.Id).ToList();
         }
     }
 }

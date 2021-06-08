@@ -71,6 +71,45 @@ namespace APIRestV2.Controllers
          
         }
 
+
+        [HttpPost("PostVersion")]
+        public ActionResult Post([FromBody] RequestMultimediaPiezaVersion req)
+        {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+            try
+            {
+
+
+                if (req.Descripcion != null)
+                {
+                    var result = procMultimediaPieza.AddMultimediaPiezaVersion(req, remoteIpAddress.ToString());
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
+                        return NotFound("MultimediaPieza not found");
+                    }
+
+                }
+                else
+                {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
+                    return NotFound("MultimediaPieza not found");
+                }
+
+            }
+            catch (Exception e)
+            {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
+                return NotFound("MultimediaPieza not found");
+
+            }
+
+        }
+
         /*
         [HttpPost]
         public ActionResult Post([FromBody] RequestMultimediaPieza req)
@@ -141,6 +180,38 @@ namespace APIRestV2.Controllers
                
             }
          
+        }
+
+        [HttpGet("FindVersiones/{idPieza}")]
+        public ActionResult<RequestMultimediaPieza> FindVersiones(long idPieza, string version)
+        {
+            try
+            {
+                if (idPieza == 0)
+                {
+                    return NotFound("MultimediaPieza not found");
+                }
+                else
+                {
+                    var result = procMultimediaPieza.FindMultimediaPiezaTipMediaVersiones(idPieza, version);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("MultimediaPieza not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("MultimediaPieza not found");
+
+            }
+
         }
 
 
