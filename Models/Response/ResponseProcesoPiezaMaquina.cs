@@ -14,6 +14,8 @@ namespace APIRestV2.Models.Response
         public bool Activo { get; set; }
         public string NumeroParte { get; set; }
         public string Nombre { get; set; }
+        public long ProcesoIdProceso { get; set; }
+        public long MaquinaIdMaquina { get; set; }
         public int? CountPreguntas { get; set; }
         public int? CountDoc { get; set; }
         public int? CountVideo { get; set; }

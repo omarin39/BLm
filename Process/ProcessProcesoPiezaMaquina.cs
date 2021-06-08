@@ -93,9 +93,9 @@ namespace APIRestV2.Controllers.Process
             }
         }
 
-        public List<ProcesoPiezaMaquina> FindAllProcesoPiezaMaquina()
+        public List<ResponseProcesoPiezaMaquina> FindAllProcesoPiezaMaquina()
         {
-            List<ProcesoPiezaMaquina> resPreguntaProcesoRet = entityData.findAllProcesoPiezaMaquina();
+            List<ResponseProcesoPiezaMaquina> resPreguntaProcesoRet = entityData.findAllProcesoPiezaMaquina();
             return resPreguntaProcesoRet;
         }
 

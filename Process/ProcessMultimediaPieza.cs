@@ -30,62 +30,62 @@ namespace APIRestV2.Controllers.Process
                 if (multimediaPiezaData.ValidaClaveExistente(MultimediaPieza.Nombre) == false)
                 {
 
-                
+
                     MultiMediaPieza logNewRegistro = new();
-                logNewRegistro.IdPieza = MultimediaPieza.IdPieza;
-                logNewRegistro.IdTipoDocumento = MultimediaPieza.IdTipoDocumento;
-                logNewRegistro.Nombre = MultimediaPieza.Nombre;
-                logNewRegistro.Descripcion = MultimediaPieza.Descripcion;
-                logNewRegistro.Version = MultimediaPieza.Version;
-                logNewRegistro.Recertificacion = MultimediaPieza.Recertificacion;
-                logNewRegistro.TipoMedia = MultimediaPieza.TipoMedia;
-                logNewRegistro.Activo = MultimediaPieza.Activo;
-                logNewRegistro.Extension = MultimediaPieza.Extension;
-                logNewRegistro.Tamanio = MultimediaPieza.Tamanio;
+                    logNewRegistro.IdPieza = MultimediaPieza.IdPieza;
+                    logNewRegistro.IdTipoDocumento = MultimediaPieza.IdTipoDocumento;
+                    logNewRegistro.Nombre = MultimediaPieza.Nombre;
+                    logNewRegistro.Descripcion = MultimediaPieza.Descripcion;
+                    logNewRegistro.Version = MultimediaPieza.Version;
+                    logNewRegistro.Recertificacion = MultimediaPieza.Recertificacion;
+                    logNewRegistro.TipoMedia = MultimediaPieza.TipoMedia;
+                    logNewRegistro.Activo = MultimediaPieza.Activo;
+                    logNewRegistro.Extension = MultimediaPieza.Extension;
+                    logNewRegistro.Tamanio = MultimediaPieza.Tamanio;
 
 
-                try
-                {
-                  
-                   //Genera path del nuevo archivo    falta la extension
-                    string filePath = save2(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower()+ MultimediaPieza.Extension.Trim());
-                    logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower()  + MultimediaPieza.Extension);
-                    File.WriteAllBytes(filePath, Convert.FromBase64String(MultimediaPieza.Documento));
-                    
+                    try
+                    {
 
-                }
-                catch (Exception ex)
-                {
-                    respAltaMultimediaPieza.Id = 0;
-                    respAltaMultimediaPieza.Codigo = "400";
-                    respAltaMultimediaPieza.Mensaje = "Error al guardar el documento";
-                    return respAltaMultimediaPieza;
-                }
+                        //Genera path del nuevo archivo    falta la extension
+                        string filePath = save2(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower() + MultimediaPieza.Extension.Trim());
+                        logNewRegistro.Ruta = armaPath(MultimediaPieza.TipoMedia, MultimediaPieza.Nombre.Trim().ToLower() + MultimediaPieza.Extension);
+                        File.WriteAllBytes(filePath, Convert.FromBase64String(MultimediaPieza.Documento));
 
 
+                    }
+                    catch (Exception ex)
+                    {
+                        respAltaMultimediaPieza.Id = 0;
+                        respAltaMultimediaPieza.Codigo = "400";
+                        respAltaMultimediaPieza.Mensaje = "Error al guardar el documento";
+                        return respAltaMultimediaPieza;
+                    }
 
-                long respNewUSR = multimediaPiezaData.AddMultimediaPieza(logNewRegistro, ip);
-                if (respNewUSR > 0)
-                {
-                    respAltaMultimediaPieza.Id = respNewUSR;
-                    respAltaMultimediaPieza.Codigo = "200";
-                    respAltaMultimediaPieza.Mensaje = "OK";
-                    return respAltaMultimediaPieza;
-                }
-                else
-                {
-                    respAltaMultimediaPieza.Id = respNewUSR;
-                    respAltaMultimediaPieza.Codigo = "400";
-                    respAltaMultimediaPieza.Mensaje = "Error al guardar datos";
-                    return respAltaMultimediaPieza;
-                }
+
+
+                    long respNewUSR = multimediaPiezaData.AddMultimediaPieza(logNewRegistro, ip);
+                    if (respNewUSR > 0)
+                    {
+                        respAltaMultimediaPieza.Id = respNewUSR;
+                        respAltaMultimediaPieza.Codigo = "200";
+                        respAltaMultimediaPieza.Mensaje = "OK";
+                        return respAltaMultimediaPieza;
+                    }
+                    else
+                    {
+                        respAltaMultimediaPieza.Id = respNewUSR;
+                        respAltaMultimediaPieza.Codigo = "400";
+                        respAltaMultimediaPieza.Mensaje = "Error al guardar datos";
+                        return respAltaMultimediaPieza;
+                    }
 
                 }
                 else
                 {
                     respAltaMultimediaPieza.Id = -1;
                     respAltaMultimediaPieza.Codigo = "-1";
-                    respAltaMultimediaPieza.Mensaje = "Nombdre de archivo Duplicado";
+                    respAltaMultimediaPieza.Mensaje = "Nombre de archivo Duplicado";
                     return respAltaMultimediaPieza;
 
                 }

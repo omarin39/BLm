@@ -114,11 +114,11 @@ namespace APIRestV2.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<ProcesoPiezaMaquina>> FindAll()
+        public ActionResult<List<ResponseProcesoPiezaMaquina>> FindAll()
         {
             try
             {
-                List<ProcesoPiezaMaquina> result = process.FindAllProcesoPiezaMaquina();
+                List<ResponseProcesoPiezaMaquina> result = process.FindAllProcesoPiezaMaquina();
                 if (result != null)
                 {
                     return result;

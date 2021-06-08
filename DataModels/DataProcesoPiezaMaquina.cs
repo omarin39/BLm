@@ -19,9 +19,15 @@ namespace APIRestV2.DataModels
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public List<ProcesoPiezaMaquina> findAllProcesoPiezaMaquina()
+        public List<ResponseProcesoPiezaMaquina> findAllProcesoPiezaMaquina()
         {
-            return _context.ProcesoPiezaMaquinas.ToList();
+            var query = from pop in _context.ProcesoPiezaMaquinas
+                        join ma in _context.Set<MaquinaProceso>()
+                        on new { A = pop.MaquinaProcesoIdMaquinaProceso}
+                        equals new { A = ma.IdMaquinaProceso }
+                        select new ResponseProcesoPiezaMaquina { IdProcesoPiezaMaquina = pop.IdProcesoPiezaMaquina, PiezaIdPieza = pop.PiezaIdPieza, MaquinaProcesoIdMaquinaProceso = pop.MaquinaProcesoIdMaquinaProceso, UsaPreguntaEstandar = pop.UsaPreguntaEstandar, Activo = pop.Activo, ProcesoIdProceso = ma.ProcesoIdProceso, MaquinaIdMaquina = ma.MaquinaIdMaquina};
+            List<ResponseProcesoPiezaMaquina> res = query.ToList();
+            return res;
         }
 
         public ProcesoPiezaMaquina findProcesoPiezaMaquinaIdProcesoPieza(long id)
