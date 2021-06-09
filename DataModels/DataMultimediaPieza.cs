@@ -90,5 +90,22 @@ namespace APIRestV2.DataModels
         {
             return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza && us.Version != version).OrderBy(u => u.Id).ToList();
         }
+
+        internal long AddMultimediaPiezaVersion(VersionMultiMediaPieza item, string ip)
+        {
+            try
+            {
+                var MultimediaPiezaRes = _context.VersionMultiMediaPiezas.Add(item);
+                _context.SaveChanges();
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
+                return Int32.Parse(MultimediaPiezaRes.Entity.IdMultiMediaPieza.ToString());
+            }
+            catch (Exception ex)
+            {
+                procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.InnerException.Message, 400);
+                var r = ex.Message;
+                return 0;
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace APIRestV2.Models.Request
         public string Extension { get; set; }
 
         public string Tamanio { get; set; }
+        public bool HistorialVersion { get; set; }
 
 
     }

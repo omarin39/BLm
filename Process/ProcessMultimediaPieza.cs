@@ -101,9 +101,9 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaMultimediaPieza = new();
             try
             {
-                var multiMediaPieza = multimediaPiezaData.findMultimediaPiezaPorNombre(req.Nombre);//documento
+                var old = multimediaPiezaData.findMultimediaPiezaPorNombre(req.Nombre);
 
-                if (multiMediaPieza==null)
+                if (old==null)
                 {
                     respAltaMultimediaPieza.Id = -1;
                     respAltaMultimediaPieza.Codigo = "-1";
@@ -114,7 +114,7 @@ namespace APIRestV2.Controllers.Process
 
                 try
                 {
-                    if (Convert.ToDouble(req.Version) <= Convert.ToDouble(multiMediaPieza.Version))
+                    if (Convert.ToDouble(req.Version) <= Convert.ToDouble(old.Version))
                     {
                         respAltaMultimediaPieza.Id = -1;
                         respAltaMultimediaPieza.Codigo = "-1";
@@ -130,42 +130,72 @@ namespace APIRestV2.Controllers.Process
                     respAltaMultimediaPieza.Mensaje = "Valor de la version no es numerica. Revise el valor";
                     return respAltaMultimediaPieza;
                 }
-                
 
-                MultiMediaPieza logNewRegistro = new();
-                    logNewRegistro.IdPieza = req.IdPieza;
-                    logNewRegistro.IdTipoDocumento = req.IdTipoDocumento;
-                    logNewRegistro.Nombre = req.Nombre;
-                    logNewRegistro.Descripcion = req.Descripcion;
-                    logNewRegistro.Version = req.Version;
-                    logNewRegistro.Recertificacion = req.Recertificacion;
-                    logNewRegistro.TipoMedia = req.TipoMedia;
-                    logNewRegistro.Activo = req.Activo;
-                    logNewRegistro.Extension = req.Extension;
-                    logNewRegistro.Tamanio = req.Tamanio;
+                //interchange place between old and new in multimedia table
+                RequestMultimediaPieza updatedVersion = new();
+                   updatedVersion.IdPieza = req.IdPieza;
+                   updatedVersion.IdTipoDocumento = req.IdTipoDocumento;
+                   updatedVersion.Nombre = req.Nombre;
+                   updatedVersion.Descripcion = req.Descripcion;
+                   updatedVersion.Version = req.Version;
+                   updatedVersion.Recertificacion = req.Recertificacion;
+                   updatedVersion.TipoMedia = req.TipoMedia;
+                   updatedVersion.Extension = req.Extension;
+                   updatedVersion.Tamanio = req.Tamanio;
+                  // updatedVersion.Ruta = old.Ruta;
+                   updatedVersion.HistorialVersion = true;
 
+                 try
+                  {
 
-                    try
-                    {
-
-                        //Genera path del nuevo archivo    falta la extension
-                        string filePath = save2(req.TipoMedia, req.Nombre.Trim().ToLower()+ req.Version.Trim().Replace(".","_") + req.Extension.Trim());
-                        logNewRegistro.Ruta = armaPath(req.TipoMedia, req.Nombre.Trim().ToLower() + req.Version.Trim().Replace(".", "_")+ req.Extension);
-                        File.WriteAllBytes(filePath, Convert.FromBase64String(req.Documento));
-
-
-                    }
-                    catch (Exception ex)
-                    {
-                        respAltaMultimediaPieza.Id = 0;
-                        respAltaMultimediaPieza.Codigo = "400";
-                        respAltaMultimediaPieza.Mensaje = "Error al guardar el documento de la nueva version";
-                        return respAltaMultimediaPieza;
-                    }
+                      //Genera path de la nueva version del archivo    
+                      string filePath = save2(req.TipoMedia, req.Nombre.Trim().ToLower()+"_"+ req.Version.Trim().Replace(".","_") + req.Extension.Trim());
+                    updatedVersion.Ruta = armaPath(req.TipoMedia, req.Nombre.Trim().ToLower() + "_" + req.Version.Trim().Replace(".", "_")+ req.Extension);
+                      File.WriteAllBytes(filePath, Convert.FromBase64String(req.Documento));
 
 
+                  }
+                  catch (Exception ex)
+                  {
+                      respAltaMultimediaPieza.Id = 0;
+                      respAltaMultimediaPieza.Codigo = "400";
+                      respAltaMultimediaPieza.Mensaje = "Error al guardar el documento de la nueva version";
+                      return respAltaMultimediaPieza;
+                  }
 
-                    long respNewUSR = multimediaPiezaData.AddMultimediaPieza(logNewRegistro, ip);
+
+                //get version historico before update it
+                VersionMultiMediaPieza historicoVersion = new();
+                historicoVersion.IdMultiMediaPieza = old.IdPieza;
+                historicoVersion.IdTipoDocumento = old.IdTipoDocumento;
+                historicoVersion.Nombre = old.Nombre;
+                historicoVersion.Descripcion = old.Descripcion;
+                historicoVersion.Version = old.Version;
+                historicoVersion.Recertificacion = old.Recertificacion;
+                historicoVersion.TipoMedia = old.TipoMedia;
+                historicoVersion.Extension = old.Extension;
+                historicoVersion.Tamanio = old.Tamanio;
+                historicoVersion.Ruta = old.Ruta;
+
+
+                var res = UpdateMultimediaPiezaVersiones(updatedVersion,ip,old);
+
+                if (res.Codigo != "200")
+                {
+                    respAltaMultimediaPieza.Id = 0;
+                    respAltaMultimediaPieza.Codigo = "400";
+                    respAltaMultimediaPieza.Mensaje = "Error al guardar el datos de la nueva version";
+                    return respAltaMultimediaPieza;
+                }
+               
+
+
+
+              
+
+                 
+                //add old version to versions table
+                long respNewUSR = multimediaPiezaData.AddMultimediaPiezaVersion(historicoVersion, ip);
                     if (respNewUSR > 0)
                     {
                         respAltaMultimediaPieza.Id = respNewUSR;
@@ -182,14 +212,7 @@ namespace APIRestV2.Controllers.Process
                     }
 
                 
-               /* else
-                {
-                    respAltaMultimediaPieza.Id = -1;
-                    respAltaMultimediaPieza.Codigo = "-1";
-                    respAltaMultimediaPieza.Mensaje = "Nombre de archivo Duplicado";
-                    return respAltaMultimediaPieza;
-
-                }*/
+            
             }
             catch (Exception ex)
             {
@@ -409,6 +432,54 @@ namespace APIRestV2.Controllers.Process
                     return respAltaMultimediaPieza;
                 }
             }
+        }
+
+        public ResponseGral UpdateMultimediaPiezaVersiones(RequestMultimediaPieza multimediaPieza, String ip, MultiMediaPieza multimediaPiezaBuscado)
+        {
+            ResponseGral respAltaMultimediaPieza = new();
+        
+                try
+                {
+                
+
+               // multimediaPiezaBuscado.Id = multimediaPieza.Id;
+                //multimediaPiezaBuscado.IdPieza = multimediaPieza.IdPieza;
+                multimediaPiezaBuscado.IdTipoDocumento = multimediaPieza.IdTipoDocumento;
+               // multimediaPiezaBuscado.Nombre = multimediaPieza.Nombre;
+                multimediaPiezaBuscado.Descripcion = multimediaPieza.Descripcion;
+                multimediaPiezaBuscado.Version = multimediaPieza.Version;
+                multimediaPiezaBuscado.Recertificacion = multimediaPieza.Recertificacion;
+                multimediaPiezaBuscado.Ruta = multimediaPieza.Ruta;
+                multimediaPiezaBuscado.TipoMedia = multimediaPieza.TipoMedia;
+                multimediaPiezaBuscado.Extension = multimediaPieza.Extension;
+                multimediaPiezaBuscado.Tamanio = multimediaPieza.Tamanio;
+                multimediaPiezaBuscado.Activo = multimediaPieza.Activo;
+                multimediaPiezaBuscado.HistorialVersion = true;
+
+                var respNewMultimediaPieza = multimediaPiezaData.UpdateMultimediaPieza(multimediaPiezaBuscado, ip);
+                    if (respNewMultimediaPieza > 0)
+                    {
+                        respAltaMultimediaPieza.Id = multimediaPieza.Id;
+                        respAltaMultimediaPieza.Codigo = "200";
+                        respAltaMultimediaPieza.Mensaje = "OK";
+                        return respAltaMultimediaPieza;
+                    }
+                    else
+                    {//nuevo
+                        respAltaMultimediaPieza.Id = multimediaPieza.Id;
+                        respAltaMultimediaPieza.Codigo = "400";
+                        respAltaMultimediaPieza.Mensaje = "Record not found";
+                        return respAltaMultimediaPieza;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    respAltaMultimediaPieza.Id = multimediaPiezaBuscado.Id;
+                    respAltaMultimediaPieza.Codigo = "400";
+                    respAltaMultimediaPieza.Mensaje = ex.InnerException.Message;
+                    return respAltaMultimediaPieza;
+                }
+            
         }
         public MultiMediaPieza FindMultimediaPieza(long idPieza, long idMultimedia)
         {

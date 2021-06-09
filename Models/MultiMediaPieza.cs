@@ -7,6 +7,11 @@ namespace APIRestV2.Models
 {
     public partial class MultiMediaPieza
     {
+        public MultiMediaPieza()
+        {
+            VersionMultiMediaPiezas = new HashSet<VersionMultiMediaPieza>();
+        }
+
         public long Id { get; set; }
         public long IdPieza { get; set; }
         public long IdTipoDocumento { get; set; }
@@ -18,9 +23,11 @@ namespace APIRestV2.Models
         public string TipoMedia { get; set; }
         public string Extension { get; set; }
         public string Tamanio { get; set; }
+        public bool HistorialVersion { get; set; }
         public bool Activo { get; set; }
 
         public virtual Pieza IdPiezaNavigation { get; set; }
         public virtual TipoDocumento IdTipoDocumentoNavigation { get; set; }
+        public virtual ICollection<VersionMultiMediaPieza> VersionMultiMediaPiezas { get; set; }
     }
 }
