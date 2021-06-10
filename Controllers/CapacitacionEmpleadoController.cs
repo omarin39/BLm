@@ -15,17 +15,17 @@ namespace APIRestV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProcesoController : ControllerBase
+    public class CapacitacionEmpleadoController : ControllerBase
     {
         private JsonMediaTypeFormatter _formatter = new();
-        private ProcessProceso procProceso = new();
+        private ProcessCapacitacionEmpleado procCapacitacionEmpleado = new();
       
         public static IConfiguration Configuration { get; set; }
         public static UsrKey paramUsrValida = new();
         private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
 
-        public ProcesoController(IConfiguration configuration)
+        public CapacitacionEmpleadoController(IConfiguration configuration)
         {
             Configuration = configuration;
             
@@ -34,15 +34,15 @@ namespace APIRestV2.Controllers
 
 
         [HttpPost]
-        public ActionResult Post([FromBody] RequestProceso req)
+        public ActionResult Post([FromBody] RequestCapacitacionEmpleado req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
                
-                if (req.Codigo != null)
+                if (req.IdEmpleado != null)
                 {
-                    var result = procProceso.AddProceso(req, remoteIpAddress.ToString());
+                    var result = procCapacitacionEmpleado.AddCapacitacionEmpleado(req, remoteIpAddress.ToString());
                     if (result != null)
                     {
                         return Ok(result);
@@ -50,46 +50,46 @@ namespace APIRestV2.Controllers
                     else
                     {
                         procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                        return NotFound("Proceso not found");
+                        return NotFound("CapacitacionEmpleado not found");
                     }
 
                 }
                 else
                 {
                     procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
-                    return NotFound("Proceso not found");
+                    return NotFound("CapacitacionEmpleado not found");
                 }
                
             }
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("Proceso not found");
+                return NotFound("CapacitacionEmpleado not found");
               
             }
          
         }
 
 
-        [HttpGet("{id}")]
-        public ActionResult<RequestProceso> Find(string Proceso)
+        [HttpGet("{idEmpleado}")]
+        public ActionResult<RequestCapacitacionEmpleado> Find(long idEmpleado)
         {
             try
             {
-                if (Proceso == "")
+                if (idEmpleado == null)
                 {
-                    return NotFound("Proceso not found");
+                    return NotFound("CapacitacionEmpleado not found");
                 }
                 else
                 {
-                    var result = procProceso.FindProceso(Proceso);
+                    var result = procCapacitacionEmpleado.FindCapacitacionEmpleado(idEmpleado);
                     if (result != null)
                     {
                         return Ok(result);
                     }
                     else
                     {
-                        return NotFound("Proceso not found");
+                        return NotFound("CapacitacionEmpleado not found");
                     }
 
                 }
@@ -97,7 +97,7 @@ namespace APIRestV2.Controllers
             }
             catch (Exception e)
             {
-                return NotFound("Proceso not found");
+                return NotFound("CapacitacionEmpleado not found");
                
             }
          
@@ -105,75 +105,41 @@ namespace APIRestV2.Controllers
 
 
         [HttpGet()]
-        public ActionResult<List<Proceso>> FindAll()
+        public ActionResult<List<CapacitacionEmpleado>> FindAll()
         {
             try
             {
                
-                List<Proceso> result = procProceso.FindAllProceso();
+                List<CapacitacionEmpleado> result = procCapacitacionEmpleado.FindAllCapacitacionEmpleado();
                 if (result != null)
                     {
                         return result;
                     }
                     else
                     {
-                        return NotFound("Proceso not found");
+                        return NotFound("CapacitacionEmpleado not found");
                     }
 
                 
             }
             catch (Exception e)
             {
-                return NotFound("Proceso not found");
+                return NotFound("CapacitacionEmpleado not found");
                
             }
          
         }
 
-        [HttpGet("FindProcesoAutoComplete/{param}")]
-        public ActionResult<List<ResponseProceso>> FindProcesoAutoComplete(String param)
-        {
-            try
-            {
-                if (param==null)
-                {
-                    return NotFound("Proceso not found");
-                }
-
-                if (param.Trim().Equals(""))
-                {
-                    return NotFound("Proceso not found");
-                }
-
-                List<ResponseProceso> result = procProceso.FindProcesoAutoComplete(param);
-                if (result != null)
-                {
-                    return result;
-                }
-                else
-                {
-                    return NotFound("Proceso not found");
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                return NotFound("Proceso not found");
-
-            }
-
-        }
 
 
         [HttpPut()]
-        public ActionResult Put([FromBody] RequestProceso req)
+        public ActionResult Put([FromBody] RequestCapacitacionEmpleado req)
         {
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             try
             {
                
-                ResponseGral result = procProceso.UpdateProceso(req, remoteIpAddress.ToString());
+                ResponseGral result = procCapacitacionEmpleado.UpdateCapacitacionEmpleado(req, remoteIpAddress.ToString());
                 if (result != null)
                 {
                     return Ok(result);
@@ -181,7 +147,7 @@ namespace APIRestV2.Controllers
                 else
                 {
                     procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
-                    return NotFound("Proceso not found");
+                    return NotFound("CapacitacionEmpleado not found");
                 }
 
 
@@ -189,7 +155,7 @@ namespace APIRestV2.Controllers
             catch (Exception e)
             {
                 procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
-                return NotFound("Proceso not found");
+                return NotFound("CapacitacionEmpleado not found");
 
             }
 

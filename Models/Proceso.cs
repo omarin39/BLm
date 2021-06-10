@@ -9,6 +9,7 @@ namespace APIRestV2.Models
     {
         public Proceso()
         {
+            CapacitacionEmpleados = new HashSet<CapacitacionEmpleado>();
             MaquinaProcesos = new HashSet<MaquinaProceso>();
             Workflows = new HashSet<Workflow>();
         }
@@ -20,6 +21,7 @@ namespace APIRestV2.Models
         public int Dificultad { get; set; }
         public bool? Activo { get; set; }
 
+        public virtual ICollection<CapacitacionEmpleado> CapacitacionEmpleados { get; set; }
         public virtual ICollection<MaquinaProceso> MaquinaProcesos { get; set; }
         public virtual ICollection<Workflow> Workflows { get; set; }
     }

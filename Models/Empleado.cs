@@ -7,6 +7,11 @@ namespace APIRestV2.Models
 {
     public partial class Empleado
     {
+        public Empleado()
+        {
+            CapacitacionEmpleados = new HashSet<CapacitacionEmpleado>();
+        }
+
         public long IdEmpleado { get; set; }
         public string NumeroNomina { get; set; }
         public string CuentaUsuario { get; set; }
@@ -32,5 +37,6 @@ namespace APIRestV2.Models
         public virtual DepartamentoNivel2 DepartamentoIdDepartamentoNivel2Navigation { get; set; }
         public virtual DepartamentoNivel3 DepartamentoIdDepartamentoNivel3Navigation { get; set; }
         public virtual Idioma IdiomaIdIdiomaNavigation { get; set; }
+        public virtual ICollection<CapacitacionEmpleado> CapacitacionEmpleados { get; set; }
     }
 }
