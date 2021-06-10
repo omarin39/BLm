@@ -101,7 +101,7 @@ namespace APIRestV2.Controllers.Process
             ResponseGral respAltaMultimediaPieza = new();
             try
             {
-                var old = multimediaPiezaData.findMultimediaPiezaPorNombre(req.Nombre);
+                var old = multimediaPiezaData.FindMultimediaPiezaPorId(req.Id);
 
                 if (old==null)
                 {
@@ -123,7 +123,7 @@ namespace APIRestV2.Controllers.Process
 
                     }
                 }
-                catch (Exception exx)
+                catch (Exception ex)
                 {
                     respAltaMultimediaPieza.Id = -1;
                     respAltaMultimediaPieza.Codigo = "-1";
@@ -166,7 +166,7 @@ namespace APIRestV2.Controllers.Process
 
                 //get version historico before update it
                 VersionMultiMediaPieza historicoVersion = new();
-                historicoVersion.IdMultiMediaPieza = old.IdPieza;
+                historicoVersion.IdMultiMediaPieza = old.Id;
                 historicoVersion.IdTipoDocumento = old.IdTipoDocumento;
                 historicoVersion.Nombre = old.Nombre;
                 historicoVersion.Descripcion = old.Descripcion;
@@ -223,14 +223,9 @@ namespace APIRestV2.Controllers.Process
             }
         }
 
-        internal List<MultiMediaPieza> FindMultimediaPiezaTipMediaVersiones(long idPieza, string version)
+        internal List<VersionMultiMediaPieza> FindMultimediaPiezaTipMediaVersiones(long idMultimedia, string version)
         {
-            List<MultiMediaPieza> respAltaMultimediaPieza = multimediaPiezaData.FindMultimediaPiezaVersiones(idPieza, version);
-           /* if (respAltaMultimediaPieza == null)
-            {
-                respAltaMultimediaPieza = new MultiMediaPieza();
-                respAltaMultimediaPieza.Id = -1;
-            }*/
+            List<VersionMultiMediaPieza> respAltaMultimediaPieza = multimediaPiezaData.FindMultimediaPiezaVersiones(idMultimedia, version);
             return respAltaMultimediaPieza;
         }
 

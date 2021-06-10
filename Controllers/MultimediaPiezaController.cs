@@ -182,18 +182,18 @@ namespace APIRestV2.Controllers
          
         }
 
-        [HttpGet("FindVersiones/{idPieza}")]
-        public ActionResult<RequestMultimediaPieza> FindVersiones(long idPieza, string version)
+        [HttpGet("FindVersiones/{idMultimedia}")]
+        public ActionResult<RequestMultimediaPieza> FindVersiones(long idMultimedia, string version)
         {
             try
             {
-                if (idPieza == 0)
+                if (idMultimedia == 0)
                 {
                     return NotFound("MultimediaPieza not found");
                 }
                 else
                 {
-                    var result = procMultimediaPieza.FindMultimediaPiezaTipMediaVersiones(idPieza, version);
+                    var result = procMultimediaPieza.FindMultimediaPiezaTipMediaVersiones(idMultimedia, version);
                     if (result != null)
                     {
                         return Ok(result);

@@ -19,7 +19,7 @@ namespace APIRestV2.DataModels
 
         public  List<MultiMediaPieza> FindAllMultimediaPieza()
         {
-            return  _context.MultiMediaPiezas.ToList();
+            return  _context.MultiMediaPiezas.AsNoTracking().ToList();
         }
         public MultiMediaPieza FindMultimediaPieza(long idMultimedia, long idPieza)
         {
@@ -34,10 +34,10 @@ namespace APIRestV2.DataModels
             return busqueda == null ? false : true;
         }
 
-        public MultiMediaPieza findMultimediaPiezaPorNombre(string nombre)
+        public MultiMediaPieza FindMultimediaPiezaPorId(long Id)
         {
 
-            var busqueda = _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Nombre.Trim().ToUpper() == nombre.Trim().ToUpper());
+            var busqueda = _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Id == Id);
             return busqueda;
         }
 
@@ -45,11 +45,11 @@ namespace APIRestV2.DataModels
         {
             if (string.IsNullOrEmpty(TipoMedia))
             {
-                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza).Take(1).OrderByDescending(u => u.Id).ToList();
+                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza).ToList();
             }
             else
             {
-                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.TipoMedia == TipoMedia && us.IdPieza == idPieza).Take(1).OrderByDescending(u => u.Id).ToList();
+                return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.TipoMedia == TipoMedia && us.IdPieza == idPieza).ToList();
             }
             
         }
@@ -86,9 +86,9 @@ namespace APIRestV2.DataModels
 
         }
 
-        internal List<MultiMediaPieza> FindMultimediaPiezaVersiones(long idPieza, string version)
+        internal List<VersionMultiMediaPieza> FindMultimediaPiezaVersiones(long idMultimedia, string version)
         {
-            return _context.MultiMediaPiezas.AsNoTracking().Where(us => us.IdPieza == idPieza && us.Version != version).OrderBy(u => u.Id).ToList();
+            return _context.VersionMultiMediaPiezas.AsNoTracking().Where(us => us.IdMultiMediaPieza == idMultimedia).OrderBy(u => u.IdMultiMediaPieza).ToList();
         }
 
         internal long AddMultimediaPiezaVersion(VersionMultiMediaPieza item, string ip)

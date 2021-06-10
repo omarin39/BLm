@@ -40,7 +40,7 @@ namespace APIRestV2.Controllers
             try
             {
                
-                if (req.IdEmpleado != null)
+                if (req.IdEmpleado > 0)
                 {
                     var result = procCapacitacionEmpleado.AddCapacitacionEmpleado(req, remoteIpAddress.ToString());
                     if (result != null)
