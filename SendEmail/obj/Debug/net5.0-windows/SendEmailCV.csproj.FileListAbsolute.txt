@@ -1,0 +1,17 @@
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\SendEmailCV.exe
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\SendEmailCV.deps.json
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\SendEmailCV.runtimeconfig.json
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\SendEmailCV.runtimeconfig.dev.json
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\SendEmailCV.dll
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\ref\SendEmailCV.dll
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\bin\Debug\net5.0-windows\SendEmailCV.pdb
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.Form1.resources
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.csproj.GenerateResource.cache
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.AssemblyInfoInputs.cache
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.AssemblyInfo.cs
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.csproj.CoreCompileInputs.cache
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.dll
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\ref\SendEmailCV.dll
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.pdb
+C:\Proyectos\BLMOVIL\SendMailCV\SendEmailCV\obj\Debug\net5.0-windows\SendEmailCV.genruntimeconfig.cache

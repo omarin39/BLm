@@ -34,6 +34,14 @@ namespace APIRestV2.DataModels
             return busqueda == null ? false : true;
         }
 
+        public bool ValidaClaveEdit(string nombre, long id)
+        {
+            //true si existe
+            //false si no existe
+            var busqueda = _context.MultiMediaPiezas.AsNoTracking().SingleOrDefault(us => us.Nombre.Trim().ToUpper() == nombre.Trim().ToUpper() && us.Id != id);
+            return busqueda == null ? false : true;
+        }
+
         public MultiMediaPieza FindMultimediaPiezaPorId(long Id)
         {
 

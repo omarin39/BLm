@@ -142,6 +142,7 @@ namespace APIRestV2.Controllers.Process
                    updatedVersion.TipoMedia = req.TipoMedia;
                    updatedVersion.Extension = req.Extension;
                    updatedVersion.Tamanio = req.Tamanio;
+                   updatedVersion.Activo = req.Activo;
                   // updatedVersion.Ruta = old.Ruta;
                    updatedVersion.HistorialVersion = true;
 
@@ -352,80 +353,92 @@ namespace APIRestV2.Controllers.Process
             }
             else
             {
-
-                try
+                if (multimediaPiezaData.ValidaClaveEdit(multimediaPieza.Nombre,multimediaPieza.Id) == false)
                 {
-                    if(multimediaPiezaBuscado.Tamanio!= multimediaPieza.Tamanio)
+                    try
                     {
-                        //Prepara path del archivo  
-                        string filePath = save2(multimediaPieza.TipoMedia, multimediaPieza.Nombre.Trim().ToLower() + multimediaPieza.Extension.Trim());
-                        multimediaPieza.Ruta = armaPath(multimediaPieza.TipoMedia, multimediaPieza.Nombre.Trim().ToLower() + multimediaPieza.Extension);
-                        File.WriteAllBytes(filePath, Convert.FromBase64String(multimediaPieza.Documento));
+
+                        if (multimediaPiezaBuscado.Tamanio != multimediaPieza.Tamanio)
+                        {
+                            //Prepara path del archivo  
+                            string filePath = save2(multimediaPieza.TipoMedia, multimediaPieza.Nombre.Trim().ToLower() + multimediaPieza.Extension.Trim());
+                            multimediaPieza.Ruta = armaPath(multimediaPieza.TipoMedia, multimediaPieza.Nombre.Trim().ToLower() + multimediaPieza.Extension);
+                            File.WriteAllBytes(filePath, Convert.FromBase64String(multimediaPieza.Documento));
+                        }
+                        else
+                        {
+                            multimediaPieza.Ruta = multimediaPiezaBuscado.Ruta;
+                        }
+
+
+
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        multimediaPieza.Ruta = multimediaPiezaBuscado.Ruta;
+                        respAltaMultimediaPieza.Id = 0;
+                        respAltaMultimediaPieza.Codigo = "400";
+                        respAltaMultimediaPieza.Mensaje = "Error al actualizar el documento";
+                        return respAltaMultimediaPieza;
                     }
-                   
-
-
-                }
-                catch (Exception ex)
-                {
-                    respAltaMultimediaPieza.Id = 0;
-                    respAltaMultimediaPieza.Codigo = "400";
-                    respAltaMultimediaPieza.Mensaje = "Error al actualizar el documento";
-                    return respAltaMultimediaPieza;
-                }
 
 
 
 
-                try
-                {
+                    try
+                    {
 
-                    var multimediaPiezaBuscadox = new MultiMediaPieza
+                        var multimediaPiezaBuscadox = new MultiMediaPieza
                         {
                             Id = multimediaPieza.Id,
-                            IdPieza=multimediaPieza.IdPieza,
-                        IdTipoDocumento = multimediaPieza.IdTipoDocumento,
-                        Nombre = multimediaPieza.Nombre,
-                        Descripcion = multimediaPieza.Descripcion,
-                        Version = multimediaPieza.Version,
-                        Recertificacion = multimediaPieza.Recertificacion,
-                        Ruta = multimediaPieza.Ruta,
-                        TipoMedia = multimediaPieza.TipoMedia,
-                        Extension = multimediaPieza.Extension,
-                        Tamanio = multimediaPieza.Tamanio,
-                        Activo = multimediaPieza.Activo
+                            IdPieza = multimediaPieza.IdPieza,
+                            IdTipoDocumento = multimediaPieza.IdTipoDocumento,
+                            Nombre = multimediaPieza.Nombre,
+                            Descripcion = multimediaPieza.Descripcion,
+                            Version = multimediaPieza.Version,
+                            Recertificacion = multimediaPieza.Recertificacion,
+                            Ruta = multimediaPieza.Ruta,
+                            TipoMedia = multimediaPieza.TipoMedia,
+                            Extension = multimediaPieza.Extension,
+                            Tamanio = multimediaPieza.Tamanio,
+                            Activo = multimediaPieza.Activo,
+                            HistorialVersion = multimediaPieza.HistorialVersion
+                            
+                        };
 
-                };
 
 
-
-                    var respNewMultimediaPieza = multimediaPiezaData.UpdateMultimediaPieza(multimediaPiezaBuscadox, ip);
-                    if (respNewMultimediaPieza > 0)
+                        var respNewMultimediaPieza = multimediaPiezaData.UpdateMultimediaPieza(multimediaPiezaBuscadox, ip);
+                        if (respNewMultimediaPieza > 0)
+                        {
+                            respAltaMultimediaPieza.Id = multimediaPiezaBuscado.Id;
+                            respAltaMultimediaPieza.Codigo = "200";
+                            respAltaMultimediaPieza.Mensaje = "OK";
+                            return respAltaMultimediaPieza;
+                        }
+                        else
+                        {//nuevo
+                            respAltaMultimediaPieza.Id = multimediaPiezaBuscado.Id;
+                            respAltaMultimediaPieza.Codigo = "400";
+                            respAltaMultimediaPieza.Mensaje = "Record not found";
+                            return respAltaMultimediaPieza;
+                        }
+                    }
+                    catch (Exception ex)
                     {
                         respAltaMultimediaPieza.Id = multimediaPiezaBuscado.Id;
-                        respAltaMultimediaPieza.Codigo = "200";
-                        respAltaMultimediaPieza.Mensaje = "OK";
-                        return respAltaMultimediaPieza;
-                    }
-                    else
-                    {//nuevo
-                        respAltaMultimediaPieza.Id = multimediaPiezaBuscado.Id;
                         respAltaMultimediaPieza.Codigo = "400";
-                        respAltaMultimediaPieza.Mensaje = "Record not found";
+                        respAltaMultimediaPieza.Mensaje = ex.InnerException.Message;
                         return respAltaMultimediaPieza;
                     }
                 }
-                catch (Exception ex)
+                else
                 {
                     respAltaMultimediaPieza.Id = multimediaPiezaBuscado.Id;
-                    respAltaMultimediaPieza.Codigo = "400";
-                    respAltaMultimediaPieza.Mensaje = ex.InnerException.Message;
+                    respAltaMultimediaPieza.Codigo = "-1";
+                    respAltaMultimediaPieza.Mensaje = "El Nombre ya existe";
                     return respAltaMultimediaPieza;
                 }
+                
             }
         }
 
