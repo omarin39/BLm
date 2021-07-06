@@ -155,5 +155,47 @@ namespace APIRestV2.Controllers
                 return NotFound("Maquina Proceso not Found");
             }
         }
+
+        [HttpGet("FindMaquinaAsignaCapacitacion")]
+        public ActionResult<List<VwMaquinaasignacapacitacion>> FindMaquinaAsignaCapacitacion()
+        {
+            try
+            {
+                var result = process.FindMaquinaAsignaCapacitacion();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return NotFound("Maquina Proceso not Found");
+            }
+        }
+
+        [HttpGet("FindMaquinaProcesosAsignaCapacitacion/{IdMaquina}")]
+        public ActionResult<List<VwMaquinaprocesoasignacapacitacion>> FindMaquinaProcesosAsignaCapacitacion(long IdMaquina)
+        {
+            try
+            {
+                var result = process.FindMaquinaProcesosAsignaCapacitacion(IdMaquina);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return NotFound("Maquina Proceso not Found");
+            }
+        }
+
+        [HttpGet("FindMaquinaProcesoPiezasAsignaCapacitacion/{IdMaquinaProceso}")]
+        public ActionResult<List<VwMaquinaprocesopiezaasignacapacitacion>> FindMaquinaProcesoPiezasAsignaCapacitacion(long IdMaquinaProceso)
+        {
+            try
+            {
+                var result = process.FindMaquinaProcesoPiezasAsignaCapacitacion(IdMaquinaProceso);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return NotFound("Maquina Proceso not Found");
+            }
+        }
     }
 }

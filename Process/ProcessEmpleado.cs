@@ -133,8 +133,30 @@ namespace APIRestV2.Controllers.Process
             }
             return RespAltaEmpleado;
         }
-         public List<Empleado> FindAllEmpleado(){
-            List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleado();          
+
+        public Empleado FinEmpleadoCertifica(long IdEmpleado)
+        {
+            return empleadoData.FinEmpleadoCertifica(IdEmpleado);
+        }
+
+
+        public List<Empleado> FindAllEmpleado()
+        {
+            List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleado();
+            return ResEmpleadoRet;
+        }
+
+        public List<Empleado> FindAllEmpleadosPorPlanta(long IdPlanta)
+        {
+            List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleadosPorPlanta(IdPlanta);
+            return ResEmpleadoRet;
+        }
+
+        
+
+        public List<Empleado> FindAllEmpleadoActivos()
+        {
+            List<Empleado> ResEmpleadoRet = empleadoData.FindAllEmpleadoActivos();
             return ResEmpleadoRet;
         }
 

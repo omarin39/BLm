@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [CARTAV]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Database [CARTAV]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 CREATE DATABASE [CARTAV]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,7 +80,101 @@ ALTER DATABASE [CARTAV] SET QUERY_STORE = OFF
 GO
 USE [CARTAV]
 GO
-/****** Object:  Table [dbo].[Workflow]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Pieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Pieza](
+	[IdPieza] [bigint] IDENTITY(1,1) NOT NULL,
+	[NumeroParte] [nvarchar](max) NOT NULL,
+	[Nombre] [varchar](max) NOT NULL,
+	[Descripcion] [varchar](max) NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_Pieza_D20ECB11F4B5FCCF] PRIMARY KEY CLUSTERED 
+(
+	[IdPieza] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ProcesoPiezaMaquina]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ProcesoPiezaMaquina](
+	[IdProcesoPiezaMaquina] [bigint] IDENTITY(1,1) NOT NULL,
+	[PiezaIdPieza] [bigint] NOT NULL,
+	[MaquinaProcesoIdMaquinaProceso] [bigint] NOT NULL,
+	[UsaPreguntaEstandar] [bit] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_ProcesoPiezaMaquina] PRIMARY KEY CLUSTERED 
+(
+	[IdProcesoPiezaMaquina] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[VW_PIEZASASIGNACAPACITACION]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_PIEZASASIGNACAPACITACION]
+AS
+SELECT        PPM.PiezaIdPieza AS IdPieza, p.NumeroParte, p.Nombre
+FROM            dbo.ProcesoPiezaMaquina AS PPM INNER JOIN
+                         dbo.Pieza AS p ON p.IdPieza = PPM.PiezaIdPieza AND p.Activo = 1
+GROUP BY PPM.PiezaIdPieza, p.NumeroParte, p.Nombre
+GO
+/****** Object:  Table [dbo].[MaquinaProceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MaquinaProceso](
+	[IdMaquinaProceso] [bigint] IDENTITY(1,1) NOT NULL,
+	[MaquinaIdMaquina] [bigint] NOT NULL,
+	[ProcesoIdProceso] [bigint] NOT NULL,
+	[UsaPreguntaEstandar] [bit] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_MaquinaProceso] PRIMARY KEY CLUSTERED 
+(
+	[IdMaquinaProceso] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Proceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Proceso](
+	[IdProceso] [bigint] IDENTITY(1,1) NOT NULL,
+	[Codigo] [nvarchar](max) NOT NULL,
+	[Nombre] [varchar](max) NOT NULL,
+	[Descripcion] [varchar](max) NULL,
+	[Dificultad] [int] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK__Procesos__4D1766E4A1132DCA] PRIMARY KEY CLUSTERED 
+(
+	[IdProceso] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[VW_PIEZAPROCESOASIGNACAPACITACION]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_PIEZAPROCESOASIGNACAPACITACION]
+AS
+SELECT        PPM.PiezaIdPieza AS IdPieza, P.IdProceso, P.Codigo, P.Nombre, P.Dificultad
+FROM            dbo.ProcesoPiezaMaquina AS PPM INNER JOIN
+                         dbo.MaquinaProceso AS MP ON MP.IdMaquinaProceso = PPM.MaquinaProcesoIdMaquinaProceso INNER JOIN
+                         dbo.Proceso AS P ON P.IdProceso = MP.ProcesoIdProceso AND P.Activo = 1
+GROUP BY PPM.PiezaIdPieza, P.IdProceso, P.Codigo, P.Nombre, P.Dificultad
+GO
+/****** Object:  Table [dbo].[Workflow]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -98,24 +192,7 @@ CREATE TABLE [dbo].[Workflow](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Pieza]    Script Date: 14/06/2021 11:06:56 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Pieza](
-	[IdPieza] [bigint] IDENTITY(1,1) NOT NULL,
-	[NumeroParte] [nvarchar](max) NOT NULL,
-	[Nombre] [varchar](max) NOT NULL,
-	[Descripcion] [varchar](max) NULL,
-	[Activo] [bit] NOT NULL,
- CONSTRAINT [PK_Pieza_D20ECB11F4B5FCCF] PRIMARY KEY CLUSTERED 
-(
-	[IdPieza] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Cliente]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Cliente]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -134,7 +211,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PiezaCliente]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PiezaCliente]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -150,7 +227,7 @@ CREATE TABLE [dbo].[PiezaCliente](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MultiMediaPieza]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[MultiMediaPieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -175,7 +252,7 @@ CREATE TABLE [dbo].[MultiMediaPieza](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[VW_PIEZAS_MULTIMEDIAS]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  View [dbo].[VW_PIEZAS_MULTIMEDIAS]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -195,55 +272,7 @@ FROM            (SELECT        p.IdPieza, p.NumeroParte, p.Nombre, p.Descripcion
                           GROUP BY p.IdPieza, p.NumeroParte, p.Nombre, p.Descripcion, p.Activo, m.TipoMedia) AS U
 GROUP BY IdPieza, NumeroParte, Nombre, Descripcion, Activo
 GO
-/****** Object:  View [dbo].[VW_PIEZA_CLIENTE]    Script Date: 14/06/2021 11:06:56 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[VW_PIEZA_CLIENTE]
-AS
-SELECT        pc.Id, pc.ClienteIdCliente, pc.PiezaIdPieza, C.Nombre, C.Contacto, C.Email, C.Telefono, pc.Activo
-FROM            dbo.PiezaCliente AS pc LEFT OUTER JOIN
-                         dbo.Cliente AS C ON pc.ClienteIdCliente = C.IdCliente
-GO
-/****** Object:  Table [dbo].[MaquinaProceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[MaquinaProceso](
-	[IdMaquinaProceso] [bigint] IDENTITY(1,1) NOT NULL,
-	[MaquinaIdMaquina] [bigint] NOT NULL,
-	[ProcesoIdProceso] [bigint] NOT NULL,
-	[UsaPreguntaEstandar] [bit] NOT NULL,
-	[Activo] [bit] NOT NULL,
- CONSTRAINT [PK_MaquinaProceso] PRIMARY KEY CLUSTERED 
-(
-	[IdMaquinaProceso] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[PreguntaMaquina]    Script Date: 14/06/2021 11:06:56 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[PreguntaMaquina](
-	[IdPreguntaMaquina] [bigint] IDENTITY(1,1) NOT NULL,
-	[Pregunta] [varchar](max) NOT NULL,
-	[Respuesta] [varchar](max) NULL,
-	[Orden] [int] NOT NULL,
-	[MaquinaIdMaquina] [bigint] NOT NULL,
-	[IdiomaIdIdioma] [bigint] NOT NULL,
-	[NivelCertificacionIdNivelCertificacion] [bigint] NOT NULL,
-	[Activo] [bit] NOT NULL,
- CONSTRAINT [PK__Pregunta__B63CDED2266C1596] PRIMARY KEY CLUSTERED 
-(
-	[IdPreguntaMaquina] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Maquina]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Maquina]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -265,7 +294,88 @@ CREATE TABLE [dbo].[Maquina](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[VW_MAQUINA_PREGUNTAS]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  View [dbo].[VW_PIEZAPROCESOMAQUINAASIGNACAPACITACION]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_PIEZAPROCESOMAQUINAASIGNACAPACITACION]
+AS
+SELECT        PPM.MaquinaProcesoIdMaquinaProceso AS IdMaquinaProceso, MP.ProcesoIdProceso AS IdProceso, MP.MaquinaIdMaquina AS IdMaquina, Mqn.Nombre, Mqn.Modelo
+FROM            dbo.ProcesoPiezaMaquina AS PPM INNER JOIN
+                         dbo.MaquinaProceso AS MP ON MP.IdMaquinaProceso = PPM.MaquinaProcesoIdMaquinaProceso INNER JOIN
+                         dbo.Maquina AS Mqn ON Mqn.IdMaquina = MP.MaquinaIdMaquina AND Mqn.Activo = 1
+GROUP BY PPM.MaquinaProcesoIdMaquinaProceso, MP.ProcesoIdProceso, MP.MaquinaIdMaquina, Mqn.Nombre, Mqn.Modelo
+GO
+/****** Object:  View [dbo].[VW_PIEZA_CLIENTE]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_PIEZA_CLIENTE]
+AS
+SELECT        pc.Id, pc.ClienteIdCliente, pc.PiezaIdPieza, C.Nombre, C.Contacto, C.Email, C.Telefono, pc.Activo
+FROM            dbo.PiezaCliente AS pc LEFT OUTER JOIN
+                         dbo.Cliente AS C ON pc.ClienteIdCliente = C.IdCliente
+GO
+/****** Object:  View [dbo].[VW_MAQUINAASIGNACAPACITACION]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_MAQUINAASIGNACAPACITACION]
+AS
+SELECT        MP.MaquinaIdMaquina AS IdMaquina, M.Nombre, M.Modelo
+FROM            dbo.MaquinaProceso AS MP INNER JOIN
+                         dbo.Maquina AS M ON M.IdMaquina = MP.MaquinaIdMaquina AND MP.Activo = 1
+GROUP BY MP.MaquinaIdMaquina, M.Nombre, M.Modelo
+GO
+/****** Object:  View [dbo].[VW_MAQUINAPROCESOASIGNACAPACITACION]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_MAQUINAPROCESOASIGNACAPACITACION]
+AS
+SELECT        MP.IdMaquinaProceso, MP.MaquinaIdMaquina AS IdMaquina, MP.ProcesoIdProceso AS IdProceso, PR.Codigo, PR.Nombre, PR.Dificultad
+FROM            dbo.MaquinaProceso AS MP INNER JOIN
+                         dbo.Proceso AS PR ON PR.IdProceso = MP.ProcesoIdProceso AND MP.Activo = 1
+GROUP BY MP.IdMaquinaProceso, MP.MaquinaIdMaquina, MP.ProcesoIdProceso, PR.Codigo, PR.Nombre, PR.Dificultad
+GO
+/****** Object:  View [dbo].[VW_MAQUINAPROCESOPIEZAASIGNACAPACITACION]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_MAQUINAPROCESOPIEZAASIGNACAPACITACION]
+AS
+SELECT        MP.IdMaquinaProceso, Pza.IdPieza, Pza.NumeroParte, Pza.Nombre
+FROM            dbo.MaquinaProceso AS MP INNER JOIN
+                         dbo.ProcesoPiezaMaquina AS PPM ON PPM.MaquinaProcesoIdMaquinaProceso = MP.IdMaquinaProceso INNER JOIN
+                         dbo.Pieza AS Pza ON PPM.PiezaIdPieza = Pza.IdPieza AND PPM.Activo = 1
+GROUP BY MP.IdMaquinaProceso, Pza.IdPieza, Pza.NumeroParte, Pza.Nombre
+GO
+/****** Object:  Table [dbo].[PreguntaMaquina]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PreguntaMaquina](
+	[IdPreguntaMaquina] [bigint] IDENTITY(1,1) NOT NULL,
+	[Pregunta] [varchar](max) NOT NULL,
+	[Respuesta] [varchar](max) NULL,
+	[Orden] [int] NOT NULL,
+	[MaquinaIdMaquina] [bigint] NOT NULL,
+	[IdiomaIdIdioma] [bigint] NOT NULL,
+	[NivelCertificacionIdNivelCertificacion] [bigint] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK__Pregunta__B63CDED2266C1596] PRIMARY KEY CLUSTERED 
+(
+	[IdPreguntaMaquina] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[VW_MAQUINA_PREGUNTAS]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -278,7 +388,7 @@ FROM     dbo.Maquina AS m LEFT OUTER JOIN
                   dbo.PreguntaMaquina AS pm ON m.IdMaquina = pm.MaquinaIdMaquina LEFT OUTER JOIN
                   dbo.MaquinaProceso AS pro ON m.IdMaquina = pro.MaquinaIdMaquina GROUP BY m.IdMaquina, m.Nombre, m.Descripcion, m.Modelo, m.MaquinaPt, m.CantidadAccesoMultiple, m.FabricanteIdFabricante, m.TipoAccesoIdTipoAcceso, m.UsaPreguntaEstandar, m.Activo
 GO
-/****** Object:  Table [dbo].[CapacitacionEmpleado]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[CapacitacionEmpleado]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -286,12 +396,13 @@ GO
 CREATE TABLE [dbo].[CapacitacionEmpleado](
 	[IdCapacitacion] [bigint] IDENTITY(1,1) NOT NULL,
 	[IdEmpleado] [bigint] NOT NULL,
-	[Pieza] [nvarchar](10) NULL,
+	[Pieza] [nvarchar](100) NULL,
 	[IdProceso] [bigint] NOT NULL,
-	[Maquina] [nvarchar](10) NULL,
+	[Maquina] [nvarchar](100) NULL,
 	[IdNivelCertificacion] [bigint] NOT NULL,
 	[IdMentor] [bigint] NULL,
 	[FechaInicio] [date] NOT NULL,
+	[FechaFin] [date] NULL,
 	[Turno] [nvarchar](50) NOT NULL,
 	[Concluida] [bit] NOT NULL,
 	[Activo] [bit] NOT NULL,
@@ -301,7 +412,7 @@ CREATE TABLE [dbo].[CapacitacionEmpleado](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CentroCosto]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[CentroCosto]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -318,7 +429,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Certificacion]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Certificacion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -337,14 +448,16 @@ CREATE TABLE [dbo].[Certificacion](
 	[TokenResponsable] [varchar](max) NULL,
 	[FechaResponsable] [datetime] NULL,
 	[Resultado] [float] NULL,
+	[IdExamenDeCertificacion] [bigint] NOT NULL,
+	[IdNivelCertificacion] [bigint] NOT NULL,
 	[Activo] [bit] NOT NULL,
-PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK__Certific__29FBE98D3BAB7DD7] PRIMARY KEY CLUSTERED 
 (
 	[IdCertificacion] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ConfiguracionNivelCertificacion]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ConfiguracionNivelCertificacion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -366,7 +479,7 @@ CREATE TABLE [dbo].[ConfiguracionNivelCertificacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Departamento]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Departamento]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -382,7 +495,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel1]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel1]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -399,7 +512,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel2]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel2]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -417,7 +530,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DepartamentoNivel3]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[DepartamentoNivel3]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -435,7 +548,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[DocumentoPiezaProceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[DocumentoPiezaProceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -452,7 +565,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Empleado]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Empleado]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -477,6 +590,7 @@ CREATE TABLE [dbo].[Empleado](
 	[UnidadNegocioIdUnidadNegocio] [bigint] NOT NULL,
 	[CentroCostoIdCentroCosto] [bigint] NOT NULL,
 	[IdPerfil] [bigint] NULL,
+	[IdPlanta] [bigint] NULL,
 	[Activo] [bit] NOT NULL,
  CONSTRAINT [PKEmpleado] PRIMARY KEY CLUSTERED 
 (
@@ -484,7 +598,27 @@ CREATE TABLE [dbo].[Empleado](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Fabricante]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ExamenDeCertificacion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ExamenDeCertificacion](
+	[IdExamenCertificacion] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdCapacitacionEmpleado] [bigint] NOT NULL,
+	[TotalFinalExamen] [float] NOT NULL,
+	[FechaExamen] [date] NOT NULL,
+	[FechaFirmaFinal] [datetime] NULL,
+	[EstadoExamen] [bit] NOT NULL,
+	[Concluido] [bit] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_ExamenDeCertificacion] PRIMARY KEY CLUSTERED 
+(
+	[IdExamenCertificacion] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Fabricante]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -502,7 +636,24 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Idioma]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[FirmasExamenCertificacion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[FirmasExamenCertificacion](
+	[IdFirmaExamen] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdExamenCertificacion] [bigint] NOT NULL,
+	[IdTipoFirma] [bigint] NOT NULL,
+	[FechaFirma] [datetime] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_FirmasExamenCertificacion] PRIMARY KEY CLUSTERED 
+(
+	[IdFirmaExamen] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Idioma]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -518,7 +669,7 @@ CREATE TABLE [dbo].[Idioma](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[LineaProduccion]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[LineaProduccion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -535,7 +686,7 @@ CREATE TABLE [dbo].[LineaProduccion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[MaquinaFisica]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[MaquinaFisica]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -556,7 +707,7 @@ CREATE TABLE [dbo].[MaquinaFisica](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Menu]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Menu]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -572,7 +723,7 @@ CREATE TABLE [dbo].[Menu](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Nave]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Nave]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -589,7 +740,7 @@ CREATE TABLE [dbo].[Nave](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[NivelCertificacion]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[NivelCertificacion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -607,7 +758,7 @@ CREATE TABLE [dbo].[NivelCertificacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Operacion]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Operacion]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -625,7 +776,7 @@ CREATE TABLE [dbo].[Operacion](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Perfil]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Perfil]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -641,7 +792,7 @@ CREATE TABLE [dbo].[Perfil](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PerfilOperacionPermiso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PerfilOperacionPermiso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -660,7 +811,7 @@ CREATE TABLE [dbo].[PerfilOperacionPermiso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Planta]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Planta]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -677,7 +828,7 @@ CREATE TABLE [dbo].[Planta](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaGeneral]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaGeneral]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -697,7 +848,7 @@ CREATE TABLE [dbo].[PreguntaGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaMaquinaGeneral]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaMaquinaGeneral]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -716,7 +867,7 @@ CREATE TABLE [dbo].[PreguntaMaquinaGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPieza]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaPieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -736,7 +887,7 @@ CREATE TABLE [dbo].[PreguntaPieza](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPiezaGeneral]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaPiezaGeneral]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -755,7 +906,7 @@ CREATE TABLE [dbo].[PreguntaPiezaGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaProceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaProceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -775,7 +926,7 @@ CREATE TABLE [dbo].[PreguntaProceso](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaProcesoGeneral]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaProcesoGeneral]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -794,7 +945,7 @@ CREATE TABLE [dbo].[PreguntaProcesoGeneral](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PreguntaPtGeneral]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[PreguntaPtGeneral]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -813,42 +964,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Proceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Proceso](
-	[IdProceso] [bigint] IDENTITY(1,1) NOT NULL,
-	[Codigo] [nvarchar](max) NOT NULL,
-	[Nombre] [varchar](max) NOT NULL,
-	[Descripcion] [varchar](max) NULL,
-	[Dificultad] [int] NOT NULL,
-	[Activo] [bit] NOT NULL,
- CONSTRAINT [PK__Procesos__4D1766E4A1132DCA] PRIMARY KEY CLUSTERED 
-(
-	[IdProceso] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[ProcesoPiezaMaquina]    Script Date: 14/06/2021 11:06:56 a. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[ProcesoPiezaMaquina](
-	[IdProcesoPiezaMaquina] [bigint] IDENTITY(1,1) NOT NULL,
-	[PiezaIdPieza] [bigint] NOT NULL,
-	[MaquinaProcesoIdMaquinaProceso] [bigint] NOT NULL,
-	[UsaPreguntaEstandar] [bit] NOT NULL,
-	[Activo] [bit] NOT NULL,
- CONSTRAINT [PK_ProcesoPiezaMaquina] PRIMARY KEY CLUSTERED 
-(
-	[IdProcesoPiezaMaquina] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[ProcessLog]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ProcessLog]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -866,7 +982,7 @@ CREATE TABLE [dbo].[ProcessLog](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Puesto]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[Puesto]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -882,7 +998,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResourceValidacionCampo]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ResourceValidacionCampo]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -904,7 +1020,7 @@ CREATE TABLE [dbo].[ResourceValidacionCampo](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaMaquina]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[RespuestaMaquina]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -921,7 +1037,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaPieza]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[RespuestaPieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -938,7 +1054,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[RespuestaProceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[RespuestaProceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -955,49 +1071,84 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoMaquina]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza](
+	[IdResultadoGeneral] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdExamenCertificacion] [bigint] NOT NULL,
+	[IdGlobal] [bigint] NOT NULL,
+	[IdPregunta] [bigint] NOT NULL,
+	[Pregunta] [nvarchar](max) NOT NULL,
+	[Demuestra] [bit] NOT NULL,
+	[Reforzar] [bit] NOT NULL,
+	[NoDemuestra] [bit] NOT NULL,
+	[Resultado] [float] NOT NULL,
+	[IsGral] [bit] NOT NULL,
+	[IdIdioma] [bigint] NOT NULL,
+	[TipoPregunta] [bigint] NOT NULL,
+	[IdNivelCertificacion] [bigint] NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] PRIMARY KEY CLUSTERED 
+(
+	[IdResultadoGeneral] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ResultadoMaquina]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ResultadoMaquina](
 	[IdResultadoMaquina] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdExamenCertificacion] [bigint] NOT NULL,
 	[Resultado] [float] NOT NULL,
-PRIMARY KEY CLUSTERED 
+	[EstatusResultado] [nvarchar](max) NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK__Resultad__162906BBF7FCF521] PRIMARY KEY CLUSTERED 
 (
 	[IdResultadoMaquina] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoPieza]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ResultadoPieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ResultadoPieza](
 	[IdResultadoPieza] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdExamenCertificacion] [bigint] NOT NULL,
 	[Resultado] [float] NOT NULL,
-PRIMARY KEY CLUSTERED 
+	[EstatusResultado] [nvarchar](max) NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK__Resultad__50209975380E3ED6] PRIMARY KEY CLUSTERED 
 (
 	[IdResultadoPieza] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ResultadoProceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[ResultadoProceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ResultadoProceso](
 	[IdResultadoProceso] [bigint] IDENTITY(1,1) NOT NULL,
+	[IdExamenCertificacion] [bigint] NOT NULL,
 	[Resultado] [float] NOT NULL,
-PRIMARY KEY CLUSTERED 
+	[EstatusResultado] [nvarchar](max) NOT NULL,
+	[Activo] [bit] NOT NULL,
+ CONSTRAINT [PK__Resultad__CCF7C4EDF4A023A3] PRIMARY KEY CLUSTERED 
 (
 	[IdResultadoProceso] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoAcceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[TipoAcceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1011,7 +1162,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoDocumento]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[TipoDocumento]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1026,7 +1177,21 @@ CREATE TABLE [dbo].[TipoDocumento](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoPregunta]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[TipoFirmaExamenCertifica]    Script Date: 06/07/2021 02:09:46 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TipoFirmaExamenCertifica](
+	[IdTipoFirma] [bigint] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [nvarchar](max) NOT NULL,
+ CONSTRAINT [PK_TipoFirmaExamenCertifica] PRIMARY KEY CLUSTERED 
+(
+	[IdTipoFirma] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TipoPregunta]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1040,7 +1205,7 @@ CREATE TABLE [dbo].[TipoPregunta](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UnidadNegocio]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[UnidadNegocio]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1055,7 +1220,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[VersionMultiMediaPieza]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[VersionMultiMediaPieza]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1078,7 +1243,7 @@ CREATE TABLE [dbo].[VersionMultiMediaPieza](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[VideoPiezaProceso]    Script Date: 14/06/2021 11:06:56 a. m. ******/
+/****** Object:  Table [dbo].[VideoPiezaProceso]    Script Date: 06/07/2021 02:09:46 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1096,15 +1261,21 @@ PRIMARY KEY CLUSTERED
 GO
 SET IDENTITY_INSERT [dbo].[CapacitacionEmpleado] ON 
 
-INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [Turno], [Concluida], [Activo]) VALUES (1, 1, N'ALL', 3, N'ALL', 4, 2, CAST(N'2021-06-15' AS Date), N'1', 0, 1)
-INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [Turno], [Concluida], [Activo]) VALUES (2, 2, N'3', 2, N'5,', 4, 3, CAST(N'2021-06-14' AS Date), N'3', 0, 1)
-INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [Turno], [Concluida], [Activo]) VALUES (3, 5, N'ALL', 2, N'3', 4, 3, CAST(N'2021-06-14' AS Date), N'1', 0, 1)
+INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [FechaFin], [Turno], [Concluida], [Activo]) VALUES (1, 2, N'1', 1, N'ALL--(1,7)', 1, 1, CAST(N'2021-07-01' AS Date), CAST(N'2021-07-11' AS Date), N'1', 1, 1)
+INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [FechaFin], [Turno], [Concluida], [Activo]) VALUES (2, 3, N'ALL--(2,3,19)', 2, N'5', 1, 1, CAST(N'2021-07-01' AS Date), CAST(N'2021-07-11' AS Date), N'1', 0, 1)
+INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [FechaFin], [Turno], [Concluida], [Activo]) VALUES (3, 4, N'1', 1, N'1', 1, 1, CAST(N'2021-07-01' AS Date), CAST(N'2021-07-11' AS Date), N'1', 0, 1)
+INSERT [dbo].[CapacitacionEmpleado] ([IdCapacitacion], [IdEmpleado], [Pieza], [IdProceso], [Maquina], [IdNivelCertificacion], [IdMentor], [FechaInicio], [FechaFin], [Turno], [Concluida], [Activo]) VALUES (4, 2, N'1', 1, N'ALL--(1,7)', 2, 1, CAST(N'2021-07-01' AS Date), CAST(N'2021-07-06' AS Date), N'1', 0, 1)
 SET IDENTITY_INSERT [dbo].[CapacitacionEmpleado] OFF
 GO
 SET IDENTITY_INSERT [dbo].[CentroCosto] ON 
 
 INSERT [dbo].[CentroCosto] ([IdCentroCosto], [IdCentroCostoExterno], [DescCentroCosto], [DuenoCeco], [Activo]) VALUES (1, 2314, N'SUELDOS1', 253, 1)
 SET IDENTITY_INSERT [dbo].[CentroCosto] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Certificacion] ON 
+
+INSERT [dbo].[Certificacion] ([IdCertificacion], [FechaEntrenamiento], [FechaCertificacion], [IdCertificador], [TokenCertificador], [FechaCertificador], [IdMentor], [TokenMentor], [FechaMentor], [IdResponsable], [TokenResponsable], [FechaResponsable], [Resultado], [IdExamenDeCertificacion], [IdNivelCertificacion], [Activo]) VALUES (1, CAST(N'2021-07-05T00:00:00.000' AS DateTime), CAST(N'2021-07-05T11:50:04.277' AS DateTime), 1, N'Token Cert', CAST(N'2021-07-05T11:50:04.277' AS DateTime), 1, N'Token Mentor', CAST(N'2021-07-05T11:50:10.233' AS DateTime), 1, N'Token Responsable', CAST(N'2021-07-05T11:50:10.233' AS DateTime), 97.33, 1, 1, 1)
+SET IDENTITY_INSERT [dbo].[Certificacion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Cliente] ON 
 
@@ -1113,8 +1284,8 @@ SET IDENTITY_INSERT [dbo].[Cliente] OFF
 GO
 SET IDENTITY_INSERT [dbo].[ConfiguracionNivelCertificacion] ON 
 
-INSERT [dbo].[ConfiguracionNivelCertificacion] ([IdConfiguraNivelCertifica], [IdNivelCertificacion], [PlazoCertificaOperNuevo], [PlazoCertificaOperAntiguo], [ReintentosOperNuevo], [ReintentosOperAntiguo], [PlazoReCertificaOperNuevo], [PlazoReCertificaOperAntiguo], [IdsPerfilFirman], [IdsPerfilExaminan]) VALUES (1, 1, 10, 400, 20, 500, 30, 600, N'3,4', N'4')
-INSERT [dbo].[ConfiguracionNivelCertificacion] ([IdConfiguraNivelCertifica], [IdNivelCertificacion], [PlazoCertificaOperNuevo], [PlazoCertificaOperAntiguo], [ReintentosOperNuevo], [ReintentosOperAntiguo], [PlazoReCertificaOperNuevo], [PlazoReCertificaOperAntiguo], [IdsPerfilFirman], [IdsPerfilExaminan]) VALUES (2, 2, 35, 65, 45, 85, 55, 95, N'1,3', N'4')
+INSERT [dbo].[ConfiguracionNivelCertificacion] ([IdConfiguraNivelCertifica], [IdNivelCertificacion], [PlazoCertificaOperNuevo], [PlazoCertificaOperAntiguo], [ReintentosOperNuevo], [ReintentosOperAntiguo], [PlazoReCertificaOperNuevo], [PlazoReCertificaOperAntiguo], [IdsPerfilFirman], [IdsPerfilExaminan]) VALUES (1, 1, 10, 10, 20, 500, 30, 600, N'3,4', N'4')
+INSERT [dbo].[ConfiguracionNivelCertificacion] ([IdConfiguraNivelCertifica], [IdNivelCertificacion], [PlazoCertificaOperNuevo], [PlazoCertificaOperAntiguo], [ReintentosOperNuevo], [ReintentosOperAntiguo], [PlazoReCertificaOperNuevo], [PlazoReCertificaOperAntiguo], [IdsPerfilFirman], [IdsPerfilExaminan]) VALUES (2, 2, 8, 5, 45, 85, 55, 95, N'1,3', N'4')
 SET IDENTITY_INSERT [dbo].[ConfiguracionNivelCertificacion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Departamento] ON 
@@ -1124,12 +1295,17 @@ SET IDENTITY_INSERT [dbo].[Departamento] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Empleado] ON 
 
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (1, N'2610', N'omar.alvarez', N'OMAR', N'ALVAREZ', N'ALCANTARA', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'omar.alvarez@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (2, N'34425', N'gerardo.hernandez.f', N'GERARDO', N'HERNÁNDEZ', N'FADIÑO', CAST(N'1978-01-03' AS Date), CAST(N'2019-01-01' AS Date), N'gerardo.hernandez.f@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (3, N'21042', N'adrian.arguelles', N'ADRIAN', N'ARGUELLES', N'BECERRIL', CAST(N'1984-01-31' AS Date), CAST(N'2012-01-11' AS Date), N'adria.arguelles@bocar.com', N'21042', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (4, N'2611', N'laura.zemeno', N'LAURA', N'ZERMEÑO', N'PICHARDO', CAST(N'1997-01-02' AS Date), CAST(N'2021-01-01' AS Date), N'laura.zemeno@bocar.com', N'2611', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1)
-INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [Activo]) VALUES (5, N'558577', N'jorge.bernal', N'JORGE', N'BERNAL', N'GARCÍA', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'jorge.bernal@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [IdPlanta], [Activo]) VALUES (1, N'2610', N'omar.alvarez', N'OMAR', N'ALVAREZ', N'ALCANTARA', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'omar.alvarez@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [IdPlanta], [Activo]) VALUES (2, N'34425', N'gerardo.hernandez.f', N'GERARDO', N'HERNÁNDEZ', N'FADIÑO', CAST(N'1978-01-03' AS Date), CAST(N'2019-01-01' AS Date), N'gerardo.hernandez.f@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [IdPlanta], [Activo]) VALUES (3, N'21042', N'adrian.arguelles', N'ADRIAN', N'ARGUELLES', N'BECERRIL', CAST(N'1984-01-31' AS Date), CAST(N'2012-01-11' AS Date), N'adrian.arguelles@bocar.com', N'21042', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [IdPlanta], [Activo]) VALUES (4, N'2611', N'laura.zemeno', N'LAURA', N'ZERMEÑO', N'PICHARDO', CAST(N'1997-01-02' AS Date), CAST(N'2021-01-01' AS Date), N'laura.zemeno@bocar.com', N'2611', 1, NULL, NULL, NULL, 1, 1, 1, 1, 1, 1, 1)
+INSERT [dbo].[Empleado] ([IdEmpleado], [NumeroNomina], [CuentaUsuario], [Nombre], [ApellidoPaterno], [ApellidoMaterno], [FechaNacimiento], [FechaIngreso], [Email], [NominaJefe], [DepartamentoIdDepartamentoNivel0], [DepartamentoIdDepartamentoNivel1], [DepartamentoIdDepartamentoNivel2], [DepartamentoIdDepartamentoNivel3], [IdiomaIdIdioma], [PuestoIdPuesto], [UnidadNegocioIdUnidadNegocio], [CentroCostoIdCentroCosto], [IdPerfil], [IdPlanta], [Activo]) VALUES (5, N'558577', N'jorge.bernal', N'JORGE', N'BERNAL', N'GARCÍA', CAST(N'1983-01-12' AS Date), CAST(N'2020-01-02' AS Date), N'jorge.bernal@bocar.com', N'17441', 1, NULL, NULL, NULL, 1, 1, 1, 1, 2, 1, 1)
 SET IDENTITY_INSERT [dbo].[Empleado] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ExamenDeCertificacion] ON 
+
+INSERT [dbo].[ExamenDeCertificacion] ([IdExamenCertificacion], [IdCapacitacionEmpleado], [TotalFinalExamen], [FechaExamen], [FechaFirmaFinal], [EstadoExamen], [Concluido], [Activo]) VALUES (1, 1, 97.33, CAST(N'2021-07-05' AS Date), CAST(N'2021-07-05T11:50:04.277' AS DateTime), 1, 1, 1)
+SET IDENTITY_INSERT [dbo].[ExamenDeCertificacion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Fabricante] ON 
 
@@ -1138,11 +1314,23 @@ INSERT [dbo].[Fabricante] ([IdFabricante], [Nombre], [Contacto], [Email], [Telef
 INSERT [dbo].[Fabricante] ([IdFabricante], [Nombre], [Contacto], [Email], [Telefono], [Activo]) VALUES (3, N'GE', N'Alfredo Martínez', N'alfredo.martinez@ge.com', N'+52 7291087280', 1)
 SET IDENTITY_INSERT [dbo].[Fabricante] OFF
 GO
+SET IDENTITY_INSERT [dbo].[FirmasExamenCertificacion] ON 
+
+INSERT [dbo].[FirmasExamenCertificacion] ([IdFirmaExamen], [IdExamenCertificacion], [IdTipoFirma], [FechaFirma], [Activo]) VALUES (1, 1, 3, CAST(N'2021-07-05T11:49:45.943' AS DateTime), 1)
+INSERT [dbo].[FirmasExamenCertificacion] ([IdFirmaExamen], [IdExamenCertificacion], [IdTipoFirma], [FechaFirma], [Activo]) VALUES (2, 1, 2, CAST(N'2021-07-05T11:49:53.527' AS DateTime), 1)
+INSERT [dbo].[FirmasExamenCertificacion] ([IdFirmaExamen], [IdExamenCertificacion], [IdTipoFirma], [FechaFirma], [Activo]) VALUES (3, 1, 1, CAST(N'2021-07-05T11:50:04.250' AS DateTime), 1)
+SET IDENTITY_INSERT [dbo].[FirmasExamenCertificacion] OFF
+GO
 SET IDENTITY_INSERT [dbo].[Idioma] ON 
 
 INSERT [dbo].[Idioma] ([IdIdioma], [CodigoIdioma], [Idioma], [Activo]) VALUES (1, N'es-MX', N'Español (México)', 1)
 INSERT [dbo].[Idioma] ([IdIdioma], [CodigoIdioma], [Idioma], [Activo]) VALUES (2, N'en-US', N'English', 1)
 SET IDENTITY_INSERT [dbo].[Idioma] OFF
+GO
+SET IDENTITY_INSERT [dbo].[LineaProduccion] ON 
+
+INSERT [dbo].[LineaProduccion] ([Id], [IdNave], [NombreLinea], [DescripcionLinea], [Activo]) VALUES (1, 1, N'Linea1', N'Linea1', 1)
+SET IDENTITY_INSERT [dbo].[LineaProduccion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Maquina] ON 
 
@@ -1155,6 +1343,11 @@ INSERT [dbo].[Maquina] ([IdMaquina], [Nombre], [Descripcion], [Modelo], [Maquina
 INSERT [dbo].[Maquina] ([IdMaquina], [Nombre], [Descripcion], [Modelo], [MaquinaPt], [CantidadAccesoMultiple], [FabricanteIdFabricante], [TipoAccesoIdTipoAcceso], [UsaPreguntaEstandar], [Activo]) VALUES (7, N'Siemens T-9000', N'Siemens T-9000', N'Siemens T-9000', 1, 1, 2, 1, 1, 1)
 SET IDENTITY_INSERT [dbo].[Maquina] OFF
 GO
+SET IDENTITY_INSERT [dbo].[MaquinaFisica] ON 
+
+INSERT [dbo].[MaquinaFisica] ([IdMaquinaFisica], [NSerie], [Ubicacion], [MaquinaPt], [MaquinaIdMaquina], [PlantaIdPlanta], [NaveIdNave], [LineaProduccionIdLineaProduccion], [Activo]) VALUES (1, N'rrrtfr4455r', N'olikuhjygfd', 1, 1, 1, 1, 1, 1)
+SET IDENTITY_INSERT [dbo].[MaquinaFisica] OFF
+GO
 SET IDENTITY_INSERT [dbo].[MaquinaProceso] ON 
 
 INSERT [dbo].[MaquinaProceso] ([IdMaquinaProceso], [MaquinaIdMaquina], [ProcesoIdProceso], [UsaPreguntaEstandar], [Activo]) VALUES (1, 1, 1, 1, 1)
@@ -1163,6 +1356,7 @@ INSERT [dbo].[MaquinaProceso] ([IdMaquinaProceso], [MaquinaIdMaquina], [ProcesoI
 INSERT [dbo].[MaquinaProceso] ([IdMaquinaProceso], [MaquinaIdMaquina], [ProcesoIdProceso], [UsaPreguntaEstandar], [Activo]) VALUES (4, 5, 7, 1, 1)
 INSERT [dbo].[MaquinaProceso] ([IdMaquinaProceso], [MaquinaIdMaquina], [ProcesoIdProceso], [UsaPreguntaEstandar], [Activo]) VALUES (5, 6, 7, 1, 1)
 INSERT [dbo].[MaquinaProceso] ([IdMaquinaProceso], [MaquinaIdMaquina], [ProcesoIdProceso], [UsaPreguntaEstandar], [Activo]) VALUES (6, 7, 1, 0, 1)
+INSERT [dbo].[MaquinaProceso] ([IdMaquinaProceso], [MaquinaIdMaquina], [ProcesoIdProceso], [UsaPreguntaEstandar], [Activo]) VALUES (7, 4, 1, 1, 1)
 SET IDENTITY_INSERT [dbo].[MaquinaProceso] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Menu] ON 
@@ -1182,7 +1376,7 @@ SET IDENTITY_INSERT [dbo].[MultiMediaPieza] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Nave] ON 
 
-INSERT [dbo].[Nave] ([IdNave], [Nombre], [Descripcion], [PlantaIdPlanta], [Activo]) VALUES (1, N'Nave 1', N'Nave de ensamble', 1, 0)
+INSERT [dbo].[Nave] ([IdNave], [Nombre], [Descripcion], [PlantaIdPlanta], [Activo]) VALUES (1, N'Nave 1', N'Nave de ensamble', 1, 1)
 SET IDENTITY_INSERT [dbo].[Nave] OFF
 GO
 SET IDENTITY_INSERT [dbo].[NivelCertificacion] ON 
@@ -1214,6 +1408,7 @@ INSERT [dbo].[Operacion] ([Id], [Operacion], [NombreMenu], [NombrePagina], [IdMe
 INSERT [dbo].[Operacion] ([Id], [Operacion], [NombreMenu], [NombrePagina], [IdMenu], [Activo]) VALUES (17, N'AsignaCapacita', N'AsignaCapacita', N'AsignaCapacita', 2, 1)
 INSERT [dbo].[Operacion] ([Id], [Operacion], [NombreMenu], [NombrePagina], [IdMenu], [Activo]) VALUES (18, N'FirmasPendientes', N'FirmasPendientes', N'FirmasPendientes', 2, 1)
 INSERT [dbo].[Operacion] ([Id], [Operacion], [NombreMenu], [NombrePagina], [IdMenu], [Activo]) VALUES (19, N'CapacitacionesCaduca', N'CapacitacionesCaduca', N'CapacitacionesCaduca', 2, 1)
+INSERT [dbo].[Operacion] ([Id], [Operacion], [NombreMenu], [NombrePagina], [IdMenu], [Activo]) VALUES (20, N'CertificacionAsigna', N'CertificacionAsigna', N'CertificacionAsigna', 2, 1)
 SET IDENTITY_INSERT [dbo].[Operacion] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Perfil] ON 
@@ -9805,6 +10000,16 @@ INSERT [dbo].[Planta] ([IdPlanta], [IdPlantaExterno], [Acronimo], [Planta], [Act
 INSERT [dbo].[Planta] ([IdPlanta], [IdPlantaExterno], [Acronimo], [Planta], [Activo]) VALUES (2, 113, N'AUCHI', N'Planta de Chihuahua', 1)
 SET IDENTITY_INSERT [dbo].[Planta] OFF
 GO
+SET IDENTITY_INSERT [dbo].[PreguntaGeneral] ON 
+
+INSERT [dbo].[PreguntaGeneral] ([IdPreguntaGeneral], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [TipoPreguntaIdTipoPregunta], [Activo]) VALUES (1, N'sasdasdasad', NULL, 1, 1, 2, 1, 1)
+INSERT [dbo].[PreguntaGeneral] ([IdPreguntaGeneral], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [TipoPreguntaIdTipoPregunta], [Activo]) VALUES (2, N'alguin ttttt', NULL, 1, 1, 1, 2, 1)
+INSERT [dbo].[PreguntaGeneral] ([IdPreguntaGeneral], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [TipoPreguntaIdTipoPregunta], [Activo]) VALUES (3, N'asdstttttttttttt', NULL, 1, 2, 1, 2, 1)
+INSERT [dbo].[PreguntaGeneral] ([IdPreguntaGeneral], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [TipoPreguntaIdTipoPregunta], [Activo]) VALUES (4, N'Pregunta pieza', NULL, 1, 1, 1, 3, 1)
+INSERT [dbo].[PreguntaGeneral] ([IdPreguntaGeneral], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [TipoPreguntaIdTipoPregunta], [Activo]) VALUES (5, N'pregunta 1', NULL, 1, 1, 1, 1, 1)
+INSERT [dbo].[PreguntaGeneral] ([IdPreguntaGeneral], [Pregunta], [Respuesta], [Orden], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [TipoPreguntaIdTipoPregunta], [Activo]) VALUES (6, N'Pregunta 2', NULL, 1, 1, 1, 1, 1)
+SET IDENTITY_INSERT [dbo].[PreguntaGeneral] OFF
+GO
 SET IDENTITY_INSERT [dbo].[PreguntaMaquina] ON 
 
 INSERT [dbo].[PreguntaMaquina] ([IdPreguntaMaquina], [Pregunta], [Respuesta], [Orden], [MaquinaIdMaquina], [IdiomaIdIdioma], [NivelCertificacionIdNivelCertificacion], [Activo]) VALUES (1, N'A-3420 Conocimiento del proceso: Explica las operaciones del proceso y conoce cuál es el proceso anterior y posterior. asdassadsa', NULL, 1, 1, 1, 3, 0)
@@ -9854,6 +10059,8 @@ INSERT [dbo].[ProcesoPiezaMaquina] ([IdProcesoPiezaMaquina], [PiezaIdPieza], [Ma
 INSERT [dbo].[ProcesoPiezaMaquina] ([IdProcesoPiezaMaquina], [PiezaIdPieza], [MaquinaProcesoIdMaquinaProceso], [UsaPreguntaEstandar], [Activo]) VALUES (4, 3, 3, 1, 1)
 INSERT [dbo].[ProcesoPiezaMaquina] ([IdProcesoPiezaMaquina], [PiezaIdPieza], [MaquinaProcesoIdMaquinaProceso], [UsaPreguntaEstandar], [Activo]) VALUES (5, 2, 6, 0, 1)
 INSERT [dbo].[ProcesoPiezaMaquina] ([IdProcesoPiezaMaquina], [PiezaIdPieza], [MaquinaProcesoIdMaquinaProceso], [UsaPreguntaEstandar], [Activo]) VALUES (6, 1, 5, 1, 1)
+INSERT [dbo].[ProcesoPiezaMaquina] ([IdProcesoPiezaMaquina], [PiezaIdPieza], [MaquinaProcesoIdMaquinaProceso], [UsaPreguntaEstandar], [Activo]) VALUES (7, 4, 1, 1, 1)
+INSERT [dbo].[ProcesoPiezaMaquina] ([IdProcesoPiezaMaquina], [PiezaIdPieza], [MaquinaProcesoIdMaquinaProceso], [UsaPreguntaEstandar], [Activo]) VALUES (8, 19, 3, 1, 1)
 SET IDENTITY_INSERT [dbo].[ProcesoPiezaMaquina] OFF
 GO
 SET IDENTITY_INSERT [dbo].[ProcessLog] ON 
@@ -12211,6 +12418,1862 @@ INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) V
   IdsPerfilExaminan (String): 4
   IdNivelCertificacionNavigation (NivelCertificacion): 
 ', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (243, N'::1', CAST(N'2021-06-14T13:12:02.597' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 13)  IdCapacitacion (Int64): 4
+  IdEmpleado (Int64): 2
+  Pieza (String): 3
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 5
+  IdMentor (Nullable`1): 2
+  FechaInicio (DateTime): 15/06/2021 12:00:00 a. m.
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (244, N'::1', CAST(N'2021-06-14T13:30:48.260' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaGeneralProperties (N = 11)  IdPreguntaGeneral (Int64): 1
+  Pregunta (String): sasdasdasad
+  Respuesta (String): 
+  Orden (Int32): 1
+  IdiomaIdIdioma (Int64): 1
+  NivelCertificacionIdNivelCertificacion (Int64): 2
+  TipoPreguntaIdTipoPregunta (Int64): 1
+  Activo (Boolean): True
+  IdiomaIdIdiomaNavigation (Idioma): 
+  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
+  TipoPreguntaIdTipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (245, N'::1', CAST(N'2021-06-14T13:56:44.593' AS DateTime), N'Operation (OPERACIÓN = UpdateNave)Type: NaveProperties (N = 8)  IdNave (Int64): 1
+  Nombre (String): Nave 1
+  Descripcion (String): Nave de ensamble
+  PlantaIdPlanta (Int64): 1
+  Activo (Nullable`1): True
+  PlantaIdPlantaNavigation (Plantum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (246, N'::1', CAST(N'2021-06-14T13:58:18.233' AS DateTime), N'Operation (OPERACIÓN = UpdateNave)Type: NaveProperties (N = 8)  IdNave (Int64): 1
+  Nombre (String): Nave 1
+  Descripcion (String): Nave de ensamble
+  PlantaIdPlanta (Int64): 1
+  Activo (Nullable`1): False
+  PlantaIdPlantaNavigation (Plantum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (247, N'::1', CAST(N'2021-06-16T18:49:46.340' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): ALL
+  IdProceso (Int64): 1
+  Maquina (String): ALL
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 17/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (248, N'::1', CAST(N'2021-06-16T19:00:11.027' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 2
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL
+  IdProceso (Int64): 2
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 17/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (249, N'::1', CAST(N'2021-06-17T10:08:14.320' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): ALL
+  IdProceso (Int64): 1
+  Maquina (String): ALL
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 17/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 30/06/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (250, N'::1', CAST(N'2021-06-17T16:56:20.370' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 3
+  IdEmpleado (Int64): 4
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 18/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 23/06/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (251, N'::1', CAST(N'2021-06-17T17:20:12.550' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 3
+  IdEmpleado (Int64): 4
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 18/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 26/06/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (252, N'::1', CAST(N'2021-06-17T18:43:31.190' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 2
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL
+  IdProceso (Int64): 2
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 17/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 30/06/2021 12:00:00 a. m.
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (253, N'::1', CAST(N'2021-06-18T12:30:44.310' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 4
+  IdEmpleado (Int64): 5
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 21/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 26/06/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (254, N'::1', CAST(N'2021-06-23T10:59:31.370' AS DateTime), N'Operation (OPERACIÓN = AddMaquinaProceso)Type: MaquinaProcesoProperties (N = 8)  IdMaquinaProceso (Int64): 7
+  MaquinaIdMaquina (Int64): 4
+  ProcesoIdProceso (Int64): 1
+  UsaPreguntaEstandar (Boolean): True
+  Activo (Nullable`1): True
+  ProcesoIdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (255, N'::1', CAST(N'2021-06-23T12:02:01.473' AS DateTime), N'Operation (OPERACIÓN = UpdateNave)Type: NaveProperties (N = 8)  IdNave (Int64): 1
+  Nombre (String): Nave 1
+  Descripcion (String): Nave de ensamble
+  PlantaIdPlanta (Int64): 1
+  Activo (Nullable`1): True
+  PlantaIdPlantaNavigation (Plantum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (256, N'::1', CAST(N'2021-06-23T12:02:31.313' AS DateTime), N'Operation (OPERACIÓN = AddLineaProduccion)Type: LineaProduccionProperties (N = 7)  Id (Int64): 0
+  IdNave (Int64): 1
+  NombreLinea (String): Linea1
+  DescripcionLinea (String): Linea1
+  Activo (Nullable`1): True
+  IdNaveNavigation (Nave): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (257, N'::1', CAST(N'2021-06-23T12:02:51.167' AS DateTime), N'Operation (OPERACIÓN = AddMaquinaFisica)Type: MaquinaFisicaProperties (N = 13)  IdMaquinaFisica (Int64): 1
+  Nserie (String): rrrtfr4455r
+  Ubicacion (String): olikuhjygfd
+  MaquinaPt (Boolean): True
+  MaquinaIdMaquina (Int64): 1
+  PlantaIdPlanta (Int64): 1
+  NaveIdNave (Int64): 1
+  LineaProduccionIdLineaProduccion (Int64): 1
+  Activo (Boolean): False
+  LineaProduccionIdLineaProduccionNavigation (LineaProduccion): 
+  MaquinaIdMaquinaNavigation (Maquina): 
+  NaveIdNaveNavigation (Nave): 
+  PlantaIdPlantaNavigation (Plantum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (258, N'::1', CAST(N'2021-06-23T12:03:19.103' AS DateTime), N'Operation (OPERACIÓN = UpdateMaquinaFisica)Type: MaquinaFisicaProperties (N = 13)  IdMaquinaFisica (Int64): 1
+  Nserie (String): rrrtfr4455r
+  Ubicacion (String): olikuhjygfd
+  MaquinaPt (Boolean): True
+  MaquinaIdMaquina (Int64): 1
+  PlantaIdPlanta (Int64): 1
+  NaveIdNave (Int64): 1
+  LineaProduccionIdLineaProduccion (Int64): 1
+  Activo (Boolean): True
+  LineaProduccionIdLineaProduccionNavigation (LineaProduccion): 
+  MaquinaIdMaquinaNavigation (Maquina): 
+  NaveIdNaveNavigation (Nave): 
+  PlantaIdPlantaNavigation (Plantum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (259, N'::1', CAST(N'2021-06-24T17:17:09.897' AS DateTime), N'Operation (OPERACIÓN = AddProcesoPiezaMaquina)Type: ProcesoPiezaMaquinaProperties (N = 8)  IdProcesoPiezaMaquina (Int64): 7
+  PiezaIdPieza (Int64): 4
+  MaquinaProcesoIdMaquinaProceso (Int64): 1
+  UsaPreguntaEstandar (Boolean): True
+  Activo (Boolean): True
+  MaquinaProcesoIdMaquinaProcesoNavigation (MaquinaProceso): 
+  PiezaIdPiezaNavigation (Pieza): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (260, N'::1', CAST(N'2021-06-24T17:19:34.667' AS DateTime), N'Operation (OPERACIÓN = AddProcesoPiezaMaquina)Type: ProcesoPiezaMaquinaProperties (N = 8)  IdProcesoPiezaMaquina (Int64): 8
+  PiezaIdPieza (Int64): 19
+  MaquinaProcesoIdMaquinaProceso (Int64): 3
+  UsaPreguntaEstandar (Boolean): True
+  Activo (Boolean): True
+  MaquinaProcesoIdMaquinaProcesoNavigation (MaquinaProceso): 
+  PiezaIdPiezaNavigation (Pieza): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (261, N'::1', CAST(N'2021-06-24T17:37:51.837' AS DateTime), N'Operation (OPERACIÓN = AddWorkflow)Type: WorkflowProperties (N = 8)  IdWorkFlow (Int64): 1
+  PiezaIdPieza (Int64): 1
+  ProcesoIdProceso (Int64): 2
+  Tiempo (Nullable`1): 150
+  Orden (Int32): 1
+  Activo (Boolean): True
+  PiezaIdPiezaNavigation (Pieza): 
+  ProcesoIdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (262, N'::1', CAST(N'2021-06-29T15:27:19.863' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 4
+  IdProceso (Int64): 1
+  Maquina (String): -1
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 30/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 10/07/2021 12:00:00 a. m.
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (263, N'::1', CAST(N'2021-06-29T15:47:04.473' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 4
+  IdProceso (Int64): 1
+  Maquina (String): ALL
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 30/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 10/07/2021 12:00:00 a. m.
+  Turno (String): 3
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (264, N'::1', CAST(N'2021-06-29T16:22:21.253' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 1
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 29/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 04/07/2021 12:00:00 a. m.
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (265, N'::1', CAST(N'2021-06-29T23:21:37.883' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 4
+  IdProceso (Int64): 1
+  Maquina (String): ALL
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 30/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 10/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (266, N'::1', CAST(N'2021-06-29T23:22:03.847' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 2
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 30/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 10/07/2021 12:00:00 a. m.
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (267, N'::1', CAST(N'2021-06-29T23:25:06.743' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 3
+  IdEmpleado (Int64): 4
+  Pieza (String): 1
+  IdProceso (Int64): 7
+  Maquina (String): 6
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 30/06/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 10/07/2021 12:00:00 a. m.
+  Turno (String): 2
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (268, N'::1', CAST(N'2021-06-30T02:18:20.667' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaGeneralProperties (N = 11)  IdPreguntaGeneral (Int64): 2
+  Pregunta (String): alguin ttttt
+  Respuesta (String): 
+  Orden (Int32): 1
+  IdiomaIdIdioma (Int64): 1
+  NivelCertificacionIdNivelCertificacion (Int64): 1
+  TipoPreguntaIdTipoPregunta (Int64): 2
+  Activo (Boolean): True
+  IdiomaIdIdiomaNavigation (Idioma): 
+  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
+  TipoPreguntaIdTipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (269, N'::1', CAST(N'2021-06-30T02:18:33.680' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaGeneralProperties (N = 11)  IdPreguntaGeneral (Int64): 3
+  Pregunta (String): asdstttttttttttt
+  Respuesta (String): 
+  Orden (Int32): 1
+  IdiomaIdIdioma (Int64): 2
+  NivelCertificacionIdNivelCertificacion (Int64): 1
+  TipoPreguntaIdTipoPregunta (Int64): 2
+  Activo (Boolean): True
+  IdiomaIdIdiomaNavigation (Idioma): 
+  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
+  TipoPreguntaIdTipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (270, N'::1', CAST(N'2021-06-30T02:18:54.410' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaGeneralProperties (N = 11)  IdPreguntaGeneral (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Respuesta (String): 
+  Orden (Int32): 1
+  IdiomaIdIdioma (Int64): 1
+  NivelCertificacionIdNivelCertificacion (Int64): 1
+  TipoPreguntaIdTipoPregunta (Int64): 3
+  Activo (Boolean): True
+  IdiomaIdIdiomaNavigation (Idioma): 
+  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
+  TipoPreguntaIdTipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (271, N'::1', CAST(N'2021-06-30T16:14:18.733' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#(1,7)
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (272, N'::1', CAST(N'2021-06-30T16:14:37.953' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Pieza''. Truncated value: ''ALL#(2,3,1''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (273, N'::1', CAST(N'2021-06-30T16:14:37.960' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (274, N'::1', CAST(N'2021-06-30T16:15:22.053' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Pieza''. Truncated value: ''ALL#(2,3,1''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (275, N'::1', CAST(N'2021-06-30T16:15:22.057' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (276, N'::1', CAST(N'2021-06-30T16:19:56.157' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Pieza''. Truncated value: ''ALL#(2,3,1''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (277, N'::1', CAST(N'2021-06-30T16:19:56.160' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (278, N'::1', CAST(N'2021-06-30T16:21:53.287' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Pieza''. Truncated value: ''ALL#(2,3,1''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (279, N'::1', CAST(N'2021-06-30T16:21:53.317' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (280, N'::1', CAST(N'2021-06-30T16:24:14.207' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Pieza''. Truncated value: ''ALL#(2,3,1''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (281, N'::1', CAST(N'2021-06-30T16:24:14.217' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL#(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (282, N'::1', CAST(N'2021-06-30T16:25:37.053' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#( 1,7 )
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Maquina''. Truncated value: ''ALL#( 1,7 ''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (283, N'::1', CAST(N'2021-06-30T16:25:42.853' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#( 1,7 )
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (284, N'::1', CAST(N'2021-06-30T16:26:22.500' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#( 1,7 )
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Maquina''. Truncated value: ''ALL#( 1,7 ''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (285, N'::1', CAST(N'2021-06-30T16:26:28.270' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#( 1,7 )
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (286, N'::1', CAST(N'2021-06-30T16:27:22.353' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#( 1,7 )
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Maquina''. Truncated value: ''ALL#( 1,7 ''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (287, N'::1', CAST(N'2021-06-30T16:27:22.367' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL#( 1,7 )
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (288, N'::1', CAST(N'2021-06-30T16:32:49.160' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 4
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (289, N'::1', CAST(N'2021-06-30T16:34:39.520' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL--(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'String or binary data would be truncated in table ''CARTAV.dbo.CapacitacionEmpleado'', column ''Pieza''. Truncated value: ''ALL--(2,3,''.
+The statement has been terminated.', 400)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (290, N'::1', CAST(N'2021-06-30T16:34:39.527' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestCapacitacionEmpleadoProperties (N = 12)  IdCapacitacion (Int64): 0
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL--(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (291, N'::1', CAST(N'2021-06-30T16:35:36.463' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 5
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL--(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (292, N'::1', CAST(N'2021-06-30T23:14:15.077' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 6
+  IdEmpleado (Int64): 4
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (293, N'::1', CAST(N'2021-07-04T19:49:37.937' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 4
+  TotalFinalExamen (Double): 60.333333333333336
+  FechaExamen (DateTime): 04/07/2021 07:49:37 p. m.
+  FirmaExaminador (Boolean): False
+  IdExaminador (Nullable`1): 
+  FechaFirma (Nullable`1): 
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (294, N'::1', CAST(N'2021-07-04T19:49:38.137' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 1
+  EstatusResultado (String): No Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (295, N'::1', CAST(N'2021-07-04T19:49:38.257' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (296, N'::1', CAST(N'2021-07-04T19:49:38.393' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (297, N'::1', CAST(N'2021-07-04T19:49:38.660' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 0
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (298, N'::1', CAST(N'2021-07-04T19:49:58.120' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestExamenDeCertificacionProperties (N = 18)  IdExamenCertificacion (Int64): 0
+  IdCapacitacionEmpleado (Int64): 4
+  TotalFinalExamen (Double): 60.333333333333336
+  FechaExamen (DateTime): 04/07/2021 07:49:37 p. m.
+  FirmaExaminador (Boolean): False
+  IdExaminador (Int64): 0
+  FechaFirma (DateTime): 01/01/0001 12:00:00 a. m.
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+  TotalFinalMaquina (Double): 1
+  TotalDescripcionFinalMaquina (String): No Aprobado
+  TotalFinalProceso (Double): 90
+  TotalDescripcionFinalProceso (String): Aprobado
+  TotalFinalPieza (Double): 90
+  TotalDescripcionFinalPieza (String): Aprobado
+  DataGlobalPreguntasMaquinaList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasMaquina]
+  DataGlobalPreguntasProcesoList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasProceso]
+  DataGlobalPreguntasPiezaList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasPieza]
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (299, N'::1', CAST(N'2021-07-04T20:13:57.057' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 2
+  IdCapacitacionEmpleado (Int64): 4
+  TotalFinalExamen (Double): 57
+  FechaExamen (DateTime): 04/07/2021 08:13:55 p. m.
+  FirmaExaminador (Boolean): False
+  IdExaminador (Nullable`1): 
+  FechaFirma (Nullable`1): 
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (300, N'::1', CAST(N'2021-07-04T20:14:04.657' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 1
+  EstatusResultado (String): No Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (301, N'::1', CAST(N'2021-07-04T20:14:06.167' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (302, N'::1', CAST(N'2021-07-04T20:14:08.007' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 80
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (303, N'::1', CAST(N'2021-07-04T20:14:30.450' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 0
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (304, N'::1', CAST(N'2021-07-04T20:15:40.677' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestExamenDeCertificacionProperties (N = 18)  IdExamenCertificacion (Int64): 0
+  IdCapacitacionEmpleado (Int64): 4
+  TotalFinalExamen (Double): 57
+  FechaExamen (DateTime): 04/07/2021 08:13:39 p. m.
+  FirmaExaminador (Boolean): False
+  IdExaminador (Int64): 0
+  FechaFirma (DateTime): 01/01/0001 12:00:00 a. m.
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+  TotalFinalMaquina (Double): 1
+  TotalDescripcionFinalMaquina (String): No Aprobado
+  TotalFinalProceso (Double): 90
+  TotalDescripcionFinalProceso (String): Aprobado
+  TotalFinalPieza (Double): 80
+  TotalDescripcionFinalPieza (String): Aprobado
+  DataGlobalPreguntasMaquinaList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasMaquina]
+  DataGlobalPreguntasProcesoList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasProceso]
+  DataGlobalPreguntasPiezaList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasPieza]
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (305, N'::1', CAST(N'2021-07-04T20:22:14.747' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 3
+  IdCapacitacionEmpleado (Int64): 4
+  TotalFinalExamen (Double): 60.33
+  FechaExamen (DateTime): 04/07/2021 08:22:12 p. m.
+  FirmaExaminador (Boolean): False
+  IdExaminador (Nullable`1): 
+  FechaFirma (Nullable`1): 
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (306, N'::1', CAST(N'2021-07-04T20:22:19.783' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  Resultado (Double): 0
+  EstatusResultado (String): No Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (307, N'::1', CAST(N'2021-07-04T20:22:21.760' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (308, N'::1', CAST(N'2021-07-04T20:22:23.200' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (309, N'::1', CAST(N'2021-07-04T20:22:42.710' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 0
+  IdExamenCertificacion (Int64): 3
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (310, N'::1', CAST(N'2021-07-04T20:24:35.657' AS DateTime), N'Operation (OPERACIÓN = Post)Type: RequestExamenDeCertificacionProperties (N = 18)  IdExamenCertificacion (Int64): 0
+  IdCapacitacionEmpleado (Int64): 4
+  TotalFinalExamen (Double): 60.33
+  FechaExamen (DateTime): 04/07/2021 08:22:03 p. m.
+  FirmaExaminador (Boolean): False
+  IdExaminador (Int64): 0
+  FechaFirma (DateTime): 01/01/0001 12:00:00 a. m.
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+  TotalFinalMaquina (Double): 0
+  TotalDescripcionFinalMaquina (String): No Aprobado
+  TotalFinalProceso (Double): 90
+  TotalDescripcionFinalProceso (String): Aprobado
+  TotalFinalPieza (Double): 90
+  TotalDescripcionFinalPieza (String): Aprobado
+  DataGlobalPreguntasMaquinaList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasMaquina]
+  DataGlobalPreguntasProcesoList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasProceso]
+  DataGlobalPreguntasPiezaList (List`1): System.Collections.Generic.List`1[APIRestV2.Models.Request.DataGlobalPreguntasPieza]
+', N'Error al realizar la operación', 401)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (311, N'::1', CAST(N'2021-07-05T01:54:59.483' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 8)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 63
+  FechaExamen (DateTime): 05/07/2021 01:54:59 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (312, N'::1', CAST(N'2021-07-05T01:54:59.507' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 0
+  EstatusResultado (String): No Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (313, N'::1', CAST(N'2021-07-05T01:54:59.520' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (314, N'::1', CAST(N'2021-07-05T01:54:59.530' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 98
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (315, N'::1', CAST(N'2021-07-05T01:54:59.547' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (316, N'::1', CAST(N'2021-07-05T01:54:59.553' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 98
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (317, N'::1', CAST(N'2021-07-05T01:54:59.553' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): False
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (318, N'::1', CAST(N'2021-07-05T01:55:41.273' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 01:55:41 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (319, N'::1', CAST(N'2021-07-05T01:58:55.743' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 8)  IdExamenCertificacion (Int64): 2
+  IdCapacitacionEmpleado (Int64): 2
+  TotalFinalExamen (Double): 60.33
+  FechaExamen (DateTime): 05/07/2021 01:58:55 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (320, N'::1', CAST(N'2021-07-05T01:58:55.770' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 0
+  EstatusResultado (String): No Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (321, N'::1', CAST(N'2021-07-05T01:58:55.783' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (322, N'::1', CAST(N'2021-07-05T01:58:55.800' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (323, N'::1', CAST(N'2021-07-05T01:58:55.820' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 3
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (324, N'::1', CAST(N'2021-07-05T01:58:55.823' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 4
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (325, N'::1', CAST(N'2021-07-05T01:58:55.827' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 2
+  IdEmpleado (Int64): 3
+  Pieza (String): ALL--(2,3,19)
+  IdProceso (Int64): 2
+  Maquina (String): 5
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): False
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (326, N'::1', CAST(N'2021-07-05T01:59:14.490' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 01:59:14 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (327, N'::1', CAST(N'2021-07-05T02:20:12.157' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaGeneralProperties (N = 11)  IdPreguntaGeneral (Int64): 5
+  Pregunta (String): pregunta 1
+  Respuesta (String): 
+  Orden (Int32): 1
+  IdiomaIdIdioma (Int64): 1
+  NivelCertificacionIdNivelCertificacion (Int64): 1
+  TipoPreguntaIdTipoPregunta (Int64): 1
+  Activo (Boolean): True
+  IdiomaIdIdiomaNavigation (Idioma): 
+  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
+  TipoPreguntaIdTipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (328, N'::1', CAST(N'2021-07-05T02:20:43.347' AS DateTime), N'Operation (OPERACIÓN = AddPregunta)Type: PreguntaGeneralProperties (N = 11)  IdPreguntaGeneral (Int64): 6
+  Pregunta (String): Pregunta 2
+  Respuesta (String): 
+  Orden (Int32): 1
+  IdiomaIdIdioma (Int64): 1
+  NivelCertificacionIdNivelCertificacion (Int64): 1
+  TipoPreguntaIdTipoPregunta (Int64): 1
+  Activo (Boolean): True
+  IdiomaIdIdiomaNavigation (Idioma): 
+  NivelCertificacionIdNivelCertificacionNavigation (NivelCertificacion): 
+  TipoPreguntaIdTipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (329, N'::1', CAST(N'2021-07-05T04:51:14.510' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 9)  IdExamenCertificacion (Int64): 3
+  IdCapacitacionEmpleado (Int64): 3
+  TotalFinalExamen (Double): 90.33
+  FechaExamen (DateTime): 05/07/2021 04:51:13 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (330, N'::1', CAST(N'2021-07-05T04:51:14.763' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  Resultado (Double): 94
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (331, N'::1', CAST(N'2021-07-05T04:51:14.823' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  Resultado (Double): 90
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (332, N'::1', CAST(N'2021-07-05T04:51:14.880' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  Resultado (Double): 87
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (333, N'::1', CAST(N'2021-07-05T04:51:15.040' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 5
+  IdExamenCertificacion (Int64): 3
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 5
+  Pregunta (String): pregunta 1
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 98
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (334, N'::1', CAST(N'2021-07-05T04:51:15.057' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 6
+  IdExamenCertificacion (Int64): 3
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 6
+  Pregunta (String): Pregunta 2
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (335, N'::1', CAST(N'2021-07-05T04:51:15.067' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 7
+  IdExamenCertificacion (Int64): 3
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 90
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (336, N'::1', CAST(N'2021-07-05T04:51:15.073' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 8
+  IdExamenCertificacion (Int64): 3
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 87
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (337, N'::1', CAST(N'2021-07-05T04:51:15.173' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 3
+  IdEmpleado (Int64): 4
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): False
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+GO
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (338, N'::1', CAST(N'2021-07-05T04:51:33.513' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 3
+  IdExamenCertificacion (Int64): 3
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 04:51:33 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (339, N'::1', CAST(N'2021-07-05T07:32:29.123' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 9)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97
+  FechaExamen (DateTime): 05/07/2021 07:32:29 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (340, N'::1', CAST(N'2021-07-05T07:32:29.130' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (341, N'::1', CAST(N'2021-07-05T07:32:29.137' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (342, N'::1', CAST(N'2021-07-05T07:32:29.167' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (343, N'::1', CAST(N'2021-07-05T07:32:29.210' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 5
+  Pregunta (String): pregunta 1
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (344, N'::1', CAST(N'2021-07-05T07:32:29.217' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 6
+  Pregunta (String): Pregunta 2
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (345, N'::1', CAST(N'2021-07-05T07:32:29.223' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 3
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (346, N'::1', CAST(N'2021-07-05T07:32:29.233' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 4
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (347, N'::1', CAST(N'2021-07-05T07:32:29.237' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (348, N'::1', CAST(N'2021-07-05T07:32:35.703' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 07:32:35 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (349, N'::1', CAST(N'2021-07-05T07:32:44.000' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 2
+  FechaFirma (DateTime): 05/07/2021 07:32:43 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (350, N'::1', CAST(N'2021-07-05T07:32:54.183' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 3
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 1
+  FechaFirma (DateTime): 05/07/2021 07:32:54 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (351, N'::1', CAST(N'2021-07-05T07:32:58.380' AS DateTime), N'Operation (OPERACIÓN = UpdateExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 9)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97
+  FechaExamen (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaFirmaFinal (Nullable`1): 05/07/2021 07:32:58 a. m.
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): True
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (352, N'::1', CAST(N'2021-07-05T07:32:58.387' AS DateTime), N'Operation (OPERACIÓN = AddCertificacion)Type: CertificacionProperties (N = 14)  IdCertificacion (Int64): 0
+  FechaEntrenamiento (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaCertificacion (Nullable`1): 05/07/2021 07:32:58 a. m.
+  IdCertificador (Nullable`1): 1
+  TokenCertificador (String): Token Cert
+  FechaCertificador (Nullable`1): 05/07/2021 07:32:58 a. m.
+  IdMentor (Nullable`1): 1
+  TokenMentor (String): Token Mentor
+  FechaMentor (Nullable`1): 05/07/2021 07:32:58 a. m.
+  IdResponsable (Nullable`1): 1
+  TokenResponsable (String): Token Responsable
+  FechaResponsable (Nullable`1): 05/07/2021 07:32:58 a. m.
+  Resultado (Nullable`1): 97
+  Activo (Nullable`1): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (353, N'::1', CAST(N'2021-07-05T07:32:58.447' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 4
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 06/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (354, N'::1', CAST(N'2021-07-05T07:55:32.167' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 2
+  IdCapacitacionEmpleado (Int64): 3
+  TotalFinalExamen (Double): 97.83
+  FechaExamen (DateTime): 05/07/2021 07:55:31 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (355, N'::1', CAST(N'2021-07-05T07:55:32.267' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 97.5
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (356, N'::1', CAST(N'2021-07-05T07:55:32.287' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 98
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (357, N'::1', CAST(N'2021-07-05T07:55:32.307' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 2
+  IdExamenCertificacion (Int64): 2
+  Resultado (Double): 98
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (358, N'::1', CAST(N'2021-07-05T07:55:32.360' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 5
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 5
+  Pregunta (String): pregunta 1
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 98
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (359, N'::1', CAST(N'2021-07-05T07:55:32.390' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 6
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 6
+  Pregunta (String): Pregunta 2
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (360, N'::1', CAST(N'2021-07-05T07:55:32.400' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 7
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 98
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (361, N'::1', CAST(N'2021-07-05T07:55:32.407' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 8
+  IdExamenCertificacion (Int64): 2
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 98
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (362, N'::1', CAST(N'2021-07-05T07:55:32.440' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 3
+  IdEmpleado (Int64): 4
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): 1
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (363, N'::1', CAST(N'2021-07-05T07:55:40.073' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 4
+  IdExamenCertificacion (Int64): 2
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 07:55:40 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (364, N'::1', CAST(N'2021-07-05T07:55:47.393' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 5
+  IdExamenCertificacion (Int64): 2
+  IdTipoFirma (Int64): 2
+  FechaFirma (DateTime): 05/07/2021 07:55:47 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (365, N'::1', CAST(N'2021-07-05T07:55:57.463' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 6
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 1
+  FechaFirma (DateTime): 05/07/2021 07:55:57 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (366, N'::1', CAST(N'2021-07-05T07:56:00.403' AS DateTime), N'Operation (OPERACIÓN = UpdateExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97
+  FechaExamen (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaFirmaFinal (Nullable`1): 05/07/2021 07:56:00 a. m.
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): True
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (367, N'::1', CAST(N'2021-07-05T07:56:00.447' AS DateTime), N'Operation (OPERACIÓN = AddCertificacion)Type: CertificacionProperties (N = 18)  IdCertificacion (Int64): 0
+  FechaEntrenamiento (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaCertificacion (Nullable`1): 05/07/2021 07:56:00 a. m.
+  IdCertificador (Nullable`1): 1
+  TokenCertificador (String): Token Cert
+  FechaCertificador (Nullable`1): 05/07/2021 07:56:00 a. m.
+  IdMentor (Nullable`1): 1
+  TokenMentor (String): Token Mentor
+  FechaMentor (Nullable`1): 05/07/2021 07:56:00 a. m.
+  IdResponsable (Nullable`1): 1
+  TokenResponsable (String): Token Responsable
+  FechaResponsable (Nullable`1): 05/07/2021 07:56:00 a. m.
+  Resultado (Nullable`1): 97
+  IdExamenDeCertificacion (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Nullable`1): True
+  IdExamenDeCertificacionNavigation (ExamenDeCertificacion): 
+  IdNivelCertificacionNavigation (NivelCertificacion): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (368, N'::1', CAST(N'2021-07-05T07:56:00.533' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 5
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 06/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (369, N'::1', CAST(N'2021-07-05T08:09:15.803' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97.17
+  FechaExamen (DateTime): 05/07/2021 08:09:15 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (370, N'::1', CAST(N'2021-07-05T08:09:15.840' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97.5
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (371, N'::1', CAST(N'2021-07-05T08:09:15.857' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (372, N'::1', CAST(N'2021-07-05T08:09:15.877' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (373, N'::1', CAST(N'2021-07-05T08:09:15.913' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 5
+  Pregunta (String): pregunta 1
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 98
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (374, N'::1', CAST(N'2021-07-05T08:09:15.920' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 6
+  Pregunta (String): Pregunta 2
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (375, N'::1', CAST(N'2021-07-05T08:09:15.923' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 3
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (376, N'::1', CAST(N'2021-07-05T08:09:15.927' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 4
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (377, N'::1', CAST(N'2021-07-05T08:09:15.953' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (378, N'::1', CAST(N'2021-07-05T08:09:22.543' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 08:09:22 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (379, N'::1', CAST(N'2021-07-05T08:09:29.417' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 2
+  FechaFirma (DateTime): 05/07/2021 08:09:29 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (380, N'::1', CAST(N'2021-07-05T08:09:58.757' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 3
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 1
+  FechaFirma (DateTime): 05/07/2021 08:09:58 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (381, N'::1', CAST(N'2021-07-05T08:09:58.767' AS DateTime), N'Operation (OPERACIÓN = UpdateExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97.17
+  FechaExamen (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaFirmaFinal (Nullable`1): 05/07/2021 08:09:58 a. m.
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): True
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (382, N'::1', CAST(N'2021-07-05T08:10:31.800' AS DateTime), N'Operation (OPERACIÓN = AddCertificacion)Type: CertificacionProperties (N = 18)  IdCertificacion (Int64): 0
+  FechaEntrenamiento (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaCertificacion (Nullable`1): 05/07/2021 08:09:58 a. m.
+  IdCertificador (Nullable`1): 1
+  TokenCertificador (String): Token Cert
+  FechaCertificador (Nullable`1): 05/07/2021 08:09:58 a. m.
+  IdMentor (Nullable`1): 1
+  TokenMentor (String): Token Mentor
+  FechaMentor (Nullable`1): 05/07/2021 08:10:20 a. m.
+  IdResponsable (Nullable`1): 1
+  TokenResponsable (String): Token Responsable
+  FechaResponsable (Nullable`1): 05/07/2021 08:10:20 a. m.
+  Resultado (Nullable`1): 97.17
+  IdExamenDeCertificacion (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Nullable`1): True
+  IdExamenDeCertificacionNavigation (ExamenDeCertificacion): 
+  IdNivelCertificacionNavigation (NivelCertificacion): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (383, N'::1', CAST(N'2021-07-05T08:10:38.147' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 4
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 06/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (384, N'::1', CAST(N'2021-07-05T11:49:34.643' AS DateTime), N'Operation (OPERACIÓN = AddExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97.33
+  FechaExamen (DateTime): 05/07/2021 11:49:34 a. m.
+  FechaFirmaFinal (Nullable`1): 
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): False
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (385, N'::1', CAST(N'2021-07-05T11:49:34.687' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoMaquinaExamenCertifica)Type: ResultadoMaquinaProperties (N = 6)  IdResultadoMaquina (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 98
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (386, N'::1', CAST(N'2021-07-05T11:49:34.707' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoProcesoExamenCertifica)Type: ResultadoProcesoProperties (N = 6)  IdResultadoProceso (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (387, N'::1', CAST(N'2021-07-05T11:49:34.723' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoPiezaExamenCertifica)Type: ResultadoPiezaProperties (N = 6)  IdResultadoPieza (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  Resultado (Double): 97
+  EstatusResultado (String): Aprobado
+  Activo (Boolean): False
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (388, N'::1', CAST(N'2021-07-05T11:49:34.763' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 5
+  Pregunta (String): pregunta 1
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 99
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (389, N'::1', CAST(N'2021-07-05T11:49:34.770' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 6
+  Pregunta (String): Pregunta 2
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (390, N'::1', CAST(N'2021-07-05T11:49:34.773' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 3
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 2
+  Pregunta (String): alguin ttttt
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 2
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (391, N'::1', CAST(N'2021-07-05T11:49:34.777' AS DateTime), N'Operation (OPERACIÓN = AddDataResultadoGeneralExamenCertificacionMaquinaProcesoPieza)Type: ResultadoGeneralExamenCertificacionMaquinaProcesoPiezaProperties (N = 16)  IdResultadoGeneral (Int64): 4
+  IdExamenCertificacion (Int64): 1
+  IdGlobal (Int64): 1
+  IdPregunta (Int64): 4
+  Pregunta (String): Pregunta pieza
+  Demuestra (Boolean): True
+  Reforzar (Boolean): False
+  NoDemuestra (Boolean): False
+  Resultado (Double): 97
+  IsGral (Boolean): True
+  IdIdioma (Int64): 1
+  TipoPregunta (Int64): 3
+  IdNivelCertificacion (Int64): 1
+  Activo (Boolean): True
+  IdExamenCertificacionNavigation (ExamenDeCertificacion): 
+  TipoPreguntaNavigation (TipoPreguntum): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (392, N'::1', CAST(N'2021-07-05T11:49:34.827' AS DateTime), N'Operation (OPERACIÓN = UpdateCpacitacionEmpleado)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 1
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 1
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 11/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): True
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (393, N'::1', CAST(N'2021-07-05T11:49:45.963' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 1
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 3
+  FechaFirma (DateTime): 05/07/2021 11:49:45 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (394, N'::1', CAST(N'2021-07-05T11:49:53.547' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 2
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 2
+  FechaFirma (DateTime): 05/07/2021 11:49:53 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (395, N'::1', CAST(N'2021-07-05T11:50:04.257' AS DateTime), N'Operation (OPERACIÓN = AddFirmasExamenCertificacion)Type: FirmasExamenCertificacionProperties (N = 6)  IdFirmaExamen (Int64): 3
+  IdExamenCertificacion (Int64): 1
+  IdTipoFirma (Int64): 1
+  FechaFirma (DateTime): 05/07/2021 11:50:04 a. m.
+  Activo (Boolean): True
+  IdTipoFirmaNavigation (TipoFirmaExamenCertifica): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (396, N'::1', CAST(N'2021-07-05T11:50:04.277' AS DateTime), N'Operation (OPERACIÓN = UpdateExamenCertificacion)Type: ExamenDeCertificacionProperties (N = 10)  IdExamenCertificacion (Int64): 1
+  IdCapacitacionEmpleado (Int64): 1
+  TotalFinalExamen (Double): 97.33
+  FechaExamen (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaFirmaFinal (Nullable`1): 05/07/2021 11:50:04 a. m.
+  EstadoExamen (Boolean): True
+  Concluido (Boolean): True
+  Activo (Boolean): True
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (397, N'::1', CAST(N'2021-07-05T11:50:10.273' AS DateTime), N'Operation (OPERACIÓN = AddCertificacion)Type: CertificacionProperties (N = 18)  IdCertificacion (Int64): 0
+  FechaEntrenamiento (DateTime): 05/07/2021 12:00:00 a. m.
+  FechaCertificacion (Nullable`1): 05/07/2021 11:50:04 a. m.
+  IdCertificador (Nullable`1): 1
+  TokenCertificador (String): Token Cert
+  FechaCertificador (Nullable`1): 05/07/2021 11:50:04 a. m.
+  IdMentor (Nullable`1): 1
+  TokenMentor (String): Token Mentor
+  FechaMentor (Nullable`1): 05/07/2021 11:50:10 a. m.
+  IdResponsable (Nullable`1): 1
+  TokenResponsable (String): Token Responsable
+  FechaResponsable (Nullable`1): 05/07/2021 11:50:10 a. m.
+  Resultado (Nullable`1): 97.33
+  IdExamenDeCertificacion (Int64): 1
+  IdNivelCertificacion (Int64): 1
+  Activo (Nullable`1): True
+  IdExamenDeCertificacionNavigation (ExamenDeCertificacion): 
+  IdNivelCertificacionNavigation (NivelCertificacion): 
+', N'OK', 200)
+INSERT [dbo].[ProcessLog] ([Id], [IP], [Fecha], [Data], [Respuesta], [Codigo]) VALUES (398, N'::1', CAST(N'2021-07-05T11:50:10.360' AS DateTime), N'Operation (OPERACIÓN = Addentity)Type: CapacitacionEmpleadoProperties (N = 14)  IdCapacitacion (Int64): 4
+  IdEmpleado (Int64): 2
+  Pieza (String): 1
+  IdProceso (Int64): 1
+  Maquina (String): ALL--(1,7)
+  IdNivelCertificacion (Int64): 2
+  IdMentor (Nullable`1): 1
+  FechaInicio (DateTime): 01/07/2021 12:00:00 a. m.
+  FechaFin (Nullable`1): 06/07/2021 12:00:00 a. m.
+  Turno (String): 1
+  Concluida (Boolean): False
+  Activo (Boolean): True
+  IdEmpleadoNavigation (Empleado): 
+  IdProcesoNavigation (Proceso): 
+', N'OK', 200)
 SET IDENTITY_INSERT [dbo].[ProcessLog] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Puesto] ON 
@@ -12252,6 +14315,29 @@ INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato
 INSERT [dbo].[ResourceValidacionCampo] ([IdReglaValidacion], [Nombre], [TipoDato], [TamanioCampo], [Requerido], [Formato], [CodigoErrorRequerido], [MensajeErrorRequerido], [CodigoErrorFormato], [MensajeErrorFormato]) VALUES (30, N'CuentaUsuario', N'string', 50, 1, N'Ninguno', 413, N'es Requerido, esta vacio o el valor es null, por favor ingrese información', 430, N'supera el maximo permitIdo de caracteres (250)')
 SET IDENTITY_INSERT [dbo].[ResourceValidacionCampo] OFF
 GO
+SET IDENTITY_INSERT [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ON 
+
+INSERT [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ([IdResultadoGeneral], [IdExamenCertificacion], [IdGlobal], [IdPregunta], [Pregunta], [Demuestra], [Reforzar], [NoDemuestra], [Resultado], [IsGral], [IdIdioma], [TipoPregunta], [IdNivelCertificacion], [Activo]) VALUES (1, 1, 1, 5, N'pregunta 1', 1, 0, 0, 99, 1, 1, 1, 1, 1)
+INSERT [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ([IdResultadoGeneral], [IdExamenCertificacion], [IdGlobal], [IdPregunta], [Pregunta], [Demuestra], [Reforzar], [NoDemuestra], [Resultado], [IsGral], [IdIdioma], [TipoPregunta], [IdNivelCertificacion], [Activo]) VALUES (2, 1, 1, 6, N'Pregunta 2', 1, 0, 0, 97, 1, 1, 1, 1, 1)
+INSERT [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ([IdResultadoGeneral], [IdExamenCertificacion], [IdGlobal], [IdPregunta], [Pregunta], [Demuestra], [Reforzar], [NoDemuestra], [Resultado], [IsGral], [IdIdioma], [TipoPregunta], [IdNivelCertificacion], [Activo]) VALUES (3, 1, 1, 2, N'alguin ttttt', 1, 0, 0, 97, 1, 1, 2, 1, 1)
+INSERT [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ([IdResultadoGeneral], [IdExamenCertificacion], [IdGlobal], [IdPregunta], [Pregunta], [Demuestra], [Reforzar], [NoDemuestra], [Resultado], [IsGral], [IdIdioma], [TipoPregunta], [IdNivelCertificacion], [Activo]) VALUES (4, 1, 1, 4, N'Pregunta pieza', 1, 0, 0, 97, 1, 1, 3, 1, 1)
+SET IDENTITY_INSERT [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ResultadoMaquina] ON 
+
+INSERT [dbo].[ResultadoMaquina] ([IdResultadoMaquina], [IdExamenCertificacion], [Resultado], [EstatusResultado], [Activo]) VALUES (1, 1, 98, N'Aprobado', 0)
+SET IDENTITY_INSERT [dbo].[ResultadoMaquina] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ResultadoPieza] ON 
+
+INSERT [dbo].[ResultadoPieza] ([IdResultadoPieza], [IdExamenCertificacion], [Resultado], [EstatusResultado], [Activo]) VALUES (1, 1, 97, N'Aprobado', 0)
+SET IDENTITY_INSERT [dbo].[ResultadoPieza] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ResultadoProceso] ON 
+
+INSERT [dbo].[ResultadoProceso] ([IdResultadoProceso], [IdExamenCertificacion], [Resultado], [EstatusResultado], [Activo]) VALUES (1, 1, 97, N'Aprobado', 0)
+SET IDENTITY_INSERT [dbo].[ResultadoProceso] OFF
+GO
 SET IDENTITY_INSERT [dbo].[TipoAcceso] ON 
 
 INSERT [dbo].[TipoAcceso] ([IdTipoAcceso], [DescTipoAcceso]) VALUES (1, N'UsuarioUnico')
@@ -12264,6 +14350,13 @@ SET IDENTITY_INSERT [dbo].[TipoDocumento] ON
 INSERT [dbo].[TipoDocumento] ([Id], [Descripcion], [TipoDocumento]) VALUES (1, N'Tipo Predeterminado para Media', N'CVDEF')
 INSERT [dbo].[TipoDocumento] ([Id], [Descripcion], [TipoDocumento]) VALUES (2, N'Documento Dummy', N'HOE')
 SET IDENTITY_INSERT [dbo].[TipoDocumento] OFF
+GO
+SET IDENTITY_INSERT [dbo].[TipoFirmaExamenCertifica] ON 
+
+INSERT [dbo].[TipoFirmaExamenCertifica] ([IdTipoFirma], [Descripcion]) VALUES (1, N'Responsable')
+INSERT [dbo].[TipoFirmaExamenCertifica] ([IdTipoFirma], [Descripcion]) VALUES (2, N'Mentor')
+INSERT [dbo].[TipoFirmaExamenCertifica] ([IdTipoFirma], [Descripcion]) VALUES (3, N'Empleado')
+SET IDENTITY_INSERT [dbo].[TipoFirmaExamenCertifica] OFF
 GO
 SET IDENTITY_INSERT [dbo].[TipoPregunta] ON 
 
@@ -12282,37 +14375,42 @@ SET IDENTITY_INSERT [dbo].[VersionMultiMediaPieza] ON
 INSERT [dbo].[VersionMultiMediaPieza] ([IdVersion], [IdMultiMediaPieza], [IdTipoDocumento], [Nombre], [Descripcion], [Version], [Recertificacion], [Ruta], [TipoMedia], [Extension], [Tamanio]) VALUES (1, 1, 2, N'ArchivoDP', N'ArchivoDP', N'1.0', 1, N'/documentos/archivodp.rtf', N'DOC', N'.rtf', N'460')
 SET IDENTITY_INSERT [dbo].[VersionMultiMediaPieza] OFF
 GO
-/****** Object:  Index [UQ__CentroCo__DBD8185BD0DACF56]    Script Date: 14/06/2021 11:06:57 a. m. ******/
+SET IDENTITY_INSERT [dbo].[Workflow] ON 
+
+INSERT [dbo].[Workflow] ([IdWorkFlow], [PiezaIdPieza], [ProcesoIdProceso], [Tiempo], [Orden], [Activo]) VALUES (1, 1, 2, 150, 1, 1)
+SET IDENTITY_INSERT [dbo].[Workflow] OFF
+GO
+/****** Object:  Index [UQ__CentroCo__DBD8185B68284836]    Script Date: 06/07/2021 02:09:47 p. m. ******/
 ALTER TABLE [dbo].[CentroCosto] ADD UNIQUE NONCLUSTERED 
 (
 	[IdCentroCostoExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D1E238A20]    Script Date: 14/06/2021 11:06:57 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D4827E69C]    Script Date: 06/07/2021 02:09:47 p. m. ******/
 ALTER TABLE [dbo].[Departamento] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D59FF4982]    Script Date: 14/06/2021 11:06:57 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D4265E92F]    Script Date: 06/07/2021 02:09:47 p. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel1] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38D5811B0CE]    Script Date: 14/06/2021 11:06:57 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D30A54117]    Script Date: 06/07/2021 02:09:47 p. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel2] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Departam__C342F38DF8E5CD0F]    Script Date: 14/06/2021 11:06:57 a. m. ******/
+/****** Object:  Index [UQ__Departam__C342F38D12D5DCFC]    Script Date: 06/07/2021 02:09:47 p. m. ******/
 ALTER TABLE [dbo].[DepartamentoNivel3] ADD UNIQUE NONCLUSTERED 
 (
 	[IdDepartamentExterno] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ__Puesto__52F767D7EBA4B325]    Script Date: 14/06/2021 11:06:57 a. m. ******/
+/****** Object:  Index [UQ__Puesto__52F767D7FCD70C8D]    Script Date: 06/07/2021 02:09:47 p. m. ******/
 ALTER TABLE [dbo].[Puesto] ADD UNIQUE NONCLUSTERED 
 (
 	[IdPuestoExterno] ASC
@@ -12362,7 +14460,13 @@ ALTER TABLE [dbo].[DocumentoPiezaProceso] ADD  CONSTRAINT [DF_Documentos_pieza_p
 GO
 ALTER TABLE [dbo].[Empleado] ADD  CONSTRAINT [DF_EmpleadoActivo]  DEFAULT ((1)) FOR [Activo]
 GO
+ALTER TABLE [dbo].[ExamenDeCertificacion] ADD  CONSTRAINT [DF_ExamenDeCertificacion_Concluido]  DEFAULT ((0)) FOR [Concluido]
+GO
+ALTER TABLE [dbo].[ExamenDeCertificacion] ADD  CONSTRAINT [DF_ExamenDeCertificacion_Activo]  DEFAULT ((0)) FOR [Activo]
+GO
 ALTER TABLE [dbo].[Fabricante] ADD  CONSTRAINT [DF_FabricanteEstado]  DEFAULT ((1)) FOR [Activo]
+GO
+ALTER TABLE [dbo].[FirmasExamenCertificacion] ADD  CONSTRAINT [DF_FirmasExamenCertificacion_Activo]  DEFAULT ((0)) FOR [Activo]
 GO
 ALTER TABLE [dbo].[Idioma] ADD  CONSTRAINT [DF_IdiomaActivo]  DEFAULT ((1)) FOR [Activo]
 GO
@@ -12418,6 +14522,22 @@ ALTER TABLE [dbo].[ResourceValidacionCampo] ADD  CONSTRAINT [DF_Resource_Validac
 GO
 ALTER TABLE [dbo].[ResourceValidacionCampo] ADD  CONSTRAINT [DF_Resource_Validaciones_Campos_Codigo_Error_Requerido]  DEFAULT ((0)) FOR [CodigoErrorRequerido]
 GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ADD  CONSTRAINT [DF_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_Demuestra]  DEFAULT ((0)) FOR [Demuestra]
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ADD  CONSTRAINT [DF_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_Reforzar]  DEFAULT ((0)) FOR [Reforzar]
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ADD  CONSTRAINT [DF_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_NoDemuestra]  DEFAULT ((0)) FOR [NoDemuestra]
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ADD  CONSTRAINT [DF_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_IsGral]  DEFAULT ((0)) FOR [IsGral]
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] ADD  CONSTRAINT [DF_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_Activo]  DEFAULT ((0)) FOR [Activo]
+GO
+ALTER TABLE [dbo].[ResultadoMaquina] ADD  CONSTRAINT [DF_ResultadoMaquina_Activo]  DEFAULT ((0)) FOR [Activo]
+GO
+ALTER TABLE [dbo].[ResultadoPieza] ADD  CONSTRAINT [DF_ResultadoPieza_Activo]  DEFAULT ((0)) FOR [Activo]
+GO
+ALTER TABLE [dbo].[ResultadoProceso] ADD  CONSTRAINT [DF_ResultadoProceso_Activo]  DEFAULT ((0)) FOR [Activo]
+GO
 ALTER TABLE [dbo].[CapacitacionEmpleado]  WITH CHECK ADD  CONSTRAINT [FK_CapacitacionEmpleadoIdEmpleado_EmpleadoIdEmpleado] FOREIGN KEY([IdEmpleado])
 REFERENCES [dbo].[Empleado] ([IdEmpleado])
 GO
@@ -12427,6 +14547,16 @@ ALTER TABLE [dbo].[CapacitacionEmpleado]  WITH CHECK ADD  CONSTRAINT [FK_Capacit
 REFERENCES [dbo].[Proceso] ([IdProceso])
 GO
 ALTER TABLE [dbo].[CapacitacionEmpleado] CHECK CONSTRAINT [FK_CapacitacionEmpleadoIdProceso_ProcesoIdProceso]
+GO
+ALTER TABLE [dbo].[Certificacion]  WITH CHECK ADD  CONSTRAINT [FK_Certificacion_Certificacion_IdNivel] FOREIGN KEY([IdNivelCertificacion])
+REFERENCES [dbo].[NivelCertificacion] ([IdNivelCertificacion])
+GO
+ALTER TABLE [dbo].[Certificacion] CHECK CONSTRAINT [FK_Certificacion_Certificacion_IdNivel]
+GO
+ALTER TABLE [dbo].[Certificacion]  WITH CHECK ADD  CONSTRAINT [FK_Certificacion_IDExamenDeCertificacion] FOREIGN KEY([IdExamenDeCertificacion])
+REFERENCES [dbo].[ExamenDeCertificacion] ([IdExamenCertificacion])
+GO
+ALTER TABLE [dbo].[Certificacion] CHECK CONSTRAINT [FK_Certificacion_IDExamenDeCertificacion]
 GO
 ALTER TABLE [dbo].[ConfiguracionNivelCertificacion]  WITH CHECK ADD  CONSTRAINT [FK_ConfiguracionNivelCertificacionIdNivel_NivelCertificacionID] FOREIGN KEY([IdNivelCertificacion])
 REFERENCES [dbo].[NivelCertificacion] ([IdNivelCertificacion])
@@ -12470,6 +14600,11 @@ REFERENCES [dbo].[DepartamentoNivel3] ([IdDepartamentoNivel3])
 ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[Empleado] CHECK CONSTRAINT [FK_EmpleadoDepartamento_DepartamentoIdDepartamentoNivel3]
+GO
+ALTER TABLE [dbo].[FirmasExamenCertificacion]  WITH CHECK ADD  CONSTRAINT [FK_FirmasExamenCertificacionTipoFirmaExamenCertifica_TipoFirmaExamenCertifica] FOREIGN KEY([IdTipoFirma])
+REFERENCES [dbo].[TipoFirmaExamenCertifica] ([IdTipoFirma])
+GO
+ALTER TABLE [dbo].[FirmasExamenCertificacion] CHECK CONSTRAINT [FK_FirmasExamenCertificacionTipoFirmaExamenCertifica_TipoFirmaExamenCertifica]
 GO
 ALTER TABLE [dbo].[LineaProduccion]  WITH CHECK ADD  CONSTRAINT [FK_LineaProduccion_NaveidNave] FOREIGN KEY([IdNave])
 REFERENCES [dbo].[Nave] ([IdNave])
@@ -12694,6 +14829,16 @@ ON UPDATE CASCADE
 GO
 ALTER TABLE [dbo].[RespuestaProceso] CHECK CONSTRAINT [Respuestas_Proceso_Resultados_Proceso_Resultados_Proceso_Id_Resultado_Proceso]
 GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza]  WITH CHECK ADD  CONSTRAINT [FK_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] FOREIGN KEY([IdExamenCertificacion])
+REFERENCES [dbo].[ExamenDeCertificacion] ([IdExamenCertificacion])
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] CHECK CONSTRAINT [FK_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza]
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza]  WITH CHECK ADD  CONSTRAINT [FK_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_TipoPregunta] FOREIGN KEY([TipoPregunta])
+REFERENCES [dbo].[TipoPregunta] ([IdTipoPregunta])
+GO
+ALTER TABLE [dbo].[ResultadoGeneralExamenCertificacionMaquinaProcesoPieza] CHECK CONSTRAINT [FK_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_ResultadoGeneralExamenCertificacionMaquinaProcesoPieza_TipoPregunta]
+GO
 ALTER TABLE [dbo].[VersionMultiMediaPieza]  WITH CHECK ADD  CONSTRAINT [FK_VersionMultiMediaPiezaIdMultiMediaPieza_MultiMediaPiezaId] FOREIGN KEY([IdMultiMediaPieza])
 REFERENCES [dbo].[MultiMediaPieza] ([Id])
 GO
@@ -12901,6 +15046,379 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
+         Begin Table = "MP"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 255
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "M"
+            Begin Extent = 
+               Top = 6
+               Left = 293
+               Bottom = 136
+               Right = 530
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 12
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_MAQUINAASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_MAQUINAASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "MP"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 255
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "PR"
+            Begin Extent = 
+               Top = 6
+               Left = 293
+               Bottom = 136
+               Right = 479
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 12
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_MAQUINAPROCESOASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_MAQUINAPROCESOASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "MP"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 255
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "PPM"
+            Begin Extent = 
+               Top = 6
+               Left = 293
+               Bottom = 136
+               Right = 586
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Pza"
+            Begin Extent = 
+               Top = 6
+               Left = 624
+               Bottom = 136
+               Right = 810
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 12
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_MAQUINAPROCESOPIEZAASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_MAQUINAPROCESOPIEZAASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
          Begin Table = "pc"
             Begin Extent = 
                Top = 6
@@ -12950,6 +15468,268 @@ End
 ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZA_CLIENTE'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZA_CLIENTE'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "PPM"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 331
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "MP"
+            Begin Extent = 
+               Top = 6
+               Left = 369
+               Bottom = 136
+               Right = 586
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "P"
+            Begin Extent = 
+               Top = 6
+               Left = 624
+               Bottom = 136
+               Right = 810
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 12
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZAPROCESOASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZAPROCESOASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "PPM"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 331
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "MP"
+            Begin Extent = 
+               Top = 6
+               Left = 369
+               Bottom = 136
+               Right = 586
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Mqn"
+            Begin Extent = 
+               Top = 6
+               Left = 624
+               Bottom = 136
+               Right = 861
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 12
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZAPROCESOMAQUINAASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZAPROCESOMAQUINAASIGNACAPACITACION'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -13061,6 +15841,127 @@ End
 ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZAS_MULTIMEDIAS'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZAS_MULTIMEDIAS'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "PPM"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 331
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "p"
+            Begin Extent = 
+               Top = 6
+               Left = 369
+               Bottom = 136
+               Right = 555
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 12
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZASASIGNACAPACITACION'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'VW_PIEZASASIGNACAPACITACION'
 GO
 USE [master]
 GO

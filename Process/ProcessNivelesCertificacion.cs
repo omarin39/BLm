@@ -176,6 +176,11 @@ namespace APIRestV2.Controllers.Process
             }
             return respAltaNivelesCertificacion;
         }
+
+        public List<NivelCertificacion> FindNivelesCertificacionAsignaCapacitacion(RequestNivelesCertificacionAsignaCapacitacion NivelFindAsigCapacita)
+        {
+            return NivelesCertificacionData.FindNivelesCertificacionAsignaCapacitacion(NivelFindAsigCapacita);
+        }
         public List<NivelCertificacion> FindAllNivelesCertificacion()
         {
             List<NivelCertificacion> resNivelesCertificacionRet = NivelesCertificacionData.FindAllNivelesCertificacion();

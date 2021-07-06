@@ -18,7 +18,7 @@ namespace APIRestV2.DataModels
 
         public List<ProcessLog> FindAllLogs()
         {
-            return  _context.ProcessLogs.ToList();
+            return  _context.ProcessLogs.AsNoTracking().ToList();
         }
         public ProcessLog FindLog(long idLog)
         {

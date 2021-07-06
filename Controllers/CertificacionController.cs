@@ -76,17 +76,17 @@ namespace APIRestV2.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<RequestCertificacion> Find(long idCertificacion)
+        public ActionResult<RequestCertificacion> Find(long id)
         {
             try
             {
-                if (idCertificacion < 0)
+                if (id < 0)
                 {
                     return NotFound("Certificacion not found");
                 }
                 else
                 {
-                    var result = procCertificacion.FindCertificacion(idCertificacion);
+                    var result = procCertificacion.FindCertificacion(id);
                     if (result != null)
                     {
                         return Ok(result);
@@ -105,6 +105,38 @@ namespace APIRestV2.Controllers
                
             }
          
+        }
+
+        [HttpGet("FindCertificacionByIdEmpleado/{IdEmpleado}")]
+        public ActionResult<List<ResponseCertificacionEmpleado>> FindCertificacionByIdEmpleado(long IdEmpleado)
+        {
+            try
+            {
+                if (IdEmpleado < 0)
+                {
+                    return NotFound("Certificacion not found");
+                }
+                else
+                {
+                    var result = procCertificacion.FindCertificacionByIdEmpleado(IdEmpleado);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("Certificacion not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Certificacion not found");
+
+            }
+
         }
 
 

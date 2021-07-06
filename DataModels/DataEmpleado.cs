@@ -22,10 +22,29 @@ namespace APIRestV2.DataModels
         {
             return  _context.Empleados.ToList();
         }
+
+        public List<Empleado> FindAllEmpleadosPorPlanta(long IdPlanta)
+        {
+            return _context.Empleados.AsNoTracking().Where(us=> us.IdPlanta == IdPlanta).ToList();
+        }
+        
+
+        public List<Empleado> FindAllEmpleadoActivos()
+        {
+            return _context.Empleados.Where(us=> us.Activo == true).ToList();
+        }
+
         public Empleado FindEmpleado(long idEmpleado)
         {
             return _context.Empleados.SingleOrDefault(us => us.IdEmpleado == idEmpleado);
         }
+
+        public Empleado FinEmpleadoCertifica(long idEmpleado)
+        {
+            return _context.Empleados.AsNoTracking().SingleOrDefault(us => us.IdEmpleado == idEmpleado);
+        }
+
+        
 
         public long AddEmpleado(Empleado item,string ip)
         {

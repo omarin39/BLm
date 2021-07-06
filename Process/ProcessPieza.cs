@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace APIRestV2.Controllers.Process
 {
     public class ProcessPieza
-    {       
+    {
         public DataPieza PiezaData = new();
         public ResponseGral AddPieza(RequestPieza Pieza, String ip)
         {
@@ -44,19 +44,19 @@ namespace APIRestV2.Controllers.Process
                 {
                     respAltaPieza.Id = -1;
                     respAltaPieza.Codigo = "-1";
-                    respAltaPieza.Mensaje =  "Numero de parte Duplicado";
+                    respAltaPieza.Mensaje = "Numero de parte Duplicado";
                     return respAltaPieza;
 
                 }
 
-                }
+            }
             catch (Exception ex)
             {
                 return null;
             }
         }
 
-        public ResponseGral UpdatePieza( RequestPieza Pieza, String ip)
+        public ResponseGral UpdatePieza(RequestPieza Pieza, String ip)
         {
             ResponseGral respAltaPieza = new();
             if (PiezaData.ValidaClaveExistente(Pieza) == false)
@@ -115,7 +115,8 @@ namespace APIRestV2.Controllers.Process
 
             }
         }
-        public Pieza FindPieza(String Pieza){
+        public Pieza FindPieza(string Pieza)
+        {
             Pieza respAltaPieza = PiezaData.FindPieza(Pieza);
             if (respAltaPieza == null)
             {
@@ -124,6 +125,36 @@ namespace APIRestV2.Controllers.Process
             }
             return respAltaPieza;
         }
+        //public List<Pieza> FindPiezaCertificacion(string Pieza)
+        //{
+        //    return PiezaData.FindPiezaCertificacion(Pieza);
+
+        //}
+
+        public Pieza FindPiezaCertificacion(string Pieza)
+        {
+            return PiezaData.FindPiezaCertificacion(Pieza);
+
+        }
+
+        public List<VwPiezasasignacapacitacion> FindPiezaAsignaCapacitacion(long IdEmp)
+        {
+            return PiezaData.FindPiezaAsignaCapacitacion(IdEmp);
+
+        }
+
+        public List<VwPiezaprocesoasignacapacitacion> FindProcesosdePiezaAsignaCapacitacion(long IdPieza)
+        {
+            return PiezaData.FindProcesosdePiezaAsignaCapacitacion(IdPieza);
+
+        }
+
+        public List<VwPiezaprocesomaquinaasignacapacitacion> FindMaquinadeProcesosdePiezaAsignaCapacitacion(long IdProceso)
+        {
+            return PiezaData.FindMaquinadeProcesosdePiezaAsignaCapacitacion(IdProceso);
+
+        }
+
 
         public Pieza FindPiezaToIdPieza(long IdPieza)
         {
@@ -154,23 +185,19 @@ namespace APIRestV2.Controllers.Process
             var result = resPiezaRet.Select((pza, i) =>
                     new ResponsePieza
                     {
-                       IdPieza= pza.IdPieza,
-                       Nombre= pza.Nombre,
-                     // Descripcion=pza.Descripcion,
-                      NumeroParte=pza.NumeroParte,
-                     // Activo=pza.Activo
+                        IdPieza = pza.IdPieza,
+                        Nombre = pza.Nombre,
+                        // Descripcion=pza.Descripcion,
+                        NumeroParte = pza.NumeroParte,
+                        // Activo=pza.Activo
                     }).ToList();
             return result;
         }
 
         public List<VwPiezasMultimedia> FindAllPieza()
-    {
-        List<VwPiezasMultimedia> resPiezaRet = PiezaData.FindAllPiezas();
-
-
-        return resPiezaRet;
+        {
+            List<VwPiezasMultimedia> resPiezaRet = PiezaData.FindAllPiezas();
+            return resPiezaRet;
+        }
     }
-
-
-}
 }

@@ -156,6 +156,38 @@ namespace APIRestV2.Controllers
 
         }
 
+        [HttpGet("FindGlobalPiezaProcesoMaquinaIdNivelCertifica/{IdPieza}/{IdProceso}/{IdMaquina}/{IdNivelCertifica}/{IdIdioma}")]
+        public ActionResult<List<ResponsePreguntasTotalesProcesos>> FindGlobalPiezaProcesoMaquinaIdNivelCertifica(string IdPieza,long IdProceso, string IdMaquina, long IdNivelCertifica, long IdIdioma)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(IdMaquina) || String.IsNullOrWhiteSpace(IdMaquina))
+                {
+                    return NotFound("PreguntaMaquina not found");
+                }
+                else
+                {
+                    var result = process.FindGlobalPiezaProcesoMaquinaIdNivelCertifica(IdPieza, IdProceso, IdMaquina, IdNivelCertifica, IdIdioma);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("PreguntaMaquina not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("PreguntaMaquina not found");
+
+            }
+
+        }
+
 
 
         [HttpGet()]

@@ -102,6 +102,38 @@ namespace APIRestV2.Controllers
          
         }
 
+        [HttpGet("FinEmpleadoCertifica/{id}")]
+        public ActionResult<RequestEmpleado> FinEmpleadoCertifica(long id) //ActionResult Get([FromBody] RequestProcessLog ReqProcessLog)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return NotFound("Empleado not found");
+                }
+                else
+                {
+                    var result = ProcEmpleado.FinEmpleadoCertifica(id);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("Empleado not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Empleado not found");
+
+            }
+
+        }
+
         [HttpGet("FindAllEmpleadosPorPerfil/{idPerfil}")]
         public ActionResult<List<Empleado>> FindAllEmpleadosPorPerfil(long idPerfil)
         {
@@ -181,6 +213,56 @@ namespace APIRestV2.Controllers
                
             }
          
+        }
+
+        [HttpGet("FindAllEmpleadosPorPlanta/{IdPlanta}")]
+        public ActionResult<List<Empleado>> FindAllEmpleadosPorPlanta(long IdPlanta)
+        {
+            try
+            {
+                List<Empleado> result = ProcEmpleado.FindAllEmpleadosPorPlanta(IdPlanta);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Empleado not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Empleado not found");
+
+            }
+
+        }
+
+        [HttpGet("FindActivos")]
+        public ActionResult<List<Empleado>> FindAllActivos()
+        {
+            try
+            {
+                List<Empleado> result = ProcEmpleado.FindAllEmpleadoActivos();
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Empleado not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Empleado not found");
+
+            }
+
         }
 
         [HttpPut()]

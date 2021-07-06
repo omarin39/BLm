@@ -16,8 +16,16 @@ namespace APIRestV2.Models.Response
         public long IdNivelCertificacion { get; set; }
         public long? IdMentor { get; set; }
         public DateTime FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
         public string Turno { get; set; }
         public bool Concluida { get; set; }
         public bool Activo { get; set; }
+        public string NombreEmpleado { get; set; }
+        public string NombreMentor { get; set; }
+        public string NombreProceso{ get; set; }
+        public long NominaEmpleado { get; set; }
+        public string NombreNivel { get; set; }
+        public string NombreMaquina { get; set; }
+        public string NombrePieza { get; set; }
     }
 }

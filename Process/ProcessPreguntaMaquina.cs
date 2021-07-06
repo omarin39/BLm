@@ -67,7 +67,10 @@ namespace APIRestV2.Controllers.Process
             return entityData.FindPreguntaPorIdMaquina(id);
         }
 
-
+        public List<ResponsePreguntasTotalesMaquina> FindGlobalPreguntasIdMaquinaIdNivelCertifica(string IdMaquina, long IdNivelCertifica, long IdIdioma)
+        {
+            return entityData.FindGlobalPreguntasIdMaquinaIdNivelCertifica(IdMaquina, IdNivelCertifica,IdIdioma);
+        }
 
         public List<PreguntaMaquina> FindAllPreguntaMaquina()
     {

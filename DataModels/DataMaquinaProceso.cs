@@ -64,6 +64,24 @@ namespace APIRestV2.DataModels
             return res;
         }
 
+        public List<VwMaquinaasignacapacitacion> FindMaquinaAsignaCapacitacion()
+        {
+            return _context.VwMaquinaasignacapacitacions.AsNoTracking().ToList();
+        }
+
+        public List<VwMaquinaprocesoasignacapacitacion> FindMaquinaProcesosAsignaCapacitacion(long IdMaquina)
+        {
+            return _context.VwMaquinaprocesoasignacapacitacions.AsNoTracking().Where(mp=> mp.IdMaquina == IdMaquina).ToList();
+        }
+        public List<VwMaquinaprocesopiezaasignacapacitacion> FindMaquinaProcesoPiezasAsignaCapacitacion(long IdMaquinaProceso)
+        {
+            return _context.VwMaquinaprocesopiezaasignacapacitacions.AsNoTracking().Where(mp => mp.IdMaquinaProceso == IdMaquinaProceso).ToList();
+        }
+
+        
+
+
+
 
         public long AddMaquinaProceso(MaquinaProceso item, string ip)
         {

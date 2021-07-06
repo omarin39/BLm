@@ -76,7 +76,7 @@ namespace APIRestV2.Controllers
         {
             try
             {
-                if (idEmpleado == null)
+                if (idEmpleado == 0)
                 {
                     return NotFound("CapacitacionEmpleado not found");
                 }
@@ -128,6 +128,58 @@ namespace APIRestV2.Controllers
                
             }
          
+        }
+
+        [HttpGet("FindAllEmpleadoConCapacitacion")]
+        public ActionResult<List<ResponseCapacitacionEmpleado>> FindAllEmpleadoConCapacitacion()
+        {
+            try
+            {
+
+                List<ResponseCapacitacionEmpleado> result = procCapacitacionEmpleado.FindAllEmpleadoConCapacitacion();
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("CapacitacionEmpleado not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("CapacitacionEmpleado not found");
+
+            }
+
+        }
+
+        [HttpGet("FindAllEmpleadoSinCapacitacion")]
+        public ActionResult<List<Empleado>> FindAllEmpleadosSinCapacitacion()
+        {
+            try
+            {
+
+                List<Empleado> result = procCapacitacionEmpleado.FindAllEmpleadoSinCapacitacion();
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("CapacitacionEmpleado not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("CapacitacionEmpleado not found");
+
+            }
+
         }
 
 

@@ -127,6 +127,14 @@ namespace APIRestV2.Controllers.Process
             return respPreguntaProcesoRet;
         }
 
+        public List<ResponsePreguntasTotalesProcesos> FindGlobalPreguntasIdMaquinaIdNivelCertifica(long IdProceso, string IdMaquina, long IdNivelCertifica, long IdIdioma)
+        {
+            List<ResponsePreguntasTotalesProcesos> respPreguntaProcesoRet = entityData.FindGlobalPreguntasIdMaquinaIdNivelCertifica(IdProceso, IdMaquina, IdNivelCertifica, IdIdioma);
+            return respPreguntaProcesoRet;
+        }
+
+        
+
 
     }
 }

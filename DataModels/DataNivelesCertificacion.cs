@@ -27,6 +27,32 @@ namespace APIRestV2.DataModels
             return _context.NivelCertificacions.AsNoTracking().SingleOrDefault(us => us.IdNivelCertificacion == idNivelesCertificacion);
         }
 
+        public List<NivelCertificacion> FindNivelesCertificacionAsignaCapacitacion(RequestNivelesCertificacionAsignaCapacitacion NivelFindAsigCapacita)
+        {
+            List<NivelCertificacion> NivelCert = _context.NivelCertificacions.Where(us => us.Activo == true).ToList();
+            CapacitacionEmpleado CapacitaEmpleado = _context.CapacitacionEmpleados.FirstOrDefault(us => us.Activo == true && us.Concluida == true && us.IdEmpleado == NivelFindAsigCapacita.IdEmpleado && us.Pieza == NivelFindAsigCapacita.Pieza && us.IdProceso == NivelFindAsigCapacita.IdProceso && us.Maquina== NivelFindAsigCapacita.Maquina);
+            List<NivelCertificacion> NivelCertRet = new();
+
+            if (CapacitaEmpleado == null)
+            {
+                return NivelCert;
+            }
+            else
+            {
+                foreach (var item in NivelCert)
+                {
+                    if (item.IdNivelCertificacion != CapacitaEmpleado.IdNivelCertificacion)
+                    {
+                        NivelCertRet.Add(item);
+                    }
+                }
+                return NivelCertRet;
+            }
+            
+        }
+
+        
+
         public bool FindNivelCertificacionsDuplicidad(int Tipobusqueda, RequestNivelesCertificacion BusquedaVar)
         {
             NivelCertificacion busqueda = new();

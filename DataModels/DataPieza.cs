@@ -39,6 +39,62 @@ namespace APIRestV2.DataModels
            
            return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.Nombre == Pieza);
         }
+        //public List<Pieza> FindPiezaCertificacion(string IdPieza)
+        //{
+        //    List<Pieza> PzasCertificacion = new();
+        //    if (IdPieza.ToUpper() == "ALL")
+        //    {
+        //        PzasCertificacion = _context.Piezas.AsNoTracking().ToList();
+        //    }
+        //    else
+        //    {
+        //        PzasCertificacion = _context.Piezas.AsNoTracking().Where(pza => pza.IdPieza == long.Parse(IdPieza)).ToList();
+        //    }
+
+        //    return PzasCertificacion;
+        //}
+
+        public Pieza FindPiezaCertificacion(string IdPieza)
+        {
+            return _context.Piezas.AsNoTracking().SingleOrDefault(pza => pza.IdPieza == long.Parse(IdPieza));
+            
+        }
+
+        public List<VwPiezasasignacapacitacion> FindPiezaAsignaCapacitacion(long IdEmp)
+        {
+            return _context.VwPiezasasignacapacitacions.AsNoTracking().ToList();
+            //CapacitacionEmpleado CapEmp = _context.CapacitacionEmpleados.AsNoTracking().SingleOrDefault(em => em.IdEmpleado == IdEmp && em.Concluida==false);
+
+            //if (CapEmp != null)
+            //{
+            //    return PzaDb;
+            //}
+            //else
+            //{
+            //    List<VwPiezasasignacapacitacion> PzaTemp = new();
+            //    foreach (var item in PzaDb)
+            //    {
+            //        if (item.IdPieza != CapEmp.Pieza)
+            //        {
+
+            //        }
+            //    }
+            //    return PzaDb;
+            //}
+
+        }
+
+        public List<VwPiezaprocesoasignacapacitacion> FindProcesosdePiezaAsignaCapacitacion(long IdPieza)
+        {
+            return _context.VwPiezaprocesoasignacapacitacions.AsNoTracking().Where(PzaProc => PzaProc.IdPieza == IdPieza).ToList();
+
+        }
+
+        public List<VwPiezaprocesomaquinaasignacapacitacion> FindMaquinadeProcesosdePiezaAsignaCapacitacion(long IdProceso)
+        {
+            return _context.VwPiezaprocesomaquinaasignacapacitacions.AsNoTracking().Where(PzaProcMaquina => PzaProcMaquina.IdProceso == IdProceso).ToList();
+        }
+
         public Pieza FindPiezaToId(long IdPieza)
         {
             return _context.Piezas.AsNoTracking().SingleOrDefault(us => us.IdPieza == IdPieza);

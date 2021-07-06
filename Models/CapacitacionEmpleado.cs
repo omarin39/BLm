@@ -15,6 +15,7 @@ namespace APIRestV2.Models
         public long IdNivelCertificacion { get; set; }
         public long? IdMentor { get; set; }
         public DateTime FechaInicio { get; set; }
+        public DateTime? FechaFin { get; set; }
         public string Turno { get; set; }
         public bool Concluida { get; set; }
         public bool Activo { get; set; }

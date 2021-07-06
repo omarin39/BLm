@@ -31,6 +31,7 @@ namespace APIRestV2.Models
         public long UnidadNegocioIdUnidadNegocio { get; set; }
         public long CentroCostoIdCentroCosto { get; set; }
         public long? IdPerfil { get; set; }
+        public long? IdPlanta { get; set; }
         public bool? Activo { get; set; }
 
         public virtual DepartamentoNivel1 DepartamentoIdDepartamentoNivel1Navigation { get; set; }

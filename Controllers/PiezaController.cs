@@ -24,14 +24,11 @@ namespace APIRestV2.Controllers
         public static UsrKey paramUsrValida = new();
         private Controllers.Process.Process_Log procLog = new Controllers.Process.Process_Log();
 
-
         public PiezaController(IConfiguration configuration)
         {
             Configuration = configuration;
-            
             Configuration.GetSection("UsrValidEntry").Bind(paramUsrValida);
         }
-
 
         [HttpPost]
         public ActionResult Post([FromBody] RequestPieza req)
@@ -71,22 +68,18 @@ namespace APIRestV2.Controllers
          
         }
 
-
-
-
-
-        [HttpGet("{id}")]
-        public ActionResult<RequestPieza> Find(string Pieza) 
+        [HttpGet("{IdPieza}")]
+        public ActionResult<RequestPieza> Find(string IdPieza) 
         {
             try
             {
-                if (Pieza == "")
+                if (IdPieza == "")
                 {
                     return NotFound("Pieza not found");
                 }
                 else
                 {
-                    var result = procPieza.FindPieza(Pieza);
+                    var result = procPieza.FindPieza(IdPieza);
                     if (result != null)
                     {
                         return Ok(result);
@@ -105,6 +98,117 @@ namespace APIRestV2.Controllers
                
             }
          
+        }
+
+        [HttpGet("FindIdPiezaCertificacion/{IdPieza}")]
+        public ActionResult<RequestPieza> FindPiezaCertificacion(string IdPieza)
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(IdPieza) || String.IsNullOrWhiteSpace(IdPieza))
+                {
+                    return NotFound("Pieza not found");
+                }
+                else
+                {
+                    //var result = procPieza.FindPiezaCertificacion(IdPieza);
+                    //if (result.Count >0)
+                    //{
+                    //    return Ok(result);
+                    //}
+                    //else
+                    //{
+                    //    return NotFound("Pieza not found");
+                    //}
+
+                    var result = procPieza.FindPiezaCertificacion(IdPieza);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return NotFound("Pieza not found");
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pieza not found");
+
+            }
+
+        }
+
+        [HttpGet("FindIdPiezaAsignaCapacitacion/{IdEmp}")]
+        public ActionResult<List<VwPiezasasignacapacitacion>> FindPiezaAsignaCapacitacion(long IdEmp)
+        {
+            try
+            {
+                var result = procPieza.FindPiezaAsignaCapacitacion(IdEmp);
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Pieza not found");
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pieza not found");
+
+            }
+
+        }
+
+        [HttpGet("FindProcesosdePiezaAsignaCapacitacion/{IdPieza}")]
+        public ActionResult<List<VwPiezaprocesoasignacapacitacion>> FindProcesosdePiezaAsignaCapacitacion(long IdPieza)
+        {
+            try
+            {
+                var result = procPieza.FindProcesosdePiezaAsignaCapacitacion(IdPieza);
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Pieza not found");
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pieza not found");
+
+            }
+
+        }
+
+        [HttpGet("FindMaquinadeProcesosdePiezaAsignaCapacitacion/{IdProceso}")]
+        public ActionResult<List<VwPiezaprocesomaquinaasignacapacitacion>> FindMaquinadeProcesosdePiezaAsignaCapacitacion(long IdProceso)
+        {
+            try
+            {
+                var result = procPieza.FindMaquinadeProcesosdePiezaAsignaCapacitacion(IdProceso);
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Pieza not found");
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound("Pieza not found");
+
+            }
+
         }
 
         [HttpGet("FindIdPieza/{idPieza}")]
@@ -138,7 +242,6 @@ namespace APIRestV2.Controllers
             }
 
         }
-
 
         [HttpGet()]
         public ActionResult<List<VwPiezasMultimedia>> FindAll()
@@ -202,9 +305,6 @@ namespace APIRestV2.Controllers
 
         }
 
-
-
-
         [HttpPut()]
         public ActionResult Put([FromBody] RequestPieza req)
         {
@@ -233,9 +333,5 @@ namespace APIRestV2.Controllers
             }
 
         }
-
-
-
-
     }
 }

@@ -72,7 +72,41 @@ namespace APIRestV2.Controllers
         }
 
 
+        [HttpPost("PostNivelesCertificacionAsignaCapacitacion")]
+        public ActionResult PostNivelesCertificacionAsignaCapacitacion([FromBody] RequestNivelesCertificacionAsignaCapacitacion req)
+        {
+            var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
+            try
+            {
+                if (req.IdEmpleado >0)
+                {
+                    var result = procNivelesCertificacion.FindNivelesCertificacionAsignaCapacitacion(req); //.ProcesaUSER(ReqUser, Configuration);
+                    if (result != null)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Error al realizar la operación", 401);
+                        return NotFound("NivelesCertificacion not found");
+                    }
 
+                }
+                else
+                {
+                    procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), "Parametros erroneos", 400);
+                    return NotFound("NivelesCertificacion not found");
+                }
+
+            }
+            catch (Exception e)
+            {
+                procLog.AddLog(remoteIpAddress.ToString(), procLog.GetPropertyValues(req, System.Reflection.MethodBase.GetCurrentMethod().Name), e.InnerException.Message, 400);
+                return NotFound("NivelesCertificacion not found");
+
+            }
+
+        }
 
 
         [HttpGet("{id}")]

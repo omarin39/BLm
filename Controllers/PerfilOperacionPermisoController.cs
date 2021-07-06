@@ -78,8 +78,6 @@ namespace APIRestV2.Controllers
         [HttpPost("PostPerfilOperacionPermiso")]
         public ActionResult Post([FromBody] List<RequestPerfilOperacionPermisoItem> req)
         {
-            List<ResponsePerfilOperacionPermiso> ResponseWS = new();
-            ResponsePerfilOperacionPermiso ComplementoResponseWS = new();
             var remoteIpAddress = HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
 
             try

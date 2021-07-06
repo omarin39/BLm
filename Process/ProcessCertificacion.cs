@@ -3,6 +3,7 @@ using APIRestV2.Helpers;
 using APIRestV2.Models;
 using APIRestV2.Models.Request;
 using APIRestV2.Models.Response;
+using APIRestV2.Process;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -15,6 +16,9 @@ namespace APIRestV2.Controllers.Process
     public class ProcessCertificacion
     {       
         public DataCertificacion CertificacionData = new();
+        public ProcessExamenCertificacion ExameCerrtiData = new();
+        public ProcessCapacitacionEmpleado ProcCapacita = new();
+
         public ResponseGral AddCertificacion(RequestCertificacion Certificacion, String ip)
         {
             ResponseGral respAltaCertificacion = new();
@@ -50,6 +54,47 @@ namespace APIRestV2.Controllers.Process
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        public bool AddCertificacionFirmaExamen(long IdExamenCertificacion, string ip)
+        {
+            try
+            {
+                var certexa = ExameCerrtiData.FindOnlyExamenCertificaPorId(IdExamenCertificacion);
+                var capacitaempleado = ProcCapacita.FindCapacitacionEmpleadoById(certexa.IdCapacitacionEmpleado);
+
+                var lognew = new Certificacion{
+                    FechaEntrenamiento = certexa.FechaExamen,
+                    FechaCertificacion = certexa.FechaFirmaFinal,
+                    IdCertificador = 1,
+                    TokenCertificador = "Token Cert",
+                    FechaCertificador = certexa.FechaFirmaFinal,
+                    IdMentor = capacitaempleado.IdMentor,
+                    TokenMentor = "Token Mentor",
+                    FechaMentor = DateTime.Now,
+                    IdResponsable = 1,
+                    TokenResponsable = "Token Responsable",
+                    FechaResponsable = DateTime.Now,
+                    IdExamenDeCertificacion = IdExamenCertificacion,
+                    IdNivelCertificacion = capacitaempleado.IdNivelCertificacion,
+                    Resultado = certexa.TotalFinalExamen,
+                    Activo = true
+                };
+                
+                long respNewUSR = CertificacionData.AddCertificacion(lognew, ip);
+                if (respNewUSR > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
@@ -122,7 +167,15 @@ namespace APIRestV2.Controllers.Process
             }
             return respAltaCertificacion;
         }
-    
+
+        public List<ResponseCertificacionEmpleado> FindCertificacionByIdEmpleado(long IdEmpleado)
+        {
+            return CertificacionData.FindCertificacionByIdEmpleado(IdEmpleado);
+        }
+
+        
+
+
 
 
     public List<Certificacion> FindAllCertificacion()

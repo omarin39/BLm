@@ -117,6 +117,28 @@ namespace APIRestV2.Controllers.Process
             List<ResponseMaquinaProceso> resMaquinaProceso = entityData.FindMaquinaProceso(Maquina);
             return resMaquinaProceso;
         }
+
+        public List<VwMaquinaasignacapacitacion> FindMaquinaAsignaCapacitacion()
+        {
+            List<VwMaquinaasignacapacitacion> resMaquinaProceso = entityData.FindMaquinaAsignaCapacitacion();
+            return resMaquinaProceso;
+        }
+
+        public List<VwMaquinaprocesoasignacapacitacion> FindMaquinaProcesosAsignaCapacitacion(long IdMaquina)
+        {
+            return entityData.FindMaquinaProcesosAsignaCapacitacion(IdMaquina);
+        }
+
+        public List<VwMaquinaprocesopiezaasignacapacitacion> FindMaquinaProcesoPiezasAsignaCapacitacion(long IdMaquinaProceso)
+        {
+            return entityData.FindMaquinaProcesoPiezasAsignaCapacitacion(IdMaquinaProceso);
+        }
+
+        
+
+
+
+
     }
 
     

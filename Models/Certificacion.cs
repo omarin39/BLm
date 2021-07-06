@@ -20,6 +20,11 @@ namespace APIRestV2.Models
         public string TokenResponsable { get; set; }
         public DateTime? FechaResponsable { get; set; }
         public double? Resultado { get; set; }
+        public long IdExamenDeCertificacion { get; set; }
+        public long IdNivelCertificacion { get; set; }
         public bool? Activo { get; set; }
+
+        public virtual ExamenDeCertificacion IdExamenDeCertificacionNavigation { get; set; }
+        public virtual NivelCertificacion IdNivelCertificacionNavigation { get; set; }
     }
 }

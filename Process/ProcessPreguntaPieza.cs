@@ -128,5 +128,13 @@ namespace APIRestV2.Controllers.Process
             List<PreguntaPieza> respPreguntaPiezaRet = entityData.findPreguntaPiezaIdProcesoPiezaMaquina(id);
             return respPreguntaPiezaRet;
         }
+
+        public List<ResponsePreguntasTotalesPiezas> FindGlobalPiezaProcesoMaquinaIdNivelCertifica(string IdPieza, long IdProceso, string IdMaquina, long IdNivelCertifica, long IdIdioma)
+        {
+            List<ResponsePreguntasTotalesPiezas> respPreguntaPiezaRet = entityData.FindGlobalPiezaProcesoMaquinaIdNivelCertifica(IdPieza, IdProceso, IdMaquina, IdNivelCertifica, IdIdioma);
+            return respPreguntaPiezaRet;
+        }
+
+        
     }
 }
