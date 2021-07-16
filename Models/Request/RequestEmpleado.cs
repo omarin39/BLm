@@ -27,5 +27,6 @@ namespace APIRestV2.Models.Request
         public long UnidadNegocioIdUnidadNegocio { get; set; }
         public long CentroCostoIdCentroCosto { get; set; }
         public long? IdPerfil { get; set; }
+        public int? NcertiRequeridas { get; set; }
     }
 }

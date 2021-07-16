@@ -160,7 +160,7 @@ namespace APIRestV2.Controllers.Process
                 }
             }
         }
-        public ResponsePlanta FindPlanta(long IdPlantaExt){
+        public ResponsePlanta FindPlanta(string IdPlantaExt){
             Plantum respAltaPlanta = PlantaData.FindPlanta(IdPlantaExt);
             if (respAltaPlanta == null)
             {

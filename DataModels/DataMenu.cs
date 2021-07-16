@@ -19,7 +19,7 @@ namespace APIRestV2.DataModels
 
         public List<Menu> FindAllMenu()
         {
-            List<Menu> MenuGral = _context.Menus.Include("Operacions").ToList();
+            List<Menu> MenuGral = _context.Menus.AsNoTracking().Include(o => o.Operacions.Where(op=> op.Activo== true)).ToList();
             return MenuGral;
         }
         public Menu FindMenu(long idMenu)

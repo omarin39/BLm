@@ -26,8 +26,7 @@ namespace APIRestV2.DataModels
         public List<Empleado> FindAllEmpleadosPorPlanta(long IdPlanta)
         {
             return _context.Empleados.AsNoTracking().Where(us=> us.IdPlanta == IdPlanta).ToList();
-        }
-        
+        }        
 
         public List<Empleado> FindAllEmpleadoActivos()
         {

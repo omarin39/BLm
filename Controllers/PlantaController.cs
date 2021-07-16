@@ -40,7 +40,7 @@ namespace APIRestV2.Controllers
             {
               
 
-                if (req.IdPlantaExterno > 0)
+                if (req.IdPlantaExterno != "0" && !String.IsNullOrEmpty(req.IdPlantaExterno) && !String.IsNullOrWhiteSpace(req.IdPlantaExterno))
                 {
                     var result = procPlanta.AddPlanta(req, remoteIpAddress.ToString());
                     if (result != null)
@@ -75,11 +75,11 @@ namespace APIRestV2.Controllers
 
 
         [HttpGet("{IdPlantaExt}")]
-        public ActionResult<RequestPlanta> Find(long IdPlantaExt)
+        public ActionResult<RequestPlanta> Find(string IdPlantaExt)
         {
             try
             {
-                if (IdPlantaExt < 0)
+                if (!String.IsNullOrEmpty(IdPlantaExt) || !String.IsNullOrWhiteSpace(IdPlantaExt) || IdPlantaExt == "0")
                 {
                     return NotFound("Planta not found");
                 }

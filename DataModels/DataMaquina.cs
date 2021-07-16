@@ -41,6 +41,27 @@ namespace APIRestV2.DataModels
             return _context.Maquinas.AsNoTracking().SingleOrDefault(p => p.IdMaquina == id);
         }
 
+        public List<Maquina> FindMaquinasByPlanta(long planta)
+        {
+            var query = from m in _context.Maquinas 
+                        join mf in _context.MaquinaFisicas on m.IdMaquina equals mf.MaquinaIdMaquina
+                        join p in _context.Planta.Where(us => us.IdPlanta == planta) on mf.PlantaIdPlanta equals p.IdPlanta 
+                        select m;
+
+            return query.ToList();
+        }
+
+        public List<Maquina> FindMaquinasByPlantaNave(long planta, long nave)
+        {
+            var query = from m in _context.Maquinas
+                        join mf in _context.MaquinaFisicas on m.IdMaquina equals mf.MaquinaIdMaquina
+                        join p in _context.Planta.Where(us => us.IdPlanta == planta) on mf.PlantaIdPlanta equals p.IdPlanta
+                        join n in _context.Naves.Where(us => us.IdNave == nave) on mf.NaveIdNave equals n.IdNave
+                        select m;
+
+            return query.ToList();
+        }
+
         public long AddMaquina(Maquina item,string ip)
         {
             try

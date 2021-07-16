@@ -19,7 +19,7 @@ namespace APIRestV2.DataModels
 
         public  List<Operacion> FindAllOperacion()
         {
-            return  _context.Operacions.ToList();
+            return  _context.Operacions.AsNoTracking().Where(op=> op.Activo == true).ToList();
         }
         public Operacion FindOperacion(long idOperacion)
         {

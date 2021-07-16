@@ -134,35 +134,84 @@ namespace APIRestV2.Controllers
          
         }
 
-     
-
         [HttpGet()]
         public ActionResult<List<VwMaquinaPregunta>> FindAll()
         {
             try
             {
-               
+
                 List<VwMaquinaPregunta> result = process.FindAllMaquina();
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Maquina not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Maquina not found");
+
+            }
+
+        }
+
+
+        [HttpGet("FindMaquinasByPlanta/{planta}")]
+        public ActionResult<List<Maquina>> FindByPlanta(long planta)
+        {
+            try
+            {
+               
+                List<Maquina> result = process.FindMaquinasByPlanta(planta);
                 if (result != null)
                     {
                         return result;
                     }
                     else
                     {
-                        return NotFound("Maquina not found");
+                        return NotFound("Maquinas not found");
                     }
 
                 
             }
             catch (Exception e)
             {
-                return NotFound("Maquina not found");
+                return NotFound("Maquinas not found");
                
             }
          
         }
 
+        [HttpGet("FindMaquinasByPlantaNave/{planta}/{nave}")]
+        public ActionResult<List<Maquina>> FindByPlantaNave(long planta, long nave)
+        {
+            try
+            {
 
+                List<Maquina> result = process.FindMaquinasByPlantaNave(planta,nave);
+                if (result != null)
+                {
+                    return result;
+                }
+                else
+                {
+                    return NotFound("Maquinas not found");
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound("Maquinas not found");
+
+            }
+
+        }
 
 
 

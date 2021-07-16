@@ -154,7 +154,17 @@ namespace APIRestV2.Controllers.Process
         List<VwMaquinaPregunta> resPiezaRet = entityData.FindAllMaquina();
         return resPiezaRet;
     }
+        public List<Maquina> FindMaquinasByPlanta(long planta)
+        {
+            List<Maquina> resMaquinaRet = entityData.FindMaquinasByPlanta(planta);
+            return resMaquinaRet;
+        }
+        public List<Maquina> FindMaquinasByPlantaNave(long planta, long nave)
+        {
+            List<Maquina> resMaquinaRet = entityData.FindMaquinasByPlantaNave(planta,nave);
+            return resMaquinaRet;
+        }
 
 
-}
+    }
 }

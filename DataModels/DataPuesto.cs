@@ -17,10 +17,10 @@ namespace APIRestV2.DataModels
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public async Task<List<Puesto>> FindAllPuestos()
+        public List<Puesto> FindAllPuestos()
         {
 
-            return await _context.Puestos.ToListAsync();
+            return _context.Puestos.ToList();
         }
         public Puesto FindPuesto(int tipoBusqueda, long id_puestoExterno, string nombrePuesto)
         {

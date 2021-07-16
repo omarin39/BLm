@@ -100,6 +100,7 @@ namespace APIRestV2.Controllers.Process
                     empleadoBuscado.CentroCostoIdCentroCosto = empleado.CentroCostoIdCentroCosto;
                     empleadoBuscado.CuentaUsuario = empleado.CuentaUsuario;
                     empleadoBuscado.IdPerfil = empleado.IdPerfil;
+                    empleadoBuscado.NcertiRequeridas = empleado.NcertiRequeridas;
                     var respNewEmpleado = empleadoData.UpdateEmpleado(empleadoBuscado,ip);
                     if (respNewEmpleado > 0)
                     {

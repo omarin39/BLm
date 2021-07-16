@@ -119,7 +119,7 @@ namespace APIRestV2.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                long id_planta = FindPlanta(RegBien.IdPlanta,RegBien.AcronimoPlanta, RegBien.DescripcionPlanta,ip);
+                long id_planta = FindPlanta(RegBien.IdPlanta.ToString(),RegBien.AcronimoPlanta, RegBien.DescripcionPlanta,ip);
                 long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento,ip);
                 long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto, ip);
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad,ip);
@@ -139,6 +139,7 @@ namespace APIRestV2.Controllers.Process
                 empleadoNewRegistro.UnidadNegocioIdUnidadNegocio = id_unidadNegocio;
                 empleadoNewRegistro.FechaNacimiento = fechaNacimiento;
                 empleadoNewRegistro.CentroCostoIdCentroCosto= id_CECO;
+                empleadoNewRegistro.IdPlanta= id_planta;
                 empleadoNewRegistro.IdiomaIdIdioma = 1;
                 empleadoNewRegistro.IdPerfil = 2;
 
@@ -173,7 +174,7 @@ namespace APIRestV2.Controllers.Process
                 var formatoFecha = "yyyy/mm/dd";
                 DateTime.TryParseExact(RegBien.FechaIngreso, formatoFecha, null, System.Globalization.DateTimeStyles.None, out FechaIngreso);
                 DateTime.TryParseExact(RegBien.FechaNacimiento, formatoFecha, null, System.Globalization.DateTimeStyles.None, out fechaNacimiento);
-                long id_planta = FindPlanta(RegBien.IdPlanta, RegBien.AcronimoPlanta, RegBien.DescripcionPlanta, ip);
+                long id_planta = FindPlanta(RegBien.IdPlanta.ToString(), RegBien.AcronimoPlanta, RegBien.DescripcionPlanta, ip);
                 long id_departamento = FindDepartamento(long.Parse(RegBien.id_depa_externo), RegBien.Departamento, ip);
                 long id_puesto = FindPuesto(long.Parse(RegBien.id_puesto_externo), RegBien.Puesto, ip);
                 long id_unidadNegocio = FindUnidadNegocio(RegBien.Unidad,ip);
@@ -191,6 +192,7 @@ namespace APIRestV2.Controllers.Process
                 _Empleado.NominaJefe = RegBien.NominaJefe.ToString();
                 _Empleado.UnidadNegocioIdUnidadNegocio = id_unidadNegocio;
                 _Empleado.FechaNacimiento = fechaNacimiento;
+                _Empleado.IdPlanta = id_planta;
                 _Empleado.CentroCostoIdCentroCosto = id_CECO;
 
 
@@ -215,7 +217,7 @@ namespace APIRestV2.Controllers.Process
             }
         }
 
-        public long FindPlanta(long idPlantaExt, string AcronimoPlanta, string DescPlanta,string ip){
+        public long FindPlanta(string idPlantaExt, string AcronimoPlanta, string DescPlanta,string ip){
             long idPlantaret = 0;
             var resPlanta = plantasData.FindPlanta(idPlantaExt);
             if(resPlanta!=null){
@@ -225,7 +227,7 @@ namespace APIRestV2.Controllers.Process
             {
                 Plantum newPlanta = new();
                 newPlanta.Acronimo = AcronimoPlanta;
-                newPlanta.IdPlantaExterno = idPlantaExt;
+                newPlanta.IdPlantaExterno = idPlantaExt.ToString();
                 newPlanta.Planta = DescPlanta;
                 var respNewPlanta = plantasData.AddPlanta(newPlanta,ip);
                 idPlantaret = respNewPlanta;

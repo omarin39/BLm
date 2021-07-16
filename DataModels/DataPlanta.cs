@@ -22,7 +22,7 @@ namespace APIRestV2.DataModels
         {
             return  _context.Planta.Include("Naves").ToList();
         }
-        public Plantum FindPlanta(long idPlantaExt)
+        public Plantum FindPlanta(string idPlantaExt)
         {
             return _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idPlantaExt);
         }
@@ -33,7 +33,7 @@ namespace APIRestV2.DataModels
             switch (Tipobusqueda)
             {
                 case 1:
-                    busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == BusquedaVar.IdPlantaExterno && us.IdPlanta != BusquedaVar.IdPlanta);
+                    busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == BusquedaVar.IdPlantaExterno.ToString() && us.IdPlanta != BusquedaVar.IdPlanta);
                     break;
                 case 2:
                     busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.Acronimo.Trim().ToUpper() == BusquedaVar.Acronimo.Trim().ToUpper() && us.IdPlanta != BusquedaVar.IdPlanta);
@@ -56,7 +56,7 @@ namespace APIRestV2.DataModels
         {
             //true si existe
             //false si no existe
-            var busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idExterno);
+            var busqueda = _context.Planta.AsNoTracking().SingleOrDefault(us => us.IdPlantaExterno == idExterno.ToString());
             return busqueda == null ? false : true;
         }
 
