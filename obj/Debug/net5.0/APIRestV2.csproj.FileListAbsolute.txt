@@ -1,9 +1,3 @@
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.AssemblyInfoInputs.cache
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.AssemblyInfo.cs
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.csproj.CoreCompileInputs.cache
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\appsettings.json
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\APIRestV2.exe
@@ -39,6 +33,7 @@ C:\Users\herna\Documents\BLm\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
+C:\Users\herna\Documents\BLm\bin\Debug\net5.0\System.Data.SqlClient.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\System.Runtime.Caching.dll
@@ -53,8 +48,19 @@ C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-arm64\native\sni.dll
+C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x64\native\sni.dll
+C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win-x86\native\sni.dll
+C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 C:\Users\herna\Documents\BLm\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.AssemblyInfoInputs.cache
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.AssemblyInfo.cs
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.csproj.CoreCompileInputs.cache
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\staticwebassets\APIRestV2.StaticWebAssets.Manifest.cache
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\staticwebassets\APIRestV2.StaticWebAssets.xml
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\scopedcss\bundle\APIRestV2.styles.css
@@ -64,4 +70,4 @@ C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.dll
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\ref\APIRestV2.dll
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.pdb
 C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.genruntimeconfig.cache
-C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.csprojAssemblyReference.cache
+C:\Users\herna\Documents\BLm\obj\Debug\net5.0\APIRestV2.csproj.AssemblyReference.cache

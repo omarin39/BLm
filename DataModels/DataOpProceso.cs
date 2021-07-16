@@ -8,50 +8,41 @@ using System.Threading.Tasks;
 
 namespace APIRestV2.DataModels
 {
-    public class DataFabricante
+    public class DataOpProceso
     {
         private readonly CARTAVContext _context;
         private Controllers.Process.Process_Log procLog;
-        public DataFabricante()
+        public DataOpProceso()
         {
             _context = new CARTAVContext();
             procLog = new Controllers.Process.Process_Log();
         }
 
-        public  List<Fabricante> FindAllFabricante()
+        public List<OperacionProceso> FindAllProcesos()
         {
-            return  _context.Fabricantes.ToList();
+            return  _context.OperacionProcesos.ToList();
         }
-        public Fabricante FindFabricante(long idFabricante)
+        public OperacionProceso FindProceso(string Proceso)
         {
-            return _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.IdFabricante == idFabricante);
-        }
-
-        public bool FindFabricanteEmailTelefono(int Tipobusqueda, RequestFabricante BusquedaVar)
-        {
-            Fabricante busqueda = new();
-            switch (Tipobusqueda)
-            {
-                case 1:
-                    busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Email.Trim().ToUpper() == BusquedaVar.Email.Trim().ToUpper() && us.IdFabricante != BusquedaVar.IdFabricante);
-                    break;
-                case 2:
-                    busqueda = _context.Fabricantes.AsNoTracking().SingleOrDefault(us => us.Telefono.Trim() == BusquedaVar.Telefono.Trim() && us.IdFabricante != BusquedaVar.IdFabricante);
-                    break;
-                default:
-                    break;
-            }
-            return busqueda == null ? false : true;
+            return _context.OperacionProcesos.AsNoTracking().SingleOrDefault(us => us.Codigo == Proceso);
         }
 
-        public long AddFabricante(Fabricante item,string ip)
+        public bool ValidaClaveExistente(RequestOpProceso Proceso)
+        {
+            //true si existe
+            //false si no existe
+           var busqueda = _context.OperacionProcesos.AsNoTracking().SingleOrDefault(us => us.Codigo.Trim().ToUpper() == Proceso.Codigo.Trim().ToUpper() && us.IdProceso != Proceso.IdProceso);
+            return busqueda==null ? false : true;
+        }
+
+        public long AddProceso(OperacionProceso item,string ip)
         {
             try
             {
-                var FabricanteRes = _context.Fabricantes.Add(item);
+                var ProcesoRes = _context.OperacionProcesos.Add(item);
                 _context.SaveChanges();
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
-                return Int32.Parse(FabricanteRes.Entity.IdFabricante.ToString());
+                return Int32.Parse(ProcesoRes.Entity.IdProceso.ToString());
             }
             catch (Exception ex)
             {
@@ -60,12 +51,11 @@ namespace APIRestV2.DataModels
                 return 0;
             }
         }
-
-        public int UpdateFabricante(Fabricante item,string ip)
+        public int UpdateProceso(OperacionProceso item,string ip)
         {
             try
             {
-                _context.Fabricantes.Update(item);
+                _context.OperacionProcesos.Update(item);
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), "OK", 200);
                 return _context.SaveChanges();
             }
@@ -74,6 +64,13 @@ namespace APIRestV2.DataModels
                 procLog.AddLog(ip, procLog.GetPropertyValues(item, System.Reflection.MethodBase.GetCurrentMethod().Name), ex.InnerException.Message, 400);
                 return 0;
             }
+
+        }
+
+        internal List<OperacionProceso> FindProcesoAutoComplete(string param)
+        {
+            param = param.ToUpper().Replace("%2F", "/").Trim();
+            return _context.OperacionProcesos.Where(p => p.Codigo.ToUpper().Contains(param) || p.Nombre.ToUpper().Contains(param)).Take(200).ToList();
 
         }
     }
